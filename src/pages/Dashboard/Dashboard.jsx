@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Users, MessageSquare, PlayCircle, CheckCircle, Search, LogOut, LayoutDashboard, MapPin } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const admin = JSON.parse(localStorage.getItem('admin') || '{}');
+    const navigate = useNavigate();
+    const admin = JSON.parse(localStorage.getItem('admin') || 'null');
 
     useEffect(() => {
+        // Auth Check
+        if (!admin) {
+            navigate('/');
+            return;
+        }
+
         axios.get('http://127.0.0.1:8000/api/dashboard-stats/')
-            .then(res => { setData(res.data); setLoading(false); })
+            .then(res => {
+                setData(res.data);
+                setLoading(false);
+            })
             .catch(err => console.error(err));
-    }, []);
+    }, [navigate]);
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('admin');
+        navigate('/');
+    };
 
     const getIcon = (type) => {
         switch(type) {
@@ -24,60 +41,66 @@ const Dashboard = () => {
         }
     };
 
-    if (loading) return <div className="loading">Initializing Dashboard...</div>;
+    if (!admin) return null;
+    if (loading) return <div className="loading-screen">Loading ERP Data...</div>;
 
     return (
-        <div className="dashboard-layout">
+        <div className="dashboard-container">
             {/* Sidebar */}
-            <aside className="sidebar">
-                <div className="brand">OPERATING<span>MEDIA</span></div>
-                <div className="user-profile">
-                    <div className="avatar">{admin.name?.charAt(0)}</div>
-                    <div>
-                        <p className="user-name">{admin.name}</p>
-                        <p className="user-role">Administrator</p>
+            <aside className="dashboard-sidebar">
+                <div className="sidebar-logo">
+                    OPERATING<span>MEDIA</span>
+                </div>
+                
+                <div className="sidebar-user">
+                    <div className="user-avatar">{admin.name?.charAt(0)}</div>
+                    <div className="user-info">
+                        <span className="user-name">{admin.name}</span>
+                        <span className="user-role">Administrator</span>
                     </div>
                 </div>
-                <nav className="nav-menu">
-                    <a href="#" className="active"><LayoutDashboard size={18}/> Dashboard</a>
-                    <a href="#"><MapPin size={18}/> Manage Branch</a>
-                    <a href="#" className="logout-btn"><LogOut size={18}/> Logout</a>
+
+                <nav className="sidebar-nav">
+                    <a href="#" className="nav-item active"><LayoutDashboard size={18}/> Dashboard</a>
+                    <a href="#" className="nav-item"><MapPin size={18}/> Manage Branch</a>
+                    <div className="nav-spacer"></div>
+                    <a href="/" className="nav-item logout" onClick={handleLogout}><LogOut size={18}/> Logout</a>
                 </nav>
             </aside>
 
             {/* Main Content */}
-            <main className="main-content">
-                <header className="top-header">
-                    <div className="search-bar">
-                        <Search size={18} />
-                        <input type="text" placeholder="Search here with Branch Name..." />
+            <main className="dashboard-main">
+                <header className="main-header">
+                    <div className="header-search">
+                        <Search size={18} color="#9ca3af" />
+                        <input type="text" placeholder="Search branch statistics..." />
                     </div>
                 </header>
 
-                <div className="content-inner">
-                    <div className="welcome-banner">
-                        <CheckCircle size={20} />
-                        <span>SUCCESS : Welcome! You are logged in as {admin.name}.</span>
+                <div className="main-body">
+                    <div className="alert-banner">
+                        <CheckCircle size={18} />
+                        Welcome back! Data is synced with Live SQL Database.
                     </div>
 
-                    {data.map((branch, idx) => (
-                        <section key={idx} className="branch-section">
-                            <h3 className="section-title">{branch.branch_name}</h3>
+                    {data.map((branch, index) => (
+                        <div key={index} className="branch-group">
+                            <h3 className="branch-heading">{branch.branch_name}</h3>
                             <div className="stats-grid">
-                                {branch.stats.map((stat, sIdx) => (
-                                    <div key={sIdx} className={`stat-card-modern ${stat.type}`}>
-                                        <div className="card-header">
-                                            <span className="icon-wrapper">{getIcon(stat.type)}</span>
-                                            <span className="stat-label">{stat.label}</span>
+                                {branch.stats.map((stat, sIndex) => (
+                                    <div key={sIndex} className={`stat-card ${stat.type}`}>
+                                        <div className="stat-card-top">
+                                            <div className="stat-icon">{getIcon(stat.type)}</div>
+                                            <span className="stat-title">{stat.label}</span>
                                         </div>
-                                        <div className="card-body">
-                                            <h2>{stat.value}</h2>
-                                            <p>{stat.monthly} From Current Month</p>
+                                        <div className="stat-card-bottom">
+                                            <div className="stat-value">{stat.value}</div>
+                                            <div className="stat-monthly">{stat.monthly} New this month</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                        </section>
+                        </div>
                     ))}
                 </div>
             </main>

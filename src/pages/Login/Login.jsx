@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react'; // Import icons
 import './Login.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // State for visibility
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // Check if 'Remember Me' was used previously
     useEffect(() => {
         const savedEmail = localStorage.getItem('rememberedEmail');
         if (savedEmail) {
@@ -24,13 +25,8 @@ const Login = () => {
         setError('');
         try {
             const res = await axios.post('http://127.0.0.1:8000/api/login/', { email, password });
-            
-            // Handle Remember Me logic
-            if (rememberMe) {
-                localStorage.setItem('rememberedEmail', email);
-            } else {
-                localStorage.removeItem('rememberedEmail');
-            }
+            if (rememberMe) localStorage.setItem('rememberedEmail', email);
+            else localStorage.removeItem('rememberedEmail');
 
             localStorage.setItem('admin', JSON.stringify(res.data.admin));
             navigate('/dashboard');
@@ -49,21 +45,30 @@ const Login = () => {
                     <input 
                         className="login-input"
                         type="email" 
-                        placeholder="email@domain.com" 
+                        placeholder="Email" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)} 
                         required 
                     />
 
                     <label className="login-label">Password</label>
-                    <input 
-                        className="login-input"
-                        type="password" 
-                        placeholder="*********" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)} 
-                        required 
-                    />
+                    <div className="password-input-wrapper">
+                        <input 
+                            className="login-input"
+                            type={showPassword ? "text" : "password"} // Dynamic type
+                            placeholder="Password" 
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)} 
+                            required 
+                        />
+                        {/* Toggle Icon */}
+                        <div 
+                            className="password-toggle-icon" 
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </div>
+                    </div>
 
                     <div className="login-options">
                         <label className="remember-me">

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Users, MessageSquare, PlayCircle, CheckCircle, Search, LogOut, LayoutDashboard, MapPin } from 'lucide-react';
+import { Users, MessageSquare, PlayCircle, CheckCircle, Search } from 'lucide-react';
+import Sidebar from '../../components/Sidebar/Sidebar'; // Ensure this path is correct
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -11,26 +12,25 @@ const Dashboard = () => {
     const admin = JSON.parse(localStorage.getItem('admin') || 'null');
 
     useEffect(() => {
-        // Auth Check
+        // Security: If not logged in, go to login page
         if (!admin) {
             navigate('/');
             return;
         }
 
+        // Fetch data from Django Backend
         axios.get('http://127.0.0.1:8000/api/dashboard-stats/')
             .then(res => {
                 setData(res.data);
                 setLoading(false);
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error("Fetch Error:", err);
+                setLoading(false);
+            });
     }, [navigate]);
 
-    const handleLogout = (e) => {
-        e.preventDefault();
-        localStorage.removeItem('admin');
-        navigate('/');
-    };
-
+    // Helper to pick the right icon for the card
     const getIcon = (type) => {
         switch(type) {
             case 'students': return <Users size={20} />;
@@ -42,63 +42,50 @@ const Dashboard = () => {
     };
 
     if (!admin) return null;
-    if (loading) return <div className="loading-screen">Loading ERP Data...</div>;
+    if (loading) return <div className="loading-state">Synchronizing with Database...</div>;
 
     return (
-        <div className="dashboard-container">
-            {/* Sidebar */}
-            <aside className="dashboard-sidebar">
-                <div className="sidebar-logo">
-                    OPERATING<span>MEDIA</span>
-                </div>
-                
-                <div className="sidebar-user">
-                    <div className="user-avatar">{admin.name?.charAt(0)}</div>
-                    <div className="user-info">
-                        <span className="user-name">{admin.name}</span>
-                        <span className="user-role">Administrator</span>
-                    </div>
-                </div>
+        <div className="dashboard-wrapper">
+            {/* 1. Integrated Sidebar Component */}
+            <Sidebar />
 
-                <nav className="sidebar-nav">
-                    <a href="#" className="nav-item active"><LayoutDashboard size={18}/> Dashboard</a>
-                    <a href="#" className="nav-item"><MapPin size={18}/> Manage Branch</a>
-                    <div className="nav-spacer"></div>
-                    <a href="/" className="nav-item logout" onClick={handleLogout}><LogOut size={18}/> Logout</a>
-                </nav>
-            </aside>
-
-            {/* Main Content */}
+            {/* 2. Main Content Area */}
             <main className="dashboard-main">
-                <header className="main-header">
-                    <div className="header-search">
-                        <Search size={18} color="#9ca3af" />
+                <header className="dashboard-header">
+                    <div className="dashboard-search">
+                        <Search size={18} color="#94a3b8" />
                         <input type="text" placeholder="Search branch statistics..." />
                     </div>
                 </header>
 
-                <div className="main-body">
-                    <div className="alert-banner">
+                <div className="dashboard-body">
+                    <div className="status-banner">
                         <CheckCircle size={18} />
-                        Welcome back! Data is synced with Live SQL Database.
+                        <span>Connected to Live SQL Database. Logged in as <strong>{admin.name}</strong></span>
                     </div>
 
+                    {/* Loop through Branches (Andheri, Borivali, etc.) */}
                     {data.map((branch, index) => (
-                        <div key={index} className="branch-group">
-                            <h3 className="branch-heading">{branch.branch_name}</h3>
-                            <div className="stats-grid">
+                        <div key={index} className="branch-container">
+                            <h3 className="branch-label">{branch.branch_name}</h3>
+                            <div className="stats-cards-grid">
+                                
+                                {/* Loop through the 4 stats for this branch */}
                                 {branch.stats.map((stat, sIndex) => (
-                                    <div key={sIndex} className={`stat-card ${stat.type}`}>
-                                        <div className="stat-card-top">
-                                            <div className="stat-icon">{getIcon(stat.type)}</div>
-                                            <span className="stat-title">{stat.label}</span>
+                                    <div key={sIndex} className={`modern-stat-card ${stat.type}`}>
+                                        <div className="card-top">
+                                            <div className="icon-box">{getIcon(stat.type)}</div>
+                                            <span className="label-text">{stat.label}</span>
                                         </div>
-                                        <div className="stat-card-bottom">
-                                            <div className="stat-value">{stat.value}</div>
-                                            <div className="stat-monthly">{stat.monthly} New this month</div>
+                                        <div className="card-bottom">
+                                            <div className="big-number">{stat.value}</div>
+                                            <div className="monthly-update">
+                                                {stat.monthly} New this month
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
+
                             </div>
                         </div>
                     ))}

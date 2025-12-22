@@ -1,0 +1,161 @@
+/* src/pages/Login/Login.css */
+.login-container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Using a high-quality modern workspace background */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+                      url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+.login-card {
+    background-color: #ffffff;
+    padding: 50px 45px;
+    border-radius: 16px; /* Slightly more rounded for a modern feel */
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.login-card h2 {
+    color: #111827; /* Darker slate for modern contrast */
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: -0.025em; /* Tight letter spacing for modern look */
+}
+
+.login-card h2 span {
+    font-weight: 800;
+    color: #059669; /* A slightly more "Pro" Emerald Green */
+}
+
+.login-label {
+    display: block;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 24px;
+    letter-spacing: 0.01em;
+}
+
+.login-input {
+    display: block;
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+    color: #111827;
+    transition: all 0.2s ease-in-out;
+}
+
+.login-input::placeholder {
+    color: #9ca3af;
+}
+
+.login-input:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+}
+
+.forgot-password {
+    display: block;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-top: 12px;
+    margin-bottom: 30px;
+}
+
+.forgot-password:hover {
+    color: #059669;
+}
+
+.login-button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: #10b981; /* Modern Emerald */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.login-button:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.register-text {
+    text-align: center;
+    margin-top: 30px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.register-text span {
+    color: #111827;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 4px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.remember-me input {
+    cursor: pointer;
+    accent-color: #10b981; /* Makes the checkbox green */
+    width: 16px;
+    height: 16px;
+}
+
+/* Updated Error Message style */
+.error-message {
+    color: #ef4444;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Remove the forgot-password margin-bottom as it's now inside login-options */
+.forgot-password {
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    margin: 0; /* Changed from previous */
+}

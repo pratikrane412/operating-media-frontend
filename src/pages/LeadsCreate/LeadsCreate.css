@@ -1,0 +1,355 @@
+/* --- MODERN SELECT UI --- */
+.duralux-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #003873; /* Duralux Blue */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Ensure spacing after the divider for the second section */
+.form-divider + .duralux-section-title {
+    margin-top: 10px;
+}
+.modern-select-container {
+    flex: 1;
+    position: relative;
+    user-select: none;
+}
+
+.modern-select-trigger {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 45px;
+    overflow: hidden;
+}
+
+.modern-select-trigger:hover {
+    border-color: #cbd5e1;
+}
+
+.modern-select-trigger.active {
+    border-color: #003873;
+    box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.05);
+}
+
+.selected-value {
+    flex: 1;
+    padding: 0 15px;
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.selected-value.placeholder {
+    color: #94a3b8;
+}
+
+.select-arrow-icon {
+    margin-right: 15px;
+    color: #94a3b8;
+    transition: transform 0.3s ease;
+}
+
+.select-arrow-icon.rotate {
+    transform: rotate(180deg);
+}
+
+/* --- DROPDOWN MENU --- */
+.modern-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #eef1f6;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 6px;
+    animation: fadeInSlide 0.2s ease-out;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #475569;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f8fafc;
+    color: #003873;
+}
+
+.dropdown-item.selected {
+    background-color: #ebf0f5;
+    color: #003873;
+    font-weight: 700;
+}
+
+.check-mark {
+    color: #003873;
+}
+
+/* --- ROW STYLES --- */
+.duralux-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.row-label {
+    width: 180px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.row-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 45px;
+}
+
+.icon-box-left {
+    width: 45px;
+    height: 100%;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    border-right: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.row-input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0 15px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 30px 0;
+}
+
+/* --- SCROLLBAR FOR DROPDOWN --- */
+.modern-dropdown-menu::-webkit-scrollbar { width: 5px; }
+.modern-dropdown-menu::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+/* --- PAGE HEADER & BREADCRUMB --- */
+.leads-page-header {
+    margin-bottom: 30px;
+}
+
+.header-left .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.header-left .sep { color: #cbd5e1; }
+.header-left .current { color: #475569; font-weight: 600; }
+
+.page-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.page-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* --- FORM CARD --- */
+.form-card-duralux {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eef1f6;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    padding: 40px;
+}
+
+.form-section-block {
+    margin-bottom: 5px;
+}
+
+/* --- DURALUX ROW DESIGN --- */
+.duralux-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.row-label {
+    width: 180px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    flex-shrink: 0;
+}
+
+.row-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+    transition: 0.2s;
+}
+
+.row-input-wrapper:focus-within {
+    border-color: #003873;
+    box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.05);
+}
+
+.icon-box-left {
+    width: 45px;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    border-right: 1px solid #e2e8f0;
+}
+
+.row-input-wrapper input, 
+.row-input-wrapper select {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #334155;
+    background: transparent;
+    font-weight: 500;
+}
+
+/* --- COURSE DETAIL SECTION --- */
+.course-detail-section {
+    margin: 30px 0;
+    padding: 25px 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.inline-section-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #003873;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.course-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #eef1f6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    transition: 0.2s;
+}
+
+.check-item:hover { background: #f1f5f9; }
+.check-item.checked {
+    background: #ebf0f5;
+    border-color: #003873;
+    color: #003873;
+}
+
+.check-item input { width: 16px; height: 16px; accent-color: #003873; }
+
+/* --- FOOTER --- */
+.duralux-form-footer {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-cancel-flat {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-submit-primary {
+    background: #003873;
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit-primary:hover {
+    background: #002d5c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 56, 115, 0.2);
+}

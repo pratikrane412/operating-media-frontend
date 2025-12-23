@@ -1,118 +1,107 @@
-.sidebar-container {
-    width: 260px;
-    background-color: #ffffff;
+:root {
+    --sidebar-w: 260px;
+    --sidebar-c: 72px;
+    --brand-blue: #003873;
+    --bg-active: #ebf0f5;
+    --text-slate: #475569;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-aside {
+    width: var(--sidebar-w);
     height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #eef1f6;
     position: fixed;
-    top: 0;
-    left: 0;
-    border-right: 1px solid #e5e7eb;
+    top: 0; left: 0; z-index: 1001;
+    transition: var(--transition);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 24px;
-    z-index: 100;
 }
 
-.sidebar-logo {
-    font-size: 20px;
-    font-weight: 800;
-    color: #111827;
-    margin-bottom: 40px;
-    letter-spacing: -0.5px;
-}
+.sidebar-aside.collapsed { width: var(--sidebar-c); }
 
-.sidebar-logo span {
-    color: #10b981; /* Our brand teal */
-}
-
-/* User Profile Section */
-.sidebar-user-box {
+/* Brand Section */
+.sidebar-brand {
+    padding: 24px 20px;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px;
-    background-color: #f9fafb;
-    border-radius: 12px;
-    margin-bottom: 32px;
+    white-space: nowrap;
 }
 
-.user-initial {
-    width: 38px;
-    height: 38px;
-    background-color: #10b981;
-    color: white;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 16px;
+.brand-logo-box {
+    min-width: 34px; height: 34px;
+    background: var(--brand-blue);
+    color: white; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 18px;
 }
 
-.user-details p {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
-}
+.brand-name-text { font-weight: 800; font-size: 18px; color: #0f172a; }
 
-.user-details span {
-    font-size: 12px;
-    color: #6b7280;
-}
+/* Navigation Logic */
+.sidebar-menu-wrapper { padding: 10px 14px; flex: 1; }
 
-/* Navigation Links */
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex-grow: 1;
+.nav-section-label {
+    font-size: 10px; font-weight: 800; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 20px 0 10px 10px;
 }
 
 .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    text-decoration: none;
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border-radius: 10px;
+    color: var(--text-slate);
+    text-decoration: none; /* Removes purple/blue line */
+    transition: var(--transition);
+    cursor: pointer;
+    margin-bottom: 4px;
 }
 
-.nav-link:hover {
-    background-color: #f3f4f6;
-    color: #111827;
+.nav-link:hover { background: #f8fafc; color: var(--brand-blue); }
+.nav-link.active { background: var(--bg-active); color: var(--brand-blue); font-weight: 700; }
+
+.link-content { display: flex; align-items: center; gap: 12px; }
+
+/* Submenu Styling (The "Leads View" Fix) */
+.nav-submenu {
+    max-height: 0; overflow: hidden;
+    transition: var(--transition);
+    opacity: 0;
 }
 
-.nav-link.active {
-    background-color: #ecfdf5;
-    color: #059669;
-}
+.nav-dropdown-group.is-open .nav-submenu { max-height: 150px; opacity: 1; padding: 5px 0; }
+.nav-dropdown-group.is-open .nav-arrow { transform: rotate(90deg); }
 
-/* Logout Button */
-.logout-btn-container {
-    border-top: 1px solid #f3f4f6;
-    padding-top: 20px;
-}
-
-.sidebar-logout {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    width: 100%;
-    background: none;
-    border: none;
-    color: #ef4444;
+.sub-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px 10px 48px; /* Indented text */
+    text-decoration: none; /* Fixes the purple underline */
+    color: var(--brand-blue);
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.2s;
+    transition: var(--transition);
 }
 
-.sidebar-logout:hover {
-    background-color: #fef2f2;
+.sub-dot { color: #cbd5e1; }
+.sub-link:hover { color: #4f46e5; }
+
+/* PERFECT COLLAPSE LOGIC */
+.collapsed .link-text, 
+.collapsed .nav-section-label, 
+.collapsed .hide-on-collapse, 
+.collapsed .brand-name-text,
+.collapsed .nav-submenu {
+    display: none !important;
 }
+
+.collapsed .sidebar-brand,
+.collapsed .nav-link {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.collapsed .link-content { gap: 0; }

@@ -1,0 +1,54 @@
+.header-nav {
+    height: var(--nav-height);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #eef1f6;
+    position: fixed;
+    top: 0;
+    right: 0;
+    /* Matches Sidebar wide width */
+    left: var(--sidebar-wide); 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 1000;
+    transition: left var(--transition-speed) var(--ease-standard);
+}
+
+/* This is the key: Navbar left edge moves with Sidebar width */
+.is-collapsed .header-nav {
+    left: var(--sidebar-narrow);
+}
+
+.hamburger-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.hamburger-btn:hover { background: #f1f5f9; }
+
+.header-actions { display: flex; align-items: center; gap: 15px; }
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.header-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #f1f5f9;
+}
+
+.profile-container { position: relative; }

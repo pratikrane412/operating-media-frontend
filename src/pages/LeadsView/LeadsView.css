@@ -294,3 +294,132 @@
 .table-wrapper::-webkit-scrollbar-thumb:hover {
     background: #cbd5e1;
 }
+
+/* --- FILTER CARD --- */
+.filter-card {
+    background: #ffffff;
+    border: 1px solid #eef1f6;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.filter-header-row {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+}
+
+.filter-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr; /* Branch | Source | DateRange */
+    gap: 25px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.filter-group select, 
+.filter-group input {
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #1e293b;
+    background: #ffffff;
+    transition: 0.2s;
+}
+
+.filter-group select:focus, 
+.filter-group input:focus {
+    border-color: #003873;
+}
+
+/* Date Range specific styles */
+.date-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-input-container input {
+    flex: 1;
+}
+
+.date-sep {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+/* Filter Footer Buttons */
+.filter-footer {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-apply {
+    background: #003873;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.btn-apply:hover {
+    background: #002d5c;
+    transform: translateY(-1px);
+}
+
+.btn-reset {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.btn-reset:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}

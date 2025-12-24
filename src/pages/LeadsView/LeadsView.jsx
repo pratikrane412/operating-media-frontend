@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Search,
@@ -9,26 +10,24 @@ import {
   Filter,
   RotateCcw,
   Check,
+  Trash2,
+  Edit3,
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
+import LeadDrawer from "../../components/LeadDrawer/LeadDrawer";
 import "./LeadsView.css";
 
 const LeadsView = () => {
+  const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Dropdown Options State
   const [options, setOptions] = useState({ branches: [], sources: [] });
-
-  // Pagination & Filter States
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-
-  // Filter values
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
@@ -36,57 +35,72 @@ const LeadsView = () => {
     toDate: "",
   });
 
-  // Fetch filter options (Branches/Sources) once on load
+  // State for Row Action Menu
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/leads/create/") // Reusing your existing options endpoint
+      .get("http://127.0.0.1:8000/api/leads/create/")
       .then((res) =>
         setOptions({ branches: res.data.branches, sources: res.data.sources })
       )
-      .catch((err) => console.error("Error fetching filter options", err));
+      .catch((err) => console.error(err));
   }, []);
 
-  // Main data fetcher
   const fetchData = async () => {
     setLoading(true);
     try {
-        // We pack all filters into the URL
-        const res = await axios.get(`http://127.0.0.1:8000/api/leads-view/`, {
-            params: {
-                page: page,
-                size: pageSize,
-                search: search,
-                branch: filters.branch,
-                source: filters.source, // Ensure this matches backend 'source'
-                from: filters.fromDate,
-                to: filters.toDate
-            }
-        });
-        setLeads(res.data.leads);
-        setTotalPages(res.data.total_pages);
-        setLoading(false);
+      const res = await axios.get(`http://127.0.0.1:8000/api/leads-view/`, {
+        params: {
+          page,
+          size: pageSize,
+          search,
+          branch: filters.branch,
+          source: filters.source,
+          from: filters.fromDate,
+          to: filters.toDate,
+        },
+      });
+      setLeads(res.data.leads);
+      setTotalPages(res.data.total_pages);
+      setLoading(false);
     } catch (err) {
-        console.error(err);
-        setLoading(false);
+      console.error(err);
+      setLoading(false);
     }
-};
+  };
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize]); // Refetch on page/size change
+  }, [page, pageSize]);
 
-  const handleApplyFilters = () => {
-    setPage(1); // Reset to first page when filtering
-    fetchData();
-  };
-
-  const handleReset = () => {
-    setFilters({ branch: "", source: "", fromDate: "", toDate: "" });
-    setSearch("");
-    setPage(1);
-    // Note: fetch will be triggered by the useEffect if needed,
-    // but it's cleaner to call fetchData manually here after state reset
-    setTimeout(fetchData, 100);
+  // DELETE LOGIC
+  const handleDeleteLead = async (id) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this lead? This action cannot be undone."
+      )
+    ) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/leads/${id}/delete/`);
+        setActiveMenuId(null);
+        fetchData(); // Refresh table
+      } catch (err) {
+        alert("Failed to delete lead");
+      }
+    }
   };
 
   const getPageNumbers = () => {
@@ -98,13 +112,21 @@ const LeadsView = () => {
     return pages;
   };
 
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const handleOpenDrawer = (id) => {
+    setSelectedLeadId(id);
+    setIsDrawerOpen(true);
+  };
+
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
       <Sidebar isCollapsed={isCollapsed} />
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
-          {/* MODERN FILTER CARD */}
+          {/* FILTER CARD */}
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
@@ -166,10 +188,29 @@ const LeadsView = () => {
               </div>
             </div>
             <div className="filter-footer">
-              <button className="btn-reset" onClick={handleReset}>
+              <button
+                className="btn-reset"
+                onClick={() => {
+                  setFilters({
+                    branch: "",
+                    source: "",
+                    fromDate: "",
+                    toDate: "",
+                  });
+                  setSearch("");
+                  setPage(1);
+                  fetchData();
+                }}
+              >
                 <RotateCcw size={14} /> RESET
               </button>
-              <button className="btn-apply" onClick={handleApplyFilters}>
+              <button
+                className="btn-apply"
+                onClick={() => {
+                  setPage(1);
+                  fetchData();
+                }}
+              >
                 <Check size={14} /> APPLY
               </button>
             </div>
@@ -189,7 +230,6 @@ const LeadsView = () => {
                 >
                   <option value="10">10</option>
                   <option value="25">25</option>
-                  <option value="50">50</option>
                 </select>{" "}
                 entries
               </div>
@@ -198,10 +238,7 @@ const LeadsView = () => {
                 <input
                   type="text"
                   value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
+                  onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search student name..."
                   onKeyUp={(e) => e.key === "Enter" && fetchData()}
                 />
@@ -220,6 +257,7 @@ const LeadsView = () => {
                     <th>PHONE</th>
                     <th>DATE</th>
                     <th>FOLLOWUP</th>
+                    <th>TAGS</th>
                     <th>NOTES</th>
                     <th className="text-center">ACTIONS</th>
                   </tr>
@@ -227,7 +265,7 @@ const LeadsView = () => {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="8" className="table-loader">
+                      <td colSpan="9" className="table-loader">
                         Fetching lead records...
                       </td>
                     </tr>
@@ -258,15 +296,57 @@ const LeadsView = () => {
                           </div>
                         </td>
                         <td className="followup-cell">{lead.followup_date}</td>
-                        <td className="notes-cell">{lead.notes}</td>
+                        <td>
+                          <span className="tag-pill">
+                            {lead.tags || "No Tag"}
+                          </span>
+                        </td>
+                        <td className="notes-cell">
+    {lead.notes || "No remarks updated"}
+</td>
                         <td>
                           <div className="action-btns">
-                            <button className="icon-btn">
+                            <button
+                              className="icon-btn"
+                              onClick={() => handleOpenDrawer(lead.id)}
+                            >
                               <Eye size={16} />
                             </button>
-                            <button className="icon-btn">
-                              <MoreHorizontal size={16} />
-                            </button>
+
+                            {/* UPDATED ACTION MENU */}
+                            <div className="action-menu-container">
+                              <button
+                                className={`icon-btn ${
+                                  activeMenuId === lead.id ? "active" : ""
+                                }`}
+                                onClick={() =>
+                                  setActiveMenuId(
+                                    activeMenuId === lead.id ? null : lead.id
+                                  )
+                                }
+                              >
+                                <MoreHorizontal size={16} />
+                              </button>
+
+                              {activeMenuId === lead.id && (
+                                <div className="action-dropdown" ref={menuRef}>
+                                  <button
+                                    className="drop-item"
+                                    onClick={() =>
+                                      navigate(`/leads-edit/${lead.id}`)
+                                    }
+                                  >
+                                    <Edit3 size={14} /> Edit Lead
+                                  </button>
+                                  <button
+                                    className="drop-item delete"
+                                    onClick={() => handleDeleteLead(lead.id)}
+                                  >
+                                    <Trash2 size={14} /> Delete Lead
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -309,6 +389,11 @@ const LeadsView = () => {
           </div>
         </main>
       </div>
+      <LeadDrawer
+        leadId={selectedLeadId}
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
     </div>
   );
 };

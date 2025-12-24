@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   User,
@@ -9,8 +9,6 @@ import {
   Calendar,
   Edit3,
   Send,
-  X,
-  BookOpen,
   Smartphone,
   ChevronDown,
   ChevronRight,
@@ -19,12 +17,14 @@ import {
   Briefcase,
   Check,
   Tag,
+  BookOpen
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
-import "./LeadsCreate.css";
+import "../LeadsCreate/LeadsCreate.css"; // Reuse the same CSS
 
-const LeadsCreate = () => {
+const LeadsEdit = () => {
+  const { leadId } = useParams();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -41,15 +41,12 @@ const LeadsCreate = () => {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
-    father_name: "",
     mobile: "",
-    other_contact: "",
     email: "",
     gender: "Male",
     source: "",
-    location: "",
     preferred_batch: "",
-    enquiry_date: new Date().toISOString().split("T")[0],
+    enquiry_date: "",
     next_followup: "",
     tags: "",
     remarks: "",
@@ -59,13 +56,16 @@ const LeadsCreate = () => {
   });
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/leads/create/")
-      .then((res) => {
-        setOptions((prev) => ({ ...res.data, tags: prev.tags }));
-      })
-      .catch((err) => console.error("Database connection error", err));
-  }, []);
+    // 1. Fetch dropdown options
+    axios.get("http://127.0.0.1:8000/api/leads/create/").then((res) => {
+      setOptions((prev) => ({ ...res.data, tags: prev.tags }));
+    });
+
+    // 2. Fetch specific Lead data
+    axios.get(`http://127.0.0.1:8000/api/leads/${leadId}/edit/`).then((res) => {
+      setFormData(res.data);
+    });
+  }, [leadId]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,26 +74,23 @@ const LeadsCreate = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/leads/create/",
+      await axios.put(
+        `http://127.0.0.1:8000/api/leads/${leadId}/edit/`,
         formData
       );
-      if (response.status === 201) {
-        alert("Lead Created Successfully!");
-        navigate("/leads-view");
-      }
+      alert("Lead Updated Successfully!");
+      navigate("/leads-view");
     } catch (err) {
-      console.error("Submission Error:", err);
-      alert("Failed to create lead. Check console for details.");
+      alert("Failed to update lead");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // --- REUSE THE SAME ModernSelect AND UI CODE FROM LEADS CREATE ---
   const ModernSelect = ({ name, value, options, placeholder, icon: Icon }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropRef = useRef(null);
-
     useEffect(() => {
       const clickOutside = (e) => {
         if (dropRef.current && !dropRef.current.contains(e.target))
@@ -102,7 +99,6 @@ const LeadsCreate = () => {
       document.addEventListener("mousedown", clickOutside);
       return () => document.removeEventListener("mousedown", clickOutside);
     }, []);
-
     return (
       <div className="modern-select-container" ref={dropRef}>
         <div
@@ -120,28 +116,22 @@ const LeadsCreate = () => {
             size={16}
           />
         </div>
-
         {isOpen && (
           <div className="modern-dropdown-list">
-            {options && options.length > 0 ? (
-              options.map((opt, i) => (
-                <div
-                  key={i}
-                  className={`dropdown-option ${
-                    value === opt ? "is-selected" : ""
-                  }`}
-                  onClick={() => {
-                    setFormData({ ...formData, [name]: opt });
-                    setIsOpen(false);
-                  }}
-                >
-                  {opt}
-                  {value === opt && <Check size={14} />}
-                </div>
-              ))
-            ) : (
-              <div className="dropdown-option disabled">No data available</div>
-            )}
+            {options.map((opt, i) => (
+              <div
+                key={i}
+                className={`dropdown-option ${
+                  value === opt ? "is-selected" : ""
+                }`}
+                onClick={() => {
+                  setFormData({ ...formData, [name]: opt });
+                  setIsOpen(false);
+                }}
+              >
+                {opt} {value === opt && <Check size={14} />}
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -153,25 +143,21 @@ const LeadsCreate = () => {
       <Sidebar isCollapsed={isCollapsed} />
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
-
         <main className="content-area">
           <header className="page-header-minimal">
             <div className="breadcrumb-nav">
               <span>Dashboards</span> <ChevronRight size={12} />{" "}
-              <span>Home</span> <ChevronRight size={12} />{" "}
-              <span className="active">Create Lead</span>
+              <span>Leads</span> <ChevronRight size={12} />{" "}
+              <span className="active">Edit</span>
             </div>
-            <h2 className="main-title">Add New Enquiry</h2>
+            <h2 className="main-title">Edit Enquiry: {formData.first_name}</h2>
           </header>
-
           <div className="duralux-card-form">
             <form onSubmit={handleSubmit}>
-              {/* SECTION 1: PERSONAL DETAILS */}
               <div className="section-block">
                 <h3 className="section-label-heading">
                   <User size={16} /> PERSONAL DETAILS
                 </h3>
-
                 <div className="form-row-layout">
                   <label>First Name:</label>
                   <div className="input-field-box">
@@ -181,13 +167,11 @@ const LeadsCreate = () => {
                     <input
                       type="text"
                       name="first_name"
-                      placeholder="Enter first name"
-                      required
+                      value={formData.first_name}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
-
                 <div className="form-row-layout">
                   <label>Last Name:</label>
                   <div className="input-field-box">
@@ -197,15 +181,13 @@ const LeadsCreate = () => {
                     <input
                       type="text"
                       name="last_name"
-                      placeholder="Enter last name"
-                      required
+                      value={formData.last_name}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
-
                 <div className="form-row-layout">
-                  <label>Mobile Number:</label>
+                  <label>Mobile:</label>
                   <div className="input-field-box">
                     <div className="icon-box-shaded">
                       <Smartphone size={16} />
@@ -213,16 +195,13 @@ const LeadsCreate = () => {
                     <input
                       type="text"
                       name="mobile"
-                      placeholder="Phone"
-                      required
+                      value={formData.mobile}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
-
-                {/* ADDED EMAIL FIELD HERE */}
                 <div className="form-row-layout">
-                  <label>Email Address:</label>
+                  <label>Email:</label>
                   <div className="input-field-box">
                     <div className="icon-box-shaded">
                       <Mail size={16} />
@@ -230,13 +209,11 @@ const LeadsCreate = () => {
                     <input
                       type="email"
                       name="email"
-                      placeholder="Enter email address"
                       value={formData.email}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
-
                 <div className="form-row-layout">
                   <label>Gender:</label>
                   <ModernSelect
@@ -246,49 +223,39 @@ const LeadsCreate = () => {
                     icon={User}
                   />
                 </div>
-
                 <div className="form-row-layout">
                   <label>Source:</label>
                   <ModernSelect
                     name="source"
                     value={formData.source}
                     options={options.sources}
-                    placeholder="Select Source"
                     icon={Link2}
                   />
                 </div>
               </div>
-
               <div className="ui-divider"></div>
-
-              {/* SECTION 2: COURSE DETAILS */}
               <div className="section-block">
                 <h3 className="section-label-heading">
                   <BookOpen size={16} /> COURSE DETAILS
                 </h3>
-
                 <div className="form-row-layout">
-                  <label>Select Course:</label>
+                  <label>Course:</label>
                   <ModernSelect
                     name="course"
                     value={formData.course}
                     options={options.courses}
-                    placeholder="Select Course"
                     icon={BookOpen}
                   />
                 </div>
-
                 <div className="form-row-layout">
-                  <label>Preferred Batch:</label>
+                  <label>Batch:</label>
                   <ModernSelect
                     name="preferred_batch"
                     value={formData.preferred_batch}
                     options={options.batches}
-                    placeholder="Select Batch"
                     icon={Briefcase}
                   />
                 </div>
-
                 <div className="form-row-layout">
                   <label>Enquiry Date:</label>
                   <div className="input-field-box">
@@ -303,32 +270,15 @@ const LeadsCreate = () => {
                     />
                   </div>
                 </div>
-
-                <div className="form-row-layout">
-                  <label>Followup Date:</label>
-                  <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <Calendar size={16} />
-                    </div>
-                    <input
-                      type="date"
-                      name="next_followup"
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
                 <div className="form-row-layout">
                   <label>Tags:</label>
                   <ModernSelect
                     name="tags"
                     value={formData.tags}
                     options={options.tags}
-                    placeholder="Select Tag"
                     icon={Tag}
                   />
                 </div>
-
                 <div className="form-row-layout">
                   <label>Remarks:</label>
                   <div className="input-field-box">
@@ -338,35 +288,30 @@ const LeadsCreate = () => {
                     <input
                       type="text"
                       name="remarks"
-                      placeholder="Notes / Remarks"
+                      value={formData.remarks}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
-
                 <div className="form-row-layout">
                   <label>Counsellor:</label>
                   <ModernSelect
                     name="counsellor_id"
                     value={formData.counsellor_id}
                     options={options.counsellors}
-                    placeholder="Assign Counsellor"
                     icon={User}
                   />
                 </div>
-
                 <div className="form-row-layout">
                   <label>Branch:</label>
                   <ModernSelect
                     name="branch_id"
                     value={formData.branch_id}
                     options={options.branches}
-                    placeholder="Select Branch"
                     icon={Building2}
                   />
                 </div>
               </div>
-
               <div className="form-footer-actions">
                 <button
                   type="button"
@@ -380,7 +325,7 @@ const LeadsCreate = () => {
                   className="btn-primary-blue"
                   disabled={isSubmitting}
                 >
-                  <Send size={14} /> {isSubmitting ? "CREATING..." : "CREATE"}
+                  {isSubmitting ? "UPDATING..." : "UPDATE LEAD"}
                 </button>
               </div>
             </form>
@@ -391,4 +336,4 @@ const LeadsCreate = () => {
   );
 };
 
-export default LeadsCreate;
+export default LeadsEdit;

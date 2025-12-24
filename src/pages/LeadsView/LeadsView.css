@@ -423,3 +423,78 @@
     background: #f8fafc;
     border-color: #cbd5e1;
 }
+
+.tag-pill {
+    background-color: #ebf0f5; /* Light Duralux Blue Shaded */
+    color: #003873;           /* Brand Blue */
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid #e2e8f0;
+}
+
+/* LeadsView.css - Additions */
+
+.action-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.action-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #eef1f6;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 150px;
+    z-index: 100;
+    padding: 6px;
+    margin-top: 5px;
+    animation: fadeInScale 0.2s ease-out;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.drop-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    border-radius: 6px;
+    text-align: left;
+    transition: 0.2s;
+}
+
+.drop-item:hover {
+    background-color: #f8fafc;
+    color: #003873;
+}
+
+.drop-item.delete {
+    color: #ef4444;
+}
+
+.drop-item.delete:hover {
+    background-color: #fef2f2;
+}
+
+/* Ensure the action button looks active when menu is open */
+.icon-btn.active {
+    background-color: #ebf0f5;
+    color: #003873;
+    border-color: #003873;
+}

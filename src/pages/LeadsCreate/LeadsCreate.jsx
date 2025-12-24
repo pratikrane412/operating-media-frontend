@@ -133,7 +133,7 @@ const LeadsCreate = () => {
 
                 <div className="form-row-layout">
                   <label>Select Course:</label>
-                  <ModernSelect name="course" value={formData.course} options={options.courses} placeholder="Select Primary Course" icon={BookOpen} />
+                  <ModernSelect name="course" value={formData.course} options={options.courses} placeholder="Select Course" icon={BookOpen} />
                 </div>
 
                 <div className="form-row-layout">

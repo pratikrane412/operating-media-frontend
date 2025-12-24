@@ -1,197 +1,171 @@
-/* src/pages/Login/Login.css */
-.login-container {
+/* --- FULL PAGE BACKGROUND --- */
+.login-page-wrapper {
     height: 100vh;
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Using a high-quality modern workspace background */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
-                      url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1920&q=80');
+    /* High quality modern workspace background with dark overlay */
+    background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.6)), 
+                url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
+/* --- THE CARD --- */
 .login-card {
     background-color: #ffffff;
-    padding: 50px 45px;
-    border-radius: 16px; /* Slightly more rounded for a modern feel */
+    padding: 50px 40px;
+    border-radius: 20px;
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-.login-card h2 {
-    color: #111827; /* Darker slate for modern contrast */
-    font-size: 24px;
-    margin-bottom: 30px;
+.login-header {
     text-align: center;
-    font-weight: 500;
-    letter-spacing: -0.025em; /* Tight letter spacing for modern look */
+    margin-bottom: 35px;
 }
 
-.login-card h2 span {
+.login-header h2 {
+    color: #1e293b;
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.login-header h2 span {
     font-weight: 800;
-    color: #059669; /* A slightly more "Pro" Emerald Green */
+    color: #003873; /* Your Duralux Blue */
+}
+
+.login-header p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* --- FORM STYLES --- */
+.form-group {
+    margin-bottom: 20px;
 }
 
 .login-label {
     display: block;
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
     margin-bottom: 8px;
-    margin-top: 24px;
-    letter-spacing: 0.01em;
+}
+
+.input-with-icon, .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
 }
 
 .login-input {
-    display: block;
     width: 100%;
-    padding: 13px 16px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 8px;
+    height: 48px;
+    padding: 0 15px 0 45px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
     outline: none;
     font-size: 15px;
-    color: #111827;
-    transition: all 0.2s ease-in-out;
-}
-
-.login-input::placeholder {
-    color: #9ca3af;
+    color: #1e293b;
+    transition: all 0.2s ease;
 }
 
 .login-input:focus {
-    border-color: #059669;
-    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
-}
-
-.forgot-password {
-    display: block;
-    color: #6b7280;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    margin-top: 12px;
-    margin-bottom: 30px;
-}
-
-.forgot-password:hover {
-    color: #059669;
-}
-
-.login-button {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background-color: #10b981; /* Modern Emerald */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.login-button:hover {
-    background-color: #059669;
-    transform: translateY(-1px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.register-text {
-    text-align: center;
-    margin-top: 30px;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.register-text span {
-    color: #111827;
-    font-weight: 700;
-    cursor: pointer;
-    margin-left: 4px;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-}
-
-.login-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    margin-bottom: 25px;
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #6b7280;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.remember-me input {
-    cursor: pointer;
-    accent-color: #10b981; /* Makes the checkbox green */
-    width: 16px;
-    height: 16px;
-}
-
-/* Updated Error Message style */
-.error-message {
-    color: #ef4444;
-    font-size: 12px;
-    text-align: center;
-    margin-bottom: 15px;
-    font-weight: 500;
-}
-
-/* Remove the forgot-password margin-bottom as it's now inside login-options */
-.forgot-password {
-    color: #6b7280;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    margin: 0; /* Changed from previous */
-}
-
-/* Add/Update these specific classes in your Login.css */
-
-.password-input-wrapper {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
+    border-color: #003873;
+    box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.08);
 }
 
 .password-toggle-icon {
     position: absolute;
-    right: 12px;
+    right: 14px;
     cursor: pointer;
-    color: #9ca3af; /* Light grey color */
+    color: #94a3b8;
     display: flex;
-    align-items: center;
-    justify-content: center;
     transition: color 0.2s;
-    user-select: none; /* Prevents text selection on click */
 }
 
 .password-toggle-icon:hover {
-    color: #10b981; /* Changes to teal on hover */
+    color: #003873;
 }
 
-/* Ensure the input has enough padding on the right so text doesn't hide behind the icon */
-.password-input-wrapper .login-input {
-    padding-right: 45px;
-    margin-top: 0; /* Reset margin if needed for alignment */
+/* --- OPTIONS (Remember Me & Forgot) --- */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 25px 0;
 }
 
-/* Add a margin to the label above password to separate from email field */
-label[for="password"], .login-label:nth-of-type(2) {
-    margin-top: 24px;
+.remember-me-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.remember-me-checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: #003873;
+    cursor: pointer;
+}
+
+.forgot-link {
+    text-decoration: none;
+    color: #003873;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* --- BUTTON & ALERTS --- */
+.login-submit-btn {
+    width: 100%;
+    height: 50px;
+    background-color: #003873;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 10px 15px -3px rgba(0, 56, 115, 0.3);
+}
+
+.login-submit-btn:hover {
+    background-color: #002d5c;
+    transform: translateY(-1px);
+}
+
+.login-submit-btn:active {
+    transform: translateY(0);
+}
+
+.error-alert {
+    background-color: #fff1f2;
+    color: #e11d48;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #ffe4e6;
 }

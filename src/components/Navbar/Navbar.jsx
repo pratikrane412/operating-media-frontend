@@ -26,7 +26,7 @@ const Navbar = ({ onToggle }) => {
                 <button className="action-btn"><Bell size={18} /></button>
                 <div className="profile-container" ref={dropRef}>
                     <img 
-                        src="https://i.pravatar.cc/150?u=admin" 
+                        src="/admin.jpg" 
                         alt="admin" 
                         className="header-avatar"
                         onClick={() => setIsProfileOpen(!isProfileOpen)}

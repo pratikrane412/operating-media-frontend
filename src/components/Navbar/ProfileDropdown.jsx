@@ -14,7 +14,7 @@ const ProfileDropdown = () => {
   return (
     <div className="pd-card">
       <div className="pd-header">
-        <img src="https://i.pravatar.cc/150?u=admin" className="pd-img" />
+        <img src="/admin.jpg" className="pd-img" />
         <div className="pd-info">
           <p className="pd-name">
             {admin.name} <span className="badge">PRO</span>

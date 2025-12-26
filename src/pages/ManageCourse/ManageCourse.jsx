@@ -8,7 +8,6 @@ import {
   Trash2,
   BookOpen,
   Clock,
-  DollarSign,
   ChevronRight,
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
@@ -23,22 +22,42 @@ const ManageCourse = () => {
 
   const navigate = useNavigate();
 
+  // Defined as a reusable function to refresh data after deletion
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`http://127.0.0.1:8000/api/courses/manage/`);
+      setCourses(res.data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCourses = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(
-          `http://127.0.0.1:8000/api/courses/manage/`
-        );
-        setCourses(res.data);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCourses();
   }, []);
+
+  // --- NEW DELETE HANDLER ---
+  const handleDeleteCourse = async (id) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this course? This will remove all records related to it."
+      )
+    ) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/courses/${id}/delete/`);
+        // Trigger data refresh
+        fetchCourses();
+      } catch (err) {
+        console.error("Delete error:", err);
+        alert(
+          "Failed to delete course. It might be linked to existing students."
+        );
+      }
+    }
+  };
 
   const filtered = courses.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
@@ -53,7 +72,12 @@ const ManageCourse = () => {
           <header className="course-header">
             <div className="header-left">
               <div className="breadcrumb">
-                <span onClick={() => navigate("/dashboard")}>Dashboards</span>
+                <span
+                  onClick={() => navigate("/dashboard")}
+                  style={{ cursor: "pointer" }}
+                >
+                  Dashboards
+                </span>
                 <ChevronRight size={12} className="sep" />
                 <span className="current">Manage Course</span>
               </div>
@@ -131,9 +155,11 @@ const ManageCourse = () => {
                             >
                               <Edit3 size={16} />
                             </button>
+                            {/* --- ATTACHED DELETE LOGIC HERE --- */}
                             <button
                               className="btn-action delete"
                               title="Delete Course"
+                              onClick={() => handleDeleteCourse(course.id)}
                             >
                               <Trash2 size={16} />
                             </button>

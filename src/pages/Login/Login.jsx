@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'; // Added Mail and Lock icons
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
 const Login = () => {
@@ -94,9 +94,12 @@ const Login = () => {
 
                     {error && <div className="error-alert">{error}</div>}
 
-                    <button type="submit" className="login-submit-btn">
-                        Sign In
-                    </button>
+                    <button type="submit" className="login-submit-btn">Sign In</button>
+
+                    {/* --- NEW OPTION --- */}
+                    <div className="login-footer-link">
+                        <span onClick={() => navigate('/login')}>Login with branch</span>
+                    </div>
                 </form>
             </div>
         </div>

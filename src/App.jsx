@@ -6,6 +6,7 @@ import LeadsView from "./pages/LeadsView/LeadsView";
 import LeadsCreate from "./pages/LeadsCreate/LeadsCreate";
 import LeadsEdit from "./pages/LeadsEdit/LeadsEdit";
 import ManageBatch from "./pages/ManageBatch/ManageBatch";
+import ManageCourse from "./pages/ManageCourse/ManageCourse";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/leads-create" element={<LeadsCreate />} />
         <Route path="/leads-edit/:leadId" element={<LeadsEdit />} />
         <Route path="/manage-batch" element={<ManageBatch />} />
+        <Route path="/manage-course" element={<ManageCourse />} />
       </Routes>
     </Router>
   );

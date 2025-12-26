@@ -1,0 +1,155 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {
+  Plus,
+  Search,
+  Edit3,
+  Trash2,
+  BookOpen,
+  Clock,
+  DollarSign,
+  ChevronRight,
+} from "lucide-react";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Navbar from "../../components/Navbar/Navbar";
+import "./ManageCourse.css";
+
+const ManageCourse = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/api/courses/manage/`
+        );
+        setCourses(res.data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const filtered = courses.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
+      <Sidebar isCollapsed={isCollapsed} />
+      <div className="main-viewport">
+        <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
+        <main className="content-area">
+          <header className="course-header">
+            <div className="header-left">
+              <div className="breadcrumb">
+                <span onClick={() => navigate("/dashboard")}>Dashboards</span>
+                <ChevronRight size={12} className="sep" />
+                <span className="current">Manage Course</span>
+              </div>
+              <h2 className="page-title">Course Directory</h2>
+            </div>
+            <button className="btn-add-new">
+              <Plus size={18} /> ADD NEW COURSE
+            </button>
+          </header>
+
+          <div className="course-card">
+            <div className="course-toolbar">
+              <div className="search-wrapper">
+                <Search size={18} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search by course name..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="table-container">
+              <table className="duralux-table">
+                <thead>
+                  <tr>
+                    <th width="80">Sr. No.</th>
+                    <th>Course Name</th>
+                    <th>Fee Structure</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th className="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="6" className="table-loader">
+                        Loading SQL data...
+                      </td>
+                    </tr>
+                  ) : (
+                    filtered.map((course, index) => (
+                      <tr key={course.id}>
+                        <td className="sr-no">{index + 1}</td>
+                        <td>
+                          <div className="course-primary">
+                            <BookOpen size={16} className="title-icon" />
+                            <span className="course-name">{course.name}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="fee-badge">{course.fee}</span>
+                        </td>
+                        <td>
+                          <div className="duration-info">
+                            <Clock size={14} /> {course.duration}
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            className={`status-badge ${
+                              course.status === 0 ? "active" : "inactive"
+                            }`}
+                          >
+                            {course.status === 0 ? "Active" : "Disabled"}
+                          </span>
+                        </td>
+                        <td className="text-right">
+                          <div className="action-btns-group">
+                            <button
+                              className="btn-action edit"
+                              title="Edit Course"
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            <button
+                              className="btn-action delete"
+                              title="Delete Course"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default ManageCourse;

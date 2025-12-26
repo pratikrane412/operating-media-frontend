@@ -35,7 +35,22 @@ const LeadsCreate = () => {
     batches: [],
     sources: [],
     courses: [],
-    tags: ["Hot Lead", "Cold Lead", "Warm Lead"],
+    tags: [
+        "Enrolled",
+        "Interested",
+        "Will Visit",
+        "Visited",
+        "No Response",
+        "Call Back",
+        "Invalid",
+        "Looking for Job",
+        "Placement Inquiry",
+        "Not Interested",
+        "Counseling Done",
+        "Old Lead",
+        "Future Admission",
+        "Online Counseling"
+    ],
   });
 
   const [formData, setFormData] = useState({
@@ -46,12 +61,12 @@ const LeadsCreate = () => {
     other_contact: "",
     email: "",
     gender: "Male",
-    source: "",
+    source: [], // CHANGED TO ARRAY for multi-select
     location: "",
     preferred_batch: "",
     enquiry_date: new Date().toISOString().split("T")[0],
     next_followup: "",
-    tags: "",
+    tags: [], // Array for multi-select
     remarks: "",
     branch_id: "",
     counsellor_id: "",
@@ -90,7 +105,8 @@ const LeadsCreate = () => {
     }
   };
 
-  const ModernSelect = ({ name, value, options, placeholder, icon: Icon }) => {
+  // --- UPDATED MODERN SELECT (Supports Multi-Select) ---
+  const ModernSelect = ({ name, value, options, placeholder, icon: Icon, isMulti = false }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropRef = useRef(null);
 
@@ -103,6 +119,22 @@ const LeadsCreate = () => {
       return () => document.removeEventListener("mousedown", clickOutside);
     }, []);
 
+    const handleSelect = (opt) => {
+      if (isMulti) {
+        const newValue = value.includes(opt)
+          ? value.filter((v) => v !== opt)
+          : [...value, opt];
+        setFormData({ ...formData, [name]: newValue });
+      } else {
+        setFormData({ ...formData, [name]: opt });
+        setIsOpen(false);
+      }
+    };
+
+    const displayValue = isMulti 
+      ? (value.length > 0 ? value.join(", ") : placeholder)
+      : (value || placeholder);
+
     return (
       <div className="modern-select-container" ref={dropRef}>
         <div
@@ -112,8 +144,8 @@ const LeadsCreate = () => {
           <div className="icon-box-shaded">
             <Icon size={16} />
           </div>
-          <span className={`selected-text ${!value ? "is-placeholder" : ""}`}>
-            {value || placeholder}
+          <span className={`selected-text ${(!value || value.length === 0) ? "is-placeholder" : ""}`}>
+            {displayValue}
           </span>
           <ChevronDown
             className={`arrow-icon ${isOpen ? "rotate" : ""}`}
@@ -124,21 +156,19 @@ const LeadsCreate = () => {
         {isOpen && (
           <div className="modern-dropdown-list">
             {options && options.length > 0 ? (
-              options.map((opt, i) => (
-                <div
-                  key={i}
-                  className={`dropdown-option ${
-                    value === opt ? "is-selected" : ""
-                  }`}
-                  onClick={() => {
-                    setFormData({ ...formData, [name]: opt });
-                    setIsOpen(false);
-                  }}
-                >
-                  {opt}
-                  {value === opt && <Check size={14} />}
-                </div>
-              ))
+              options.map((opt, i) => {
+                const isSelected = isMulti ? value.includes(opt) : value === opt;
+                return (
+                  <div
+                    key={i}
+                    className={`dropdown-option ${isSelected ? "is-selected" : ""}`}
+                    onClick={() => handleSelect(opt)}
+                  >
+                    {opt}
+                    {isSelected && <Check size={14} />}
+                  </div>
+                );
+              })
             ) : (
               <div className="dropdown-option disabled">No data available</div>
             )}
@@ -166,7 +196,6 @@ const LeadsCreate = () => {
 
           <div className="duralux-card-form">
             <form onSubmit={handleSubmit}>
-              {/* SECTION 1: PERSONAL DETAILS */}
               <div className="section-block">
                 <h3 className="section-label-heading">
                   <User size={16} /> PERSONAL DETAILS
@@ -175,93 +204,56 @@ const LeadsCreate = () => {
                 <div className="form-row-layout">
                   <label>First Name:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <User size={16} />
-                    </div>
-                    <input
-                      type="text"
-                      name="first_name"
-                      placeholder="Enter first name"
-                      required
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><User size={16} /></div>
+                    <input type="text" name="first_name" placeholder="Enter first name" required onChange={handleChange} />
                   </div>
                 </div>
 
                 <div className="form-row-layout">
                   <label>Last Name:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <User size={16} />
-                    </div>
-                    <input
-                      type="text"
-                      name="last_name"
-                      placeholder="Enter last name"
-                      required
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><User size={16} /></div>
+                    <input type="text" name="last_name" placeholder="Enter last name" required onChange={handleChange} />
                   </div>
                 </div>
 
                 <div className="form-row-layout">
                   <label>Mobile Number:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <Smartphone size={16} />
-                    </div>
-                    <input
-                      type="text"
-                      name="mobile"
-                      placeholder="Phone"
-                      required
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><Smartphone size={16} /></div>
+                    <input type="text" name="mobile" placeholder="Phone" required onChange={handleChange} />
                   </div>
                 </div>
 
-                {/* ADDED EMAIL FIELD HERE */}
                 <div className="form-row-layout">
                   <label>Email Address:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <Mail size={16} />
-                    </div>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter email address"
-                      value={formData.email}
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><Mail size={16} /></div>
+                    <input type="email" name="email" placeholder="Enter email address" value={formData.email} onChange={handleChange} />
                   </div>
                 </div>
 
                 <div className="form-row-layout">
                   <label>Gender:</label>
-                  <ModernSelect
-                    name="gender"
-                    value={formData.gender}
-                    options={["Male", "Female", "Other"]}
-                    icon={User}
-                  />
+                  <ModernSelect name="gender" value={formData.gender} options={["Male", "Female", "Other"]} icon={User} />
                 </div>
 
+                {/* UPDATED SOURCE FIELD (MULTI-SELECT) */}
                 <div className="form-row-layout">
                   <label>Source:</label>
-                  <ModernSelect
-                    name="source"
-                    value={formData.source}
-                    options={options.sources}
-                    placeholder="Select Source"
-                    icon={Link2}
+                  <ModernSelect 
+                    name="source" 
+                    value={formData.source} 
+                    options={options.sources} 
+                    placeholder="Select Multiple Sources" 
+                    icon={Link2} 
+                    isMulti={true}
                   />
                 </div>
               </div>
 
               <div className="ui-divider"></div>
 
-              {/* SECTION 2: COURSE DETAILS */}
               <div className="section-block">
                 <h3 className="section-label-heading">
                   <BookOpen size={16} /> COURSE DETAILS
@@ -269,117 +261,65 @@ const LeadsCreate = () => {
 
                 <div className="form-row-layout">
                   <label>Select Course:</label>
-                  <ModernSelect
-                    name="course"
-                    value={formData.course}
-                    options={options.courses}
-                    placeholder="Select Course"
-                    icon={BookOpen}
-                  />
+                  <ModernSelect name="course" value={formData.course} options={options.courses} placeholder="Select Course" icon={BookOpen} />
                 </div>
 
                 <div className="form-row-layout">
                   <label>Preferred Batch:</label>
-                  <ModernSelect
-                    name="preferred_batch"
-                    value={formData.preferred_batch}
-                    options={options.batches}
-                    placeholder="Select Batch"
-                    icon={Briefcase}
-                  />
+                  <ModernSelect name="preferred_batch" value={formData.preferred_batch} options={options.batches} placeholder="Select Batch" icon={Briefcase} />
                 </div>
 
                 <div className="form-row-layout">
                   <label>Enquiry Date:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <Calendar size={16} />
-                    </div>
-                    <input
-                      type="date"
-                      name="enquiry_date"
-                      value={formData.enquiry_date}
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><Calendar size={16} /></div>
+                    <input type="date" name="enquiry_date" value={formData.enquiry_date} onChange={handleChange} />
                   </div>
                 </div>
 
                 <div className="form-row-layout">
                   <label>Followup Date:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <Calendar size={16} />
-                    </div>
-                    <input
-                      type="date"
-                      name="next_followup"
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><Calendar size={16} /></div>
+                    <input type="date" name="next_followup" onChange={handleChange} />
                   </div>
                 </div>
 
+                {/* UPDATED TAGS FIELD (MULTI-SELECT) */}
                 <div className="form-row-layout">
                   <label>Tags:</label>
                   <ModernSelect
                     name="tags"
                     value={formData.tags}
                     options={options.tags}
-                    placeholder="Select Tag"
+                    placeholder="Select Multiple Tags"
                     icon={Tag}
+                    isMulti={true}
                   />
                 </div>
 
                 <div className="form-row-layout">
                   <label>Remarks:</label>
                   <div className="input-field-box">
-                    <div className="icon-box-shaded">
-                      <Edit3 size={16} />
-                    </div>
-                    <input
-                      type="text"
-                      name="remarks"
-                      placeholder="Notes / Remarks"
-                      onChange={handleChange}
-                    />
+                    <div className="icon-box-shaded"><Edit3 size={16} /></div>
+                    <input type="text" name="remarks" placeholder="Notes / Remarks" onChange={handleChange} />
                   </div>
                 </div>
 
                 <div className="form-row-layout">
                   <label>Counsellor:</label>
-                  <ModernSelect
-                    name="counsellor_id"
-                    value={formData.counsellor_id}
-                    options={options.counsellors}
-                    placeholder="Assign Counsellor"
-                    icon={User}
-                  />
+                  <ModernSelect name="counsellor_id" value={formData.counsellor_id} options={options.counsellors} placeholder="Assign Counsellor" icon={User} />
                 </div>
 
                 <div className="form-row-layout">
                   <label>Branch:</label>
-                  <ModernSelect
-                    name="branch_id"
-                    value={formData.branch_id}
-                    options={options.branches}
-                    placeholder="Select Branch"
-                    icon={Building2}
-                  />
+                  <ModernSelect name="branch_id" value={formData.branch_id} options={options.branches} placeholder="Select Branch" icon={Building2} />
                 </div>
               </div>
 
               <div className="form-footer-actions">
-                <button
-                  type="button"
-                  className="btn-secondary-flat"
-                  onClick={() => navigate("/leads-view")}
-                >
-                  CANCEL
-                </button>
-                <button
-                  type="submit"
-                  className="btn-primary-blue"
-                  disabled={isSubmitting}
-                >
+                <button type="button" className="btn-secondary-flat" onClick={() => navigate("/leads-view")}>CANCEL</button>
+                <button type="submit" className="btn-primary-blue" disabled={isSubmitting}>
                   <Send size={14} /> {isSubmitting ? "CREATING..." : "CREATE"}
                 </button>
               </div>

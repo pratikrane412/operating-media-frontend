@@ -200,3 +200,14 @@
   background: #002d5c;
   transform: translateY(-2px);
 }
+
+.selected-text {
+    flex: 1;
+    padding: 0 15px;
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* This adds '...' if the tag list is too long */
+}

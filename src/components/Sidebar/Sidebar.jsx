@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Info, ChevronRight, Circle } from 'lucide-react';
+import { 
+    LayoutDashboard, 
+    Info, 
+    ChevronRight, 
+    Circle, 
+    GraduationCap // Added for Course & Batch
+} from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isCollapsed }) => {
-    const [leadsOpen, setLeadsOpen] = useState(true);
+    const [leadsOpen, setLeadsOpen] = useState(false);
+    const [courseBatchOpen, setCourseBatchOpen] = useState(false); // New state for Course & Batch
 
     return (
         <aside className={`sidebar-aside ${isCollapsed ? 'collapsed' : ''}`}>
@@ -23,7 +30,6 @@ const Sidebar = ({ isCollapsed }) => {
                         <LayoutDashboard size={20} className="nav-icon" />
                         <span className="link-text">Dashboards</span>
                     </div>
-                    {!isCollapsed && <ChevronRight size={14} className="hide-on-collapse" style={{opacity: 0}} />}
                 </NavLink>
 
                 {/* Leads Dropdown */}
@@ -42,11 +48,34 @@ const Sidebar = ({ isCollapsed }) => {
                             <span className="link-text">Leads View</span>
                         </NavLink>
                         <NavLink to="/leads-create" className="sub-link">
-                            <Circle size={6} className="sub-dot" />
+                            <Circle size={6} fill="currentColor" className="sub-dot" />
                             <span className="link-text">Leads Create</span>
                         </NavLink>
                     </div>
                 </div>
+
+                {/* --- NEW: Course & Batch Dropdown --- */}
+                <div className={`nav-dropdown-group ${courseBatchOpen ? 'is-open' : ''}`}>
+                    <div className="nav-link trigger" onClick={() => !isCollapsed && setCourseBatchOpen(!courseBatchOpen)}>
+                        <div className="link-content">
+                            <GraduationCap size={20} className="nav-icon" />
+                            <span className="link-text">Course & Batch</span>
+                        </div>
+                        <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+                    </div>
+                    
+                    <div className="nav-submenu">
+                        <NavLink to="/manage-batch" className="sub-link">
+                            <Circle size={6} fill="currentColor" className="sub-dot" />
+                            <span className="link-text">Manage Batch</span>
+                        </NavLink>
+                        <NavLink to="/manage-course" className="sub-link">
+                            <Circle size={6} fill="currentColor" className="sub-dot" />
+                            <span className="link-text">Manage Course</span>
+                        </NavLink>
+                    </div>
+                </div>
+
             </div>
         </aside>
     );

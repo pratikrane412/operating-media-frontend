@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import LeadsView from "./pages/LeadsView/LeadsView";
 import LeadsCreate from "./pages/LeadsCreate/LeadsCreate";
 import LeadsEdit from "./pages/LeadsEdit/LeadsEdit";
+import ManageBatch from "./pages/ManageBatch/ManageBatch";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/leads-view" element={<LeadsView />} />
         <Route path="/leads-create" element={<LeadsCreate />} />
         <Route path="/leads-edit/:leadId" element={<LeadsEdit />} />
+        <Route path="/manage-batch" element={<ManageBatch />} />
       </Routes>
     </Router>
   );

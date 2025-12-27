@@ -48,8 +48,9 @@ const BranchLogin = () => {
                                 value={branch} 
                                 onChange={(e) => setBranch(e.target.value)}
                             >
-                                <option value="Andheri">Andheri Branch</option>
-                                <option value="Borivali">Borivali Branch</option>
+                            {/* Use values that match your database exactly */}
+                            <option value="Andheri">Andheri Branch</option>
+                            <option value="Borivali">Borivali Branch</option>
                             </select>
                         </div>
                     </div>

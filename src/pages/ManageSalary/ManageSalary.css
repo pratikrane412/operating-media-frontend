@@ -1,0 +1,148 @@
+/* --- HEADER --- */
+.salary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.btn-export {
+  background-color: white;
+  color: #003873;
+  border: 1px solid #e2e8f0;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-export:hover {
+  background-color: #f8fafc;
+  border-color: #003873;
+}
+
+/* --- CARD --- */
+.salary-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #eef1f6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+.salary-toolbar {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 350px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 12px;
+  color: #94a3b8;
+}
+.search-wrapper input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* --- TABLE --- */
+.duralux-salary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.duralux-salary-table th {
+  background: #f8fafc;
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.duralux-salary-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 14px;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.staff-primary {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.avatar-mini {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ebf0f5;
+  color: #003873;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.name-box {
+  display: flex;
+  flex-direction: column;
+}
+.staff-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+.staff-id {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Salary Highlighting */
+.salary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f0fdf4; /* Light Green */
+  color: #166534; /* Dark Green */
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 14px;
+  border: 1px solid #dcfce7;
+}
+
+.table-loader {
+  padding: 60px;
+  text-align: center;
+  color: #94a3b8;
+  font-weight: 600;
+}

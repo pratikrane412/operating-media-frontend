@@ -8,6 +8,7 @@ import LeadsEdit from "./pages/LeadsEdit/LeadsEdit";
 import ManageBatch from "./pages/ManageBatch/ManageBatch";
 import ManageCourse from "./pages/ManageCourse/ManageCourse";
 import ManageStaff from "./pages/ManageStaff/ManageStaff";
+import ManageSalary from "./pages/ManageSalary/ManageSalary";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/manage-batch" element={<ManageBatch />} />
         <Route path="/manage-course" element={<ManageCourse />} />
         <Route path="/manage-staff" element={<ManageStaff />} />
+        <Route path="/manage-salary" element={<ManageSalary />} />
       </Routes>
     </Router>
   );

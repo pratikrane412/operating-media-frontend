@@ -94,6 +94,10 @@ const Sidebar = ({ isCollapsed }) => {
                             <Circle size={6} fill="currentColor" className="sub-dot" />
                             <span className="link-text">Manage Staff</span>
                         </NavLink>
+                        <NavLink to="/manage-salary" className="sub-link">
+                            <Circle size={6} fill="currentColor" className="sub-dot" />
+                            <span className="link-text">Manage Salary</span>
+                        </NavLink>
                     </div>
                 </div>
 

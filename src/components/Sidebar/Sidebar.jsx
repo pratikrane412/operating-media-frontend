@@ -5,13 +5,15 @@ import {
     Info, 
     ChevronRight, 
     Circle, 
-    GraduationCap // Added for Course & Batch
+    GraduationCap,
+    Users // Added for Staff
 } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isCollapsed }) => {
     const [leadsOpen, setLeadsOpen] = useState(false);
-    const [courseBatchOpen, setCourseBatchOpen] = useState(false); // New state for Course & Batch
+    const [courseBatchOpen, setCourseBatchOpen] = useState(false);
+    const [staffOpen, setStaffOpen] = useState(false); // New state for Staff
 
     return (
         <aside className={`sidebar-aside ${isCollapsed ? 'collapsed' : ''}`}>
@@ -31,6 +33,7 @@ const Sidebar = ({ isCollapsed }) => {
                         <span className="link-text">Dashboards</span>
                     </div>
                 </NavLink>
+
 
                 {/* Leads Dropdown */}
                 <div className={`nav-dropdown-group ${leadsOpen ? 'is-open' : ''}`}>
@@ -54,7 +57,7 @@ const Sidebar = ({ isCollapsed }) => {
                     </div>
                 </div>
 
-                {/* --- NEW: Course & Batch Dropdown --- */}
+                {/* Course & Batch Dropdown */}
                 <div className={`nav-dropdown-group ${courseBatchOpen ? 'is-open' : ''}`}>
                     <div className="nav-link trigger" onClick={() => !isCollapsed && setCourseBatchOpen(!courseBatchOpen)}>
                         <div className="link-content">
@@ -72,6 +75,24 @@ const Sidebar = ({ isCollapsed }) => {
                         <NavLink to="/manage-course" className="sub-link">
                             <Circle size={6} fill="currentColor" className="sub-dot" />
                             <span className="link-text">Manage Course</span>
+                        </NavLink>
+                    </div>
+                </div>
+
+                {/* --- Staff Dropdown --- */}
+                <div className={`nav-dropdown-group ${staffOpen ? 'is-open' : ''}`}>
+                    <div className="nav-link trigger" onClick={() => !isCollapsed && setStaffOpen(!staffOpen)}>
+                        <div className="link-content">
+                            <Users size={20} className="nav-icon" />
+                            <span className="link-text">Staff</span>
+                        </div>
+                        <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+                    </div>
+                    
+                    <div className="nav-submenu">
+                        <NavLink to="/manage-staff" className="sub-link">
+                            <Circle size={6} fill="currentColor" className="sub-dot" />
+                            <span className="link-text">Manage Staff</span>
                         </NavLink>
                     </div>
                 </div>

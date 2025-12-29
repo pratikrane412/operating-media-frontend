@@ -1,0 +1,135 @@
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+}
+
+.drawer-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 450px;
+  height: 100vh;
+  background: white;
+  z-index: 2001;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer-header {
+  padding: 25px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #003873;
+}
+.header-title h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.drawer-body {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.drawer-form-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.drawer-form-row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.drawer-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  height: 44px;
+  overflow: hidden;
+  background: white;
+}
+
+.drawer-icon-box {
+  width: 44px;
+  height: 100%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  border-right: 1px solid #e2e8f0;
+}
+
+.drawer-input-wrapper input,
+.drawer-input-wrapper select {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  background: transparent;
+}
+
+.drawer-footer {
+  padding: 20px 25px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-save {
+  flex: 1;
+  background: #003873;
+  color: white;
+  border: none;
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  padding: 0 25px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 700;
+  cursor: pointer;
+}

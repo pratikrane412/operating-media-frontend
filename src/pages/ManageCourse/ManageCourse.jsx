@@ -12,9 +12,12 @@ import {
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
+import CourseDrawer from "../../components/CourseDrawer/CourseDrawer";
 import "./ManageCourse.css";
 
 const ManageCourse = () => {
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +41,16 @@ const ManageCourse = () => {
   useEffect(() => {
     fetchCourses();
   }, []);
+
+  const handleEditClick = (id) => {
+    setSelectedCourseId(id);
+    setIsDrawerOpen(true);
+  };
+
+  const handleAddNewClick = () => {
+    setSelectedCourseId(null); // Ensure ID is null for "Add New" mode
+    setIsDrawerOpen(true);
+  };
 
   // --- NEW DELETE HANDLER ---
   const handleDeleteCourse = async (id) => {
@@ -83,7 +96,10 @@ const ManageCourse = () => {
               </div>
               <h2 className="page-title">Course Directory</h2>
             </div>
-            <button className="btn-add-new">
+            <button
+              className="btn-add-new"
+              onClick={() => setIsDrawerOpen(true)}
+            >
               <Plus size={18} /> ADD NEW COURSE
             </button>
           </header>
@@ -152,6 +168,7 @@ const ManageCourse = () => {
                             <button
                               className="btn-action edit"
                               title="Edit Course"
+                              onClick={() => handleEditClick(course.id)}
                             >
                               <Edit3 size={16} />
                             </button>
@@ -174,6 +191,15 @@ const ManageCourse = () => {
           </div>
         </main>
       </div>
+      <CourseDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedCourseId(null);
+        }}
+        onUpdate={fetchCourses}
+        courseId={selectedCourseId} // Pass the ID prop
+      />
     </div>
   );
 };

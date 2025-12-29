@@ -1,109 +1,146 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { 
-    LayoutDashboard, 
-    Info, 
-    ChevronRight, 
-    Circle, 
-    GraduationCap,
-    Users // Added for Staff
-} from 'lucide-react';
-import './Sidebar.css';
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Info,
+  ChevronRight,
+  Circle,
+  GraduationCap,
+  Users,
+  UserCheck, // 1. ADDED THIS ICON IMPORT
+} from "lucide-react";
+import "./Sidebar.css";
 
 const Sidebar = ({ isCollapsed }) => {
-    const [leadsOpen, setLeadsOpen] = useState(false);
-    const [courseBatchOpen, setCourseBatchOpen] = useState(false);
-    const [staffOpen, setStaffOpen] = useState(false); // New state for Staff
+  const [leadsOpen, setLeadsOpen] = useState(false);
+  const [courseBatchOpen, setCourseBatchOpen] = useState(false);
+  const [staffOpen, setStaffOpen] = useState(false);
+  const [studentsOpen, setStudentsOpen] = useState(false); // 2. ADDED THIS STATE
 
-    return (
-        <aside className={`sidebar-aside ${isCollapsed ? 'collapsed' : ''}`}>
-            {/* Logo Section */}
-            <div className="sidebar-brand">
-                <div className="brand-logo-box">O</div>
-                <span className="brand-name-text">Operating Media</span>
+  return (
+    <aside className={`sidebar-aside ${isCollapsed ? "collapsed" : ""}`}>
+      {/* Logo Section */}
+      <div className="sidebar-brand">
+        <div className="brand-logo-box">O</div>
+        <span className="brand-name-text">Operating Media</span>
+      </div>
+
+      <div className="sidebar-menu-wrapper">
+        <p className="nav-section-label">Navigation</p>
+
+        {/* Dashboard Item */}
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          <div className="link-content">
+            <LayoutDashboard size={20} className="nav-icon" />
+            <span className="link-text">Dashboards</span>
+          </div>
+        </NavLink>
+
+        {/* Leads Dropdown */}
+        <div className={`nav-dropdown-group ${leadsOpen ? "is-open" : ""}`}>
+          <div
+            className="nav-link trigger"
+            onClick={() => !isCollapsed && setLeadsOpen(!leadsOpen)}
+          >
+            <div className="link-content">
+              <Info size={20} className="nav-icon" />
+              <span className="link-text">Leads</span>
             </div>
+            <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+          </div>
 
-            <div className="sidebar-menu-wrapper">
-                <p className="nav-section-label">Navigation</p>
+          <div className="nav-submenu">
+            <NavLink to="/leads-view" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Leads View</span>
+            </NavLink>
+            <NavLink to="/leads-create" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Leads Create</span>
+            </NavLink>
+          </div>
+        </div>
 
-                {/* Dashboard Item */}
-                <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-                    <div className="link-content">
-                        <LayoutDashboard size={20} className="nav-icon" />
-                        <span className="link-text">Dashboards</span>
-                    </div>
-                </NavLink>
-
-
-                {/* Leads Dropdown */}
-                <div className={`nav-dropdown-group ${leadsOpen ? 'is-open' : ''}`}>
-                    <div className="nav-link trigger" onClick={() => !isCollapsed && setLeadsOpen(!leadsOpen)}>
-                        <div className="link-content">
-                            <Info size={20} className="nav-icon" />
-                            <span className="link-text">Leads</span>
-                        </div>
-                        <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
-                    </div>
-                    
-                    <div className="nav-submenu">
-                        <NavLink to="/leads-view" className="sub-link">
-                            <Circle size={6} fill="currentColor" className="sub-dot" />
-                            <span className="link-text">Leads View</span>
-                        </NavLink>
-                        <NavLink to="/leads-create" className="sub-link">
-                            <Circle size={6} fill="currentColor" className="sub-dot" />
-                            <span className="link-text">Leads Create</span>
-                        </NavLink>
-                    </div>
-                </div>
-
-                {/* Course & Batch Dropdown */}
-                <div className={`nav-dropdown-group ${courseBatchOpen ? 'is-open' : ''}`}>
-                    <div className="nav-link trigger" onClick={() => !isCollapsed && setCourseBatchOpen(!courseBatchOpen)}>
-                        <div className="link-content">
-                            <GraduationCap size={20} className="nav-icon" />
-                            <span className="link-text">Course & Batch</span>
-                        </div>
-                        <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
-                    </div>
-                    
-                    <div className="nav-submenu">
-                        <NavLink to="/manage-batch" className="sub-link">
-                            <Circle size={6} fill="currentColor" className="sub-dot" />
-                            <span className="link-text">Manage Batch</span>
-                        </NavLink>
-                        <NavLink to="/manage-course" className="sub-link">
-                            <Circle size={6} fill="currentColor" className="sub-dot" />
-                            <span className="link-text">Manage Course</span>
-                        </NavLink>
-                    </div>
-                </div>
-
-                {/* --- Staff Dropdown --- */}
-                <div className={`nav-dropdown-group ${staffOpen ? 'is-open' : ''}`}>
-                    <div className="nav-link trigger" onClick={() => !isCollapsed && setStaffOpen(!staffOpen)}>
-                        <div className="link-content">
-                            <Users size={20} className="nav-icon" />
-                            <span className="link-text">Staff</span>
-                        </div>
-                        <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
-                    </div>
-                    
-                    <div className="nav-submenu">
-                        <NavLink to="/manage-staff" className="sub-link">
-                            <Circle size={6} fill="currentColor" className="sub-dot" />
-                            <span className="link-text">Manage Staff</span>
-                        </NavLink>
-                        <NavLink to="/manage-salary" className="sub-link">
-                            <Circle size={6} fill="currentColor" className="sub-dot" />
-                            <span className="link-text">Manage Salary</span>
-                        </NavLink>
-                    </div>
-                </div>
-
+        {/* Course & Batch Dropdown */}
+        <div
+          className={`nav-dropdown-group ${courseBatchOpen ? "is-open" : ""}`}
+        >
+          <div
+            className="nav-link trigger"
+            onClick={() => !isCollapsed && setCourseBatchOpen(!courseBatchOpen)}
+          >
+            <div className="link-content">
+              <GraduationCap size={20} className="nav-icon" />
+              <span className="link-text">Course & Batch</span>
             </div>
-        </aside>
-    );
+            <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+          </div>
+
+          <div className="nav-submenu">
+            <NavLink to="/manage-batch" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Manage Batch</span>
+            </NavLink>
+            <NavLink to="/manage-course" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Manage Course</span>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Staff Dropdown */}
+        <div className={`nav-dropdown-group ${staffOpen ? "is-open" : ""}`}>
+          <div
+            className="nav-link trigger"
+            onClick={() => !isCollapsed && setStaffOpen(!staffOpen)}
+          >
+            <div className="link-content">
+              <Users size={20} className="nav-icon" />
+              <span className="link-text">Staff</span>
+            </div>
+            <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+          </div>
+
+          <div className="nav-submenu">
+            <NavLink to="/manage-staff" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Manage Staff</span>
+            </NavLink>
+            <NavLink to="/manage-salary" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Manage Salary</span>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Students Dropdown */}
+        <div className={`nav-dropdown-group ${studentsOpen ? "is-open" : ""}`}>
+          <div
+            className="nav-link trigger"
+            onClick={() => !isCollapsed && setStudentsOpen(!studentsOpen)}
+          >
+            <div className="link-content">
+              <UserCheck size={20} className="nav-icon" />
+              <span className="link-text">Students</span>
+            </div>
+            <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+          </div>
+
+          <div className="nav-submenu">
+            <NavLink to="/manage-student" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Manage Student</span>
+            </NavLink>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
 };
 
 export default Sidebar;

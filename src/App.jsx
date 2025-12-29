@@ -9,6 +9,7 @@ import ManageBatch from "./pages/ManageBatch/ManageBatch";
 import ManageCourse from "./pages/ManageCourse/ManageCourse";
 import ManageStaff from "./pages/ManageStaff/ManageStaff";
 import ManageSalary from "./pages/ManageSalary/ManageSalary";
+import ManageStudent from "./pages/ManageStudent/ManageStudent";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/manage-course" element={<ManageCourse />} />
         <Route path="/manage-staff" element={<ManageStaff />} />
         <Route path="/manage-salary" element={<ManageSalary />} />
+        <Route path="/manage-student" element={<ManageStudent />} />
       </Routes>
     </Router>
   );

@@ -1,0 +1,157 @@
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+}
+
+.drawer-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 450px;
+  height: 100vh;
+  background: white;
+  z-index: 2001;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  /* Removed animation to prevent focus flickering during re-render */
+}
+
+.drawer-header {
+  padding: 25px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #003873;
+}
+.header-title h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.drawer-body {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+/* --- ROW LAYOUT --- */
+.drawer-form-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.drawer-form-row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.drawer-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  height: 46px;
+  overflow: hidden;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.drawer-input-wrapper:focus-within {
+  border-color: #003873;
+  background-color: #fff;
+}
+
+.drawer-input-wrapper:hover {
+  border-color: #cbd5e1;
+}
+.drawer-icon-box {
+  width: 46px; /* Slightly wider */
+  height: 100%;
+  background: #f1f5f9; /* Slightly darker shade for better contrast */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b; /* Darker grey color so the icon is "bold" */
+  border-right: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.drawer-input-wrapper input,
+.drawer-input-wrapper select {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  background: transparent;
+}
+
+.drawer-footer {
+  padding: 20px 25px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-save-blue {
+  flex: 1;
+  background: #003873;
+  color: white;
+  border: none;
+  height: 48px;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-save-blue:hover {
+  background-color: #002d5c;
+}
+
+.btn-save-blue:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  padding: 0 30px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}

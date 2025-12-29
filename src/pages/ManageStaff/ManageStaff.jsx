@@ -10,13 +10,17 @@ import {
   Briefcase,
   Calendar,
   ChevronRight,
+  PlusSquare, // Added for Assign Batch
 } from "lucide-react";
 import StaffDrawer from "../../components/StaffDrawer/StaffDrawer";
+import StaffBatchDrawer from "../../components/StaffBatchDrawer/StaffBatchDrawer";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStaff.css";
 
 const ManageStaff = () => {
+  const [isAssignDrawerOpen, setIsAssignDrawerOpen] = useState(false);
+  const [currentStaff, setCurrentStaff] = useState({ id: null, name: "" });
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -33,8 +37,14 @@ const ManageStaff = () => {
   };
 
   const handleAddNewClick = () => {
-    setSelectedStaffId(null); // Reset for Add mode
+    setSelectedStaffId(null);
     setIsDrawerOpen(true);
+  };
+
+  // Logic for when the Assign button is clicked
+  const handleAssignClick = (id, name) => {
+    setCurrentStaff({ id, name });
+    setIsAssignDrawerOpen(true);
   };
 
   const fetchStaff = async () => {
@@ -59,16 +69,11 @@ const ManageStaff = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to remove this staff member?")) {
       try {
-        // Updated URL to match the new separate backend endpoint
         await axios.delete(`http://127.0.0.1:8000/api/staff/delete/${id}/`);
-
-        // Refresh the table list
         fetchStaff();
       } catch (err) {
         console.error("Delete error:", err);
-        alert(
-          "Failed to remove staff member. They might be linked to other data."
-        );
+        alert("Failed to remove staff member.");
       }
     }
   };
@@ -86,16 +91,18 @@ const ManageStaff = () => {
           <header className="staff-header-flex">
             <div className="header-left">
               <div className="breadcrumb">
-                <span onClick={() => navigate("/dashboard")}>Dashboards</span>
+                <span
+                  onClick={() => navigate("/dashboard")}
+                  style={{ cursor: "pointer" }}
+                >
+                  Dashboards
+                </span>
                 <ChevronRight size={12} className="sep" />
                 <span className="current">Manage Staff</span>
               </div>
               <h2 className="page-title">Staff Management</h2>
             </div>
-            <button
-              className="btn-primary-blue"
-              onClick={() => setIsDrawerOpen(true)}
-            >
+            <button className="btn-primary-blue" onClick={handleAddNewClick}>
               <Plus size={18} /> ADD NEW STAFF
             </button>
           </header>
@@ -106,7 +113,7 @@ const ManageStaff = () => {
                 <Search size={18} className="search-icon-fixed" />
                 <input
                   type="text"
-                  placeholder="Search staff..."
+                  placeholder="Search staff by name..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -162,7 +169,6 @@ const ManageStaff = () => {
                           </div>
                         </td>
                         <td>
-                          {/* GREEN for Active (0), RED for Disabled (1) */}
                           <span
                             className={`status-pill-modern ${
                               member.status === 0
@@ -175,9 +181,20 @@ const ManageStaff = () => {
                         </td>
                         <td>
                           <div className="action-row-group">
-                            {/* GREEN for Edit */}
+                            {/* --- NEW ASSIGN BATCH BUTTON (BLUE) --- */}
+                            <button
+                              className="btn-round-action assign-blue"
+                              onClick={() =>
+                                handleAssignClick(member.id, member.name)
+                              }
+                            >
+                              <PlusSquare size={16} />
+                            </button>
+
+                            {/* Existing Edit and Delete */}
                             <button
                               className="btn-round-action edit-green"
+                              title="Edit"
                               onClick={() => handleEditClick(member.id)}
                             >
                               <Edit3 size={16} />
@@ -207,7 +224,13 @@ const ManageStaff = () => {
           setSelectedStaffId(null);
         }}
         onUpdate={fetchStaff}
-        staffId={selectedStaffId} // Pass the ID
+        staffId={selectedStaffId}
+      />
+      <StaffBatchDrawer
+        isOpen={isAssignDrawerOpen}
+        onClose={() => setIsAssignDrawerOpen(false)}
+        staffId={currentStaff.id}
+        staffName={currentStaff.name}
       />
     </div>
   );

@@ -3,7 +3,6 @@ import axios from 'axios';
 import { X, Briefcase, Clock, Calendar, Building2, CheckCircle, Send } from 'lucide-react';
 import './BatchDrawer.css';
 
-// --- MOVE THIS OUTSIDE THE MAIN COMPONENT ---
 const FormRow = ({ label, icon: Icon, children }) => (
     <div className="drawer-form-row">
         <label>{label}:</label>
@@ -14,33 +13,42 @@ const FormRow = ({ label, icon: Icon, children }) => (
     </div>
 );
 
-const BatchDrawer = ({ isOpen, onClose, onUpdate }) => {
+const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
     const user = JSON.parse(localStorage.getItem('admin') || '{}');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
-        timing: '',
-        starting_date: '',
-        end_date: '',
-        status: 0,
-        branch_id: user.branch_id || 1
+        name: '', timing: '', starting_date: '', end_date: '', status: 0, branch_id: user.branch_id || 1
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
+    // 1. If batchId is provided, fetch existing data to pre-fill
+    useEffect(() => {
+        if (isOpen && batchId) {
+            axios.get(`http://127.0.0.1:8000/api/batches/${batchId}/`)
+                .then(res => setFormData(res.data))
+                .catch(err => console.error("Error fetching batch details", err));
+        } else {
+            // Reset for "Add New" mode
+            setFormData({ name: '', timing: '', starting_date: '', end_date: '', status: 0, branch_id: user.branch_id || 1 });
+        }
+    }, [isOpen, batchId, user.branch_id]);
+
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('http://127.0.0.1:8000/api/batches/manage/', formData);
-            setFormData({ name: '', timing: '', starting_date: '', end_date: '', status: 0, branch_id: user.branch_id || 1 });
+            if (batchId) {
+                // UPDATE MODE
+                await axios.put(`http://127.0.0.1:8000/api/batches/${batchId}/`, formData);
+            } else {
+                // CREATE MODE
+                await axios.post('http://127.0.0.1:8000/api/batches/manage/', formData);
+            }
             onUpdate(); 
             onClose();  
         } catch (err) {
-            alert("Failed to create batch");
+            alert(batchId ? "Failed to update batch" : "Failed to create batch");
         } finally {
             setIsSubmitting(false);
         }
@@ -55,7 +63,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate }) => {
                 <div className="drawer-header">
                     <div className="header-title">
                         <Briefcase size={20} />
-                        <h3>Create New Batch</h3>
+                        <h3>{batchId ? 'Edit Batch' : 'Create New Batch'}</h3>
                     </div>
                     <button className="close-btn" onClick={onClose}><X size={20}/></button>
                 </div>
@@ -63,44 +71,19 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate }) => {
                 <form className="drawer-body" onSubmit={handleSubmit}>
                     <div className="drawer-section">
                         <FormRow label="Batch Name" icon={Briefcase}>
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={formData.name}
-                                placeholder="e.g. Weekend Master" 
-                                required 
-                                onChange={handleChange} 
-                            />
+                            <input type="text" name="name" value={formData.name} placeholder="e.g. Weekend Master" required onChange={handleChange} />
                         </FormRow>
                         
                         <FormRow label="Timing" icon={Clock}>
-                            <input 
-                                type="text" 
-                                name="timing" 
-                                value={formData.timing}
-                                placeholder="e.g. 10AM - 1PM" 
-                                required 
-                                onChange={handleChange} 
-                            />
+                            <input type="text" name="timing" value={formData.timing} placeholder="e.g. 10AM - 1PM" required onChange={handleChange} />
                         </FormRow>
 
                         <FormRow label="Start Date" icon={Calendar}>
-                            <input 
-                                type="date" 
-                                name="starting_date" 
-                                value={formData.starting_date}
-                                required 
-                                onChange={handleChange} 
-                            />
+                            <input type="date" name="starting_date" value={formData.starting_date} required onChange={handleChange} />
                         </FormRow>
 
                         <FormRow label="End Date" icon={Calendar}>
-                            <input 
-                                type="date" 
-                                name="end_date" 
-                                value={formData.end_date}
-                                onChange={handleChange} 
-                            />
+                            <input type="date" name="end_date" value={formData.end_date} onChange={handleChange} />
                         </FormRow>
 
                         <FormRow label="Status" icon={CheckCircle}>
@@ -123,7 +106,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate }) => {
                     <div className="drawer-footer">
                         <button type="button" className="btn-cancel" onClick={onClose}>Cancel</button>
                         <button type="submit" className="btn-save" disabled={isSubmitting}>
-                            <Send size={16} /> {isSubmitting ? 'Saving...' : 'Create Batch'}
+                            <Send size={16} /> {isSubmitting ? 'Saving...' : (batchId ? 'Update Batch' : 'Create Batch')}
                         </button>
                     </div>
                 </form>

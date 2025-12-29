@@ -16,6 +16,7 @@ import BatchDrawer from "../../components/BatchDrawer/BatchDrawer";
 import "./ManageBatch.css";
 
 const ManageBatch = () => {
+  const [selectedBatchId, setSelectedBatchId] = useState(null); // Track ID for edit
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,16 +47,32 @@ const ManageBatch = () => {
 
   // --- NEW DELETE HANDLER ---
   const handleDeleteBatch = async (id) => {
-    if (window.confirm("Are you sure you want to delete this batch? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this batch? This action cannot be undone."
+      )
+    ) {
       try {
         await axios.delete(`http://127.0.0.1:8000/api/batches/${id}/delete/`);
         // Refresh the list after successful deletion
         fetchBatches();
       } catch (err) {
         console.error("Delete error:", err);
-        alert("Failed to delete batch. It might be linked to existing students.");
+        alert(
+          "Failed to delete batch. It might be linked to existing students."
+        );
       }
     }
+  };
+
+  const handleEditClick = (id) => {
+    setSelectedBatchId(id);
+    setIsDrawerOpen(true);
+  };
+
+  const handleAddNewClick = () => {
+    setSelectedBatchId(null); // Clear ID for "Add New" mode
+    setIsDrawerOpen(true);
   };
 
   const filtered = batches.filter((b) =>
@@ -71,7 +88,10 @@ const ManageBatch = () => {
           <header className="batch-header">
             <div className="header-left">
               <div className="breadcrumb">
-                <span onClick={() => navigate("/dashboard")} style={{ cursor: "pointer" }}>
+                <span
+                  onClick={() => navigate("/dashboard")}
+                  style={{ cursor: "pointer" }}
+                >
                   Dashboards
                 </span>
                 <ChevronRight size={12} className="sep" />
@@ -79,7 +99,10 @@ const ManageBatch = () => {
               </div>
               <h2 className="page-title">Batch Directory</h2>
             </div>
-            <button className="btn-add-new" onClick={() => setIsDrawerOpen(true)}>
+            <button
+              className="btn-add-new"
+              onClick={() => setIsDrawerOpen(true)}
+            >
               <Plus size={18} /> ADD NEW BATCH
             </button>
           </header>
@@ -112,7 +135,9 @@ const ManageBatch = () => {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="6" className="table-loader">Loading Batches...</td>
+                      <td colSpan="6" className="table-loader">
+                        Loading Batches...
+                      </td>
                     </tr>
                   ) : (
                     filtered.map((batch) => (
@@ -122,7 +147,9 @@ const ManageBatch = () => {
                             <span className="batch-name">{batch.name}</span>
                           </div>
                         </td>
-                        <td><span className="branch-tag">{batch.branch}</span></td>
+                        <td>
+                          <span className="branch-tag">{batch.branch}</span>
+                        </td>
                         <td>
                           <div className="schedule-box">
                             <div className="sch-item">
@@ -137,22 +164,30 @@ const ManageBatch = () => {
                           </div>
                         </td>
                         <td>
-                          <span className={`status-badge ${batch.status === 0 ? "active" : "inactive"}`}>
+                          <span
+                            className={`status-badge ${
+                              batch.status === 0 ? "active" : "inactive"
+                            }`}
+                          >
                             {batch.status === 0 ? "Active" : "Disabled"}
                           </span>
                         </td>
                         <td className="text-right">
                           <div className="action-btns-group">
-                            <button className="btn-action edit" title="Edit Batch">
-                                <Edit3 size={16} />
+                            <button
+                              className="btn-action edit"
+                              title="Edit Batch"
+                              onClick={() => handleEditClick(batch.id)}
+                            >
+                              <Edit3 size={16} />
                             </button>
                             {/* --- ATTACHED DELETE HANDLER HERE --- */}
-                            <button 
-                                className="btn-action delete" 
-                                title="Delete Batch"
-                                onClick={() => handleDeleteBatch(batch.id)}
+                            <button
+                              className="btn-action delete"
+                              title="Delete Batch"
+                              onClick={() => handleDeleteBatch(batch.id)}
                             >
-                                <Trash2 size={16} />
+                              <Trash2 size={16} />
                             </button>
                           </div>
                         </td>
@@ -166,10 +201,14 @@ const ManageBatch = () => {
         </main>
       </div>
 
-      <BatchDrawer 
-        isOpen={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-        onUpdate={fetchBatches} 
+      <BatchDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedBatchId(null);
+        }}
+        onUpdate={fetchBatches}
+        batchId={selectedBatchId} // Pass the ID
       />
     </div>
   );

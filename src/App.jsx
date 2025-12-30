@@ -15,7 +15,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<BranchLogin />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leads-view" element={<LeadsView />} />

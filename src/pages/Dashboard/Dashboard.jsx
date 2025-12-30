@@ -11,7 +11,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/dashboard-stats/")
+        axios.get("https://operating-media-backend.onrender.com/api/dashboard-stats/")
             .then(res => {
                 setStats(res.data);
                 setLoading(false);

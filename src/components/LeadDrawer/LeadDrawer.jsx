@@ -33,7 +33,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
 
   const fetchLeadDetails = () => {
     setLoading(true);
-    axios.get(`http://127.0.0.1:8000/api/leads/${leadId}/`)
+    axios.get(`https://operating-media-backend.onrender.com/api/leads/${leadId}/`)
       .then((res) => {
         setDetails(res.data);
         setTempTags(formatList(res.data.tags)); // Sync temp tags with DB
@@ -60,7 +60,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
 
   const handleSaveTags = async () => {
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/leads/${leadId}/tags/`, { tags: tempTags });
+      await axios.patch(`https://operating-media-backend.onrender.com/api/leads/${leadId}/tags/`, { tags: tempTags });
       setIsEditingTags(false);
       fetchLeadDetails();
       if (onUpdate) onUpdate(); // Refresh main table
@@ -73,7 +73,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post(`http://127.0.0.1:8000/api/leads/${leadId}/followup/`, {
+      await axios.post(`https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`, {
         remark: newRemark,
         next_date: nextDate,
       });

@@ -17,7 +17,7 @@ const BranchLogin = () => {
         setError('');
         try {
             // Note: Sending branch name along with credentials
-            const res = await axios.post('http://127.0.0.1:8000/api/login/', { 
+            const res = await axios.post('https://operating-media-backend.onrender.com/api/login/', { 
                 email: username, 
                 password: password,
                 branch: branch 

@@ -47,12 +47,12 @@ const LeadsEdit = () => {
 
   useEffect(() => {
     // 1. Fetch dropdown options (Branches, Courses, etc.)
-    axios.get("http://127.0.0.1:8000/api/leads/create/").then((res) => {
+    axios.get("https://operating-media-backend.onrender.com/api/leads/create/").then((res) => {
       setOptions((prev) => ({ ...res.data, tags: prev.tags }));
     });
 
     // 2. Fetch specific Lead data and convert comma-strings to arrays
-    axios.get(`http://127.0.0.1:8000/api/leads/${leadId}/edit/`).then((res) => {
+    axios.get(`https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`).then((res) => {
       const data = res.data;
       setFormData({
         ...data,
@@ -71,7 +71,7 @@ const LeadsEdit = () => {
     setIsSubmitting(true);
     try {
       // Backend handles joining arrays back into strings
-      await axios.put(`http://127.0.0.1:8000/api/leads/${leadId}/edit/`, formData);
+      await axios.put(`https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`, formData);
       alert("Lead Updated Successfully!");
       navigate("/leads-view");
     } catch (err) {

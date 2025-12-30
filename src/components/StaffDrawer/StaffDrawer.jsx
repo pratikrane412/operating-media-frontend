@@ -43,7 +43,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
   useEffect(() => {
     if (isOpen && staffId) {
       axios
-        .get(`http://127.0.0.1:8000/api/staff/${staffId}/`)
+        .get(`https://operating-media-backend.onrender.com/api/staff/${staffId}/`)
         .then((res) => setFormData(res.data))
         .catch((err) => console.error(err));
     } else if (isOpen) {
@@ -69,11 +69,11 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
     try {
       if (staffId) {
         await axios.put(
-          `http://127.0.0.1:8000/api/staff/${staffId}/`,
+          `https://operating-media-backend.onrender.com/api/staff/${staffId}/`,
           formData
         );
       } else {
-        await axios.post("http://127.0.0.1:8000/api/staff/manage/", formData);
+        await axios.post("https://operating-media-backend.onrender.com/api/staff/manage/", formData);
       }
       onUpdate();
       onClose();

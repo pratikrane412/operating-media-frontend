@@ -24,7 +24,7 @@ const StaffBatchDrawer = ({
   useEffect(() => {
     if (isOpen && staffId) {
       axios
-        .get(`http://127.0.0.1:8000/api/staff/${staffId}/assign-batch/`)
+        .get(`https://operating-media-backend.onrender.com/api/staff/${staffId}/assign-batch/`)
         .then((res) => setBatches(res.data))
         .catch((err) => console.error(err));
     }
@@ -40,7 +40,7 @@ const StaffBatchDrawer = ({
     setIsSubmitting(true);
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/staff/${staffId}/assign-batch/`,
+        `https://operating-media-backend.onrender.com/api/staff/${staffId}/assign-batch/`,
         formData
       );
       alert("Batch assigned successfully!");

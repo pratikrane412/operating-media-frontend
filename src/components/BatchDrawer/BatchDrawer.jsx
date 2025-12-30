@@ -23,7 +23,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
     // 1. If batchId is provided, fetch existing data to pre-fill
     useEffect(() => {
         if (isOpen && batchId) {
-            axios.get(`http://127.0.0.1:8000/api/batches/${batchId}/`)
+            axios.get(`https://operating-media-backend.onrender.com/api/batches/${batchId}/`)
                 .then(res => setFormData(res.data))
                 .catch(err => console.error("Error fetching batch details", err));
         } else {
@@ -40,10 +40,10 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
         try {
             if (batchId) {
                 // UPDATE MODE
-                await axios.put(`http://127.0.0.1:8000/api/batches/${batchId}/`, formData);
+                await axios.put(`https://operating-media-backend.onrender.com/api/batches/${batchId}/`, formData);
             } else {
                 // CREATE MODE
-                await axios.post('http://127.0.0.1:8000/api/batches/manage/', formData);
+                await axios.post('https://operating-media-backend.onrender.com/api/batches/manage/', formData);
             }
             onUpdate(); 
             onClose();  

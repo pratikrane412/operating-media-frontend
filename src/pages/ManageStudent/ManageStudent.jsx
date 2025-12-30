@@ -56,7 +56,7 @@ const ManageStudent = () => {
     try {
       const branchParam = user.branch_id ? `&branch_id=${user.branch_id}` : "";
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/students/manage/?page=${page}&size=${pageSize}&search=${search}${branchParam}`
+        `https://operating-media-backend.onrender.com/api/students/manage/?page=${page}&size=${pageSize}&search=${search}${branchParam}`
       );
       setStudents(res.data.students);
       setTotalPages(res.data.total_pages);
@@ -74,7 +74,7 @@ const ManageStudent = () => {
   const handleDeleteStudent = async (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/students/${id}/delete/`);
+        await axios.delete(`https://operating-media-backend.onrender.com/api/students/${id}/delete/`);
         setActiveMenuId(null);
         fetchStudents(); // Refresh table
       } catch (err) {

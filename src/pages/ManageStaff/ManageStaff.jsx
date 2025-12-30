@@ -52,7 +52,7 @@ const ManageStaff = () => {
     try {
       const branchParam = user.branch_id ? `?branch_id=${user.branch_id}` : "";
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/staff/manage/${branchParam}`
+        `https://operating-media-backend.onrender.com/api/staff/manage/${branchParam}`
       );
       setStaff(res.data);
     } catch (err) {
@@ -69,7 +69,7 @@ const ManageStaff = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to remove this staff member?")) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/staff/delete/${id}/`);
+        await axios.delete(`https://operating-media-backend.onrender.com/api/staff/delete/${id}/`);
         fetchStaff();
       } catch (err) {
         console.error("Delete error:", err);

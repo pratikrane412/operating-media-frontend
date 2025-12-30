@@ -24,7 +24,7 @@ const Login = () => {
         e.preventDefault();
         setError('');
         try {
-            const res = await axios.post('http://127.0.0.1:8000/api/login/', { email, password });
+            const res = await axios.post('https://operating-media-backend.onrender.com/api/login/', { email, password });
             if (rememberMe) localStorage.setItem('rememberedEmail', email);
             else localStorage.removeItem('rememberedEmail');
 

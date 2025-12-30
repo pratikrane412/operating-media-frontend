@@ -29,7 +29,7 @@ const ManageCourse = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/api/courses/manage/`);
+      const res = await axios.get(`https://operating-media-backend.onrender.com/api/courses/manage/`);
       setCourses(res.data);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -60,7 +60,7 @@ const ManageCourse = () => {
       )
     ) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/courses/${id}/delete/`);
+        await axios.delete(`https://operating-media-backend.onrender.com/api/courses/${id}/delete/`);
         // Trigger data refresh
         fetchCourses();
       } catch (err) {

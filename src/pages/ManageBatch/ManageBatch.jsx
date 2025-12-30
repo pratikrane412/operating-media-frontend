@@ -31,7 +31,7 @@ const ManageBatch = () => {
     try {
       const branchParam = user.branch_id ? `?branch_id=${user.branch_id}` : "";
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/batches/manage/${branchParam}`
+        `https://operating-media-backend.onrender.com/api/batches/manage/${branchParam}`
       );
       setBatches(res.data);
     } catch (err) {
@@ -53,7 +53,7 @@ const ManageBatch = () => {
       )
     ) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/batches/${id}/delete/`);
+        await axios.delete(`https://operating-media-backend.onrender.com/api/batches/${id}/delete/`);
         // Refresh the list after successful deletion
         fetchBatches();
       } catch (err) {

@@ -50,7 +50,7 @@ const LeadsView = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/leads/create/")
+      .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) =>
         setOptions({ branches: res.data.branches, sources: res.data.sources })
       )
@@ -60,7 +60,7 @@ const LeadsView = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/api/leads-view/`, {
+      const res = await axios.get(`https://operating-media-backend.onrender.com/api/leads-view/`, {
         params: {
           page,
           size: pageSize,
@@ -87,7 +87,7 @@ const LeadsView = () => {
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure you want to delete this lead?")) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/leads/${id}/delete/`);
+        await axios.delete(`https://operating-media-backend.onrender.com/api/leads/${id}/delete/`);
         setActiveMenuId(null);
         fetchData();
       } catch (err) {

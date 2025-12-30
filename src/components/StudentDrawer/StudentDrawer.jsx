@@ -168,13 +168,13 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate, studentId }) => {
     if (isOpen) {
       // 1. Fetch all options
       axios
-        .get("http://127.0.0.1:8000/api/students/create/")
+        .get("https://operating-media-backend.onrender.com/api/students/create/")
         .then((res) => setOptions({ ...res.data, years }));
 
       // 2. If editing, fetch lead data and map labels
       if (studentId) {
         axios
-          .get(`http://127.0.0.1:8000/api/students/${studentId}/`)
+          .get(`https://operating-media-backend.onrender.com/api/students/${studentId}/`)
           .then((res) => {
             const data = res.data;
             setFormData({
@@ -248,13 +248,13 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate, studentId }) => {
       if (studentId) {
         // UPDATE MODE
         await axios.put(
-          `http://127.0.0.1:8000/api/students/${studentId}/`,
+          `https://operating-media-backend.onrender.com/api/students/${studentId}/`,
           formData
         );
       } else {
         // CREATE MODE
         await axios.post(
-          "http://127.0.0.1:8000/api/students/create/",
+          "https://operating-media-backend.onrender.com/api/students/create/",
           formData
         );
       }

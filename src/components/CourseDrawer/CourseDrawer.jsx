@@ -37,7 +37,7 @@ const CourseDrawer = ({ isOpen, onClose, onUpdate, courseId }) => {
     if (isOpen && courseId) {
       // Edit Mode: Fetch existing data
       axios
-        .get(`http://127.0.0.1:8000/api/courses/${courseId}/`)
+        .get(`https://operating-media-backend.onrender.com/api/courses/${courseId}/`)
         .then((res) => setFormData(res.data))
         .catch((err) => console.error("Error fetching course", err));
     } else {
@@ -56,12 +56,12 @@ const CourseDrawer = ({ isOpen, onClose, onUpdate, courseId }) => {
       if (courseId) {
         // UPDATE
         await axios.put(
-          `http://127.0.0.1:8000/api/courses/${courseId}/`,
+          `https://operating-media-backend.onrender.com/api/courses/${courseId}/`,
           formData
         );
       } else {
         // CREATE
-        await axios.post("http://127.0.0.1:8000/api/courses/manage/", formData);
+        await axios.post("https://operating-media-backend.onrender.com/api/courses/manage/", formData);
       }
       onUpdate(); // Refresh table
       onClose(); // Close drawer

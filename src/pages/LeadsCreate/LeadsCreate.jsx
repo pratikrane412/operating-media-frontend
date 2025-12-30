@@ -75,7 +75,7 @@ const LeadsCreate = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/leads/create/")
+      .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
         setOptions((prev) => ({ ...res.data, tags: prev.tags }));
       })
@@ -90,7 +90,7 @@ const LeadsCreate = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/leads/create/",
+        "https://operating-media-backend.onrender.com/api/leads/create/",
         formData
       );
       if (response.status === 201) {

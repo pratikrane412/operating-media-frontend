@@ -31,7 +31,7 @@ const ManageSalary = () => {
           ? `?branch_id=${user.branch_id}`
           : "";
         const res = await axios.get(
-          `http://127.0.0.1:8000/api/staff/salary-list/${branchParam}`
+          `https://operating-media-backend.onrender.com/api/staff/salary-list/${branchParam}`
         );
         setStaffList(res.data);
       } catch (err) {

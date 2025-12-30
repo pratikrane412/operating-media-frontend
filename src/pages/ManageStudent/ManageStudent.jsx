@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -12,13 +12,17 @@ import {
   Phone,
   Calendar,
   Hash,
+  Edit3,
+  Trash2,
 } from "lucide-react";
+import StudentDrawer from "../../components/StudentDrawer/StudentDrawer.jsx";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStudent.css";
 
 const ManageStudent = () => {
   const navigate = useNavigate();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +33,22 @@ const ManageStudent = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
 
+  // Menu State
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const menuRef = useRef(null);
+
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -51,6 +70,18 @@ const ManageStudent = () => {
     fetchStudents();
   }, [page, pageSize, user.branch_id]);
 
+  const handleDeleteStudent = async (id) => {
+    if (window.confirm("Are you sure you want to delete this student?")) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/students/${id}/delete/`);
+        setActiveMenuId(null);
+        fetchStudents(); // Refresh table
+      } catch (err) {
+        alert("Failed to delete student. Check if they have linked records.");
+      }
+    }
+  };
+
   const getPageNumbers = () => {
     const pages = [];
     let start = Math.max(1, page - 2);
@@ -67,7 +98,6 @@ const ManageStudent = () => {
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 
         <main className="content-area">
-          {/* --- DURALUX STYLE HEADER --- */}
           <header className="page-header-flex">
             <div className="header-left">
               <div className="breadcrumb-nav">
@@ -83,12 +113,14 @@ const ManageStudent = () => {
               <h2 className="page-title-bold">Student Directory</h2>
             </div>
 
-            <button className="btn-add-primary">
+            <button
+              className="btn-add-primary"
+              onClick={() => setIsDrawerOpen(true)}
+            >
               <Plus size={18} /> ADD NEW STUDENT
             </button>
           </header>
 
-          {/* --- DATA CARD --- */}
           <div className="data-display-card">
             <div className="data-toolbar">
               <div className="entries-select">
@@ -156,7 +188,7 @@ const ManageStudent = () => {
                           <span className="user-full-name">{s.name}</span>
                         </td>
                         <td>
-                          <span className="id-badge-blue">{s.login_id}</span>
+                          <span className="id-badge-blue"># {s.login_id}</span>
                         </td>
                         <td>
                           <div className="course-batch-stack">
@@ -171,7 +203,8 @@ const ManageStudent = () => {
                               {s.joining_date}
                             </span>
                             <span className="source-label-red">
-                              Source: {s.source}
+                              Source:{" "}
+                              {s.source?.replace(/[\[\]'"]/g, "") || "Direct"}
                             </span>
                           </div>
                         </td>
@@ -189,9 +222,39 @@ const ManageStudent = () => {
                             <button className="btn-icon-round">
                               <Eye size={15} />
                             </button>
-                            <button className="btn-icon-round">
-                              <MoreHorizontal size={15} />
-                            </button>
+
+                            {/* --- ACTION DROPDOWN --- */}
+                            <div className="action-menu-container">
+                              <button
+                                className={`btn-icon-round ${
+                                  activeMenuId === s.id ? "active" : ""
+                                }`}
+                                onClick={() =>
+                                  setActiveMenuId(
+                                    activeMenuId === s.id ? null : s.id
+                                  )
+                                }
+                              >
+                                <MoreHorizontal size={15} />
+                              </button>
+
+                              {activeMenuId === s.id && (
+                                <div
+                                  className="action-dropdown-list"
+                                  ref={menuRef}
+                                >
+                                  <button className="drop-item">
+                                    <Edit3 size={14} /> Edit Profile
+                                  </button>
+                                  <button
+                                    className="drop-item delete"
+                                    onClick={() => handleDeleteStudent(s.id)}
+                                  >
+                                    <Trash2 size={14} /> Delete Student
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -234,6 +297,11 @@ const ManageStudent = () => {
           </div>
         </main>
       </div>
+      <StudentDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onUpdate={fetchStudents}
+      />
     </div>
   );
 };

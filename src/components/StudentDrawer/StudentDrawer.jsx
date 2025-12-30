@@ -118,7 +118,7 @@ const FormRow = ({ label, icon: Icon, children }) => (
   </div>
 );
 
-const StudentDrawer = ({ isOpen, onClose, onUpdate }) => {
+const StudentDrawer = ({ isOpen, onClose, onUpdate, studentId }) => {
   const [options, setOptions] = useState({
     courses: [],
     batches: [],
@@ -166,12 +166,56 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate }) => {
 
   useEffect(() => {
     if (isOpen) {
+      // 1. Fetch all options
       axios
         .get("http://127.0.0.1:8000/api/students/create/")
-        .then((res) => setOptions({ ...res.data, years }))
-        .catch((err) => console.error(err));
+        .then((res) => setOptions({ ...res.data, years }));
+
+      // 2. If editing, fetch lead data and map labels
+      if (studentId) {
+        axios
+          .get(`http://127.0.0.1:8000/api/students/${studentId}/`)
+          .then((res) => {
+            const data = res.data;
+            setFormData({
+              ...data,
+              // Fix: Convert "Source1, Source2" string into Array for multi-select UI
+              source: data.source ? data.source.split(", ") : [],
+              // Ensure display labels are set so dropdowns don't look empty
+              branch_label: data.branch_label,
+              course_label: data.course_label,
+              counsellor_label: data.counsellor_label,
+            });
+          });
+      } else {
+        // Reset for Add Mode
+        setFormData({
+          admission_type: "Admission",
+          joining_date: new Date().toISOString().split("T")[0],
+          first_name: "",
+          last_name: "",
+          father_name: "",
+          dob: "",
+          mobile: "",
+          email: "",
+          gender: "Male",
+          source: [],
+          college: "",
+          college_year: "",
+          address: "",
+          branch_id: "",
+          batch_name: "",
+          course_id: "",
+          roll_no: "",
+          fee_deposit: "",
+          discount: "",
+          payment_mode: "Cash",
+          remarks: "",
+          counsellor_id: "",
+        });
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, studentId]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -201,13 +245,23 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.post("http://127.0.0.1:8000/api/students/create/", formData);
+      if (studentId) {
+        // UPDATE MODE
+        await axios.put(
+          `http://127.0.0.1:8000/api/students/${studentId}/`,
+          formData
+        );
+      } else {
+        // CREATE MODE
+        await axios.post(
+          "http://127.0.0.1:8000/api/students/create/",
+          formData
+        );
+      }
       onUpdate();
       onClose();
     } catch (err) {
-      alert(
-        "Submission failed. Ensure all required fields marked with * are filled."
-      );
+      alert("Error saving student");
     } finally {
       setIsSubmitting(false);
     }
@@ -221,7 +275,10 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate }) => {
       <div className="drawer-container wide">
         <div className="drawer-header">
           <div className="header-title">
-            <GraduationCap size={22} /> <h3>Student Admission</h3>
+            <GraduationCap size={22} />{" "}
+            <h3>
+              {studentId ? "Update Student Profile" : "New Student Admission"}
+            </h3>
           </div>
           <button className="close-btn" onClick={onClose}>
             <X size={20} />

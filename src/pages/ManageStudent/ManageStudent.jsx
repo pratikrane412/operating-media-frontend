@@ -26,6 +26,7 @@ const ManageStudent = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
 
   // Pagination & Filter States
   const [page, setPage] = useState(1);
@@ -82,6 +83,11 @@ const ManageStudent = () => {
     }
   };
 
+  const handleEditClick = (id) => {
+    setSelectedStudentId(id);
+    setIsDrawerOpen(true);
+  };
+
   const getPageNumbers = () => {
     const pages = [];
     let start = Math.max(1, page - 2);
@@ -115,7 +121,10 @@ const ManageStudent = () => {
 
             <button
               className="btn-add-primary"
-              onClick={() => setIsDrawerOpen(true)}
+              onClick={() => {
+                setSelectedStudentId(null);
+                setIsDrawerOpen(true);
+              }}
             >
               <Plus size={18} /> ADD NEW STUDENT
             </button>
@@ -243,7 +252,10 @@ const ManageStudent = () => {
                                   className="action-dropdown-list"
                                   ref={menuRef}
                                 >
-                                  <button className="drop-item">
+                                  <button
+                                    className="drop-item"
+                                    onClick={() => handleEditClick(s.id)}
+                                  >
                                     <Edit3 size={14} /> Edit Profile
                                   </button>
                                   <button
@@ -299,8 +311,12 @@ const ManageStudent = () => {
       </div>
       <StudentDrawer
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedStudentId(null);
+        }}
         onUpdate={fetchStudents}
+        studentId={selectedStudentId}
       />
     </div>
   );

@@ -8,7 +8,7 @@ const ProfileDropdown = () => {
   const admin = JSON.parse(localStorage.getItem("admin") || "{}");
   const logout = () => {
     localStorage.removeItem("admin");
-    navigate("/admin");
+    navigate("/");
   };
 
   return (

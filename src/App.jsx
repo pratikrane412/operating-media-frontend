@@ -10,6 +10,7 @@ import ManageCourse from "./pages/ManageCourse/ManageCourse";
 import ManageStaff from "./pages/ManageStaff/ManageStaff";
 import ManageSalary from "./pages/ManageSalary/ManageSalary";
 import ManageStudent from "./pages/ManageStudent/ManageStudent";
+import ManageAdmission from "./pages/ManageAdmission/ManageAdmission";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/manage-staff" element={<ManageStaff />} />
         <Route path="/manage-salary" element={<ManageSalary />} />
         <Route path="/manage-student" element={<ManageStudent />} />
+        <Route path="/manage-admission" element={<ManageAdmission />} />
       </Routes>
     </Router>
   );

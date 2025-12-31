@@ -7,19 +7,21 @@ import {
   Circle,
   GraduationCap,
   Users,
-  UserCheck, // 1. ADDED THIS ICON IMPORT
+  UserCheck,
+  ClipboardList, // Ensure this is imported
 } from "lucide-react";
 import "./Sidebar.css";
 
 const Sidebar = ({ isCollapsed }) => {
+  // --- ALL STATES MUST BE DEFINED HERE ---
   const [leadsOpen, setLeadsOpen] = useState(false);
   const [courseBatchOpen, setCourseBatchOpen] = useState(false);
   const [staffOpen, setStaffOpen] = useState(false);
-  const [studentsOpen, setStudentsOpen] = useState(false); // 2. ADDED THIS STATE
+  const [studentsOpen, setStudentsOpen] = useState(false);
+  const [admissionOpen, setAdmissionOpen] = useState(false); // ADDED THIS LINE
 
   return (
     <aside className={`sidebar-aside ${isCollapsed ? "collapsed" : ""}`}>
-      {/* Logo Section */}
       <div className="sidebar-brand">
         <div className="brand-logo-box">O</div>
         <span className="brand-name-text">Operating Media</span>
@@ -131,6 +133,27 @@ const Sidebar = ({ isCollapsed }) => {
             <NavLink to="/manage-student" className="sub-link">
               <Circle size={6} fill="currentColor" className="sub-dot" />
               <span className="link-text">Manage Student</span>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Admission Dropdown */}
+        <div className={`nav-dropdown-group ${admissionOpen ? "is-open" : ""}`}>
+          <div
+            className="nav-link trigger"
+            onClick={() => !isCollapsed && setAdmissionOpen(!admissionOpen)}
+          >
+            <div className="link-content">
+              <ClipboardList size={20} className="nav-icon" />
+              <span className="link-text">Admission</span>
+            </div>
+            <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
+          </div>
+
+          <div className="nav-submenu">
+            <NavLink to="/manage-admission" className="sub-link">
+              <Circle size={6} fill="currentColor" className="sub-dot" />
+              <span className="link-text">Manage Admission</span>
             </NavLink>
           </div>
         </div>

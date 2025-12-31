@@ -8,10 +8,6 @@ import {
   Eye,
   MoreHorizontal,
   Plus,
-  GraduationCap,
-  Phone,
-  Calendar,
-  Hash,
   Edit3,
   Trash2,
 } from "lucide-react";
@@ -74,9 +70,11 @@ const ManageStudent = () => {
   const handleDeleteStudent = async (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/students/${id}/delete/`);
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/students/${id}/delete/`
+        );
         setActiveMenuId(null);
-        fetchStudents(); // Refresh table
+        fetchStudents();
       } catch (err) {
         alert("Failed to delete student. Check if they have linked records.");
       }
@@ -163,24 +161,19 @@ const ManageStudent = () => {
               <table className="modern-data-table">
                 <thead>
                   <tr>
-                    <th width="50">
-                      <input type="checkbox" />
-                    </th>
-                    <th width="220">CUSTOMER</th>
-                    <th width="150">LOGIN ID</th>
-                    <th width="250">COURSE & BATCH</th>
-                    <th width="140">MOBILE</th>
-                    <th width="180">JOINING INFO</th>
-                    <th width="120">STATUS</th>
-                    <th className="text-center" width="120">
-                      ACTIONS
-                    </th>
+                    <th>CUSTOMER</th>
+                    <th>LOGIN ID</th>
+                    <th>COURSE & BATCH</th>
+                    <th>MOBILE</th>
+                    <th>JOINING INFO</th>
+                    <th>STATUS</th>
+                    <th className="text-center">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="8" className="table-loading-msg">
+                      <td colSpan="7" className="table-loading-msg">
                         Synchronizing records...
                       </td>
                     </tr>
@@ -188,13 +181,12 @@ const ManageStudent = () => {
                     students.map((s) => (
                       <tr key={s.id}>
                         <td>
-                          <input type="checkbox" />
-                        </td>
-                        <td className="user-profile-cell">
-                          <div className="avatar-letter">
-                            {s.name.charAt(0)}
+                          <div className="user-profile-cell">
+                            <div className="avatar-letter">
+                              {s.name.charAt(0)}
+                            </div>
+                            <span className="user-full-name">{s.name}</span>
                           </div>
-                          <span className="user-full-name">{s.name}</span>
                         </td>
                         <td>
                           <span className="id-badge-blue"># {s.login_id}</span>
@@ -232,7 +224,6 @@ const ManageStudent = () => {
                               <Eye size={15} />
                             </button>
 
-                            {/* --- ACTION DROPDOWN --- */}
                             <div className="action-menu-container">
                               <button
                                 className={`btn-icon-round ${

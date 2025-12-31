@@ -60,17 +60,20 @@ const LeadsView = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://operating-media-backend.onrender.com/api/leads-view/`, {
-        params: {
-          page,
-          size: pageSize,
-          search,
-          branch: filters.branch,
-          source: filters.source,
-          from: filters.fromDate,
-          to: filters.toDate,
-        },
-      });
+      const res = await axios.get(
+        `https://operating-media-backend.onrender.com/api/leads-view/`,
+        {
+          params: {
+            page,
+            size: pageSize,
+            search,
+            branch: filters.branch,
+            source: filters.source,
+            from: filters.fromDate,
+            to: filters.toDate,
+          },
+        }
+      );
       setLeads(res.data.leads);
       setTotalPages(res.data.total_pages);
       setLoading(false);
@@ -87,7 +90,9 @@ const LeadsView = () => {
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure you want to delete this lead?")) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/leads/${id}/delete/`);
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/leads/${id}/delete/`
+        );
         setActiveMenuId(null);
         fetchData();
       } catch (err) {
@@ -96,12 +101,10 @@ const LeadsView = () => {
     }
   };
 
-  // --- HELPER FUNCTION TO RENDER PILLS WITHOUT BRACKETS ---
   const renderPills = (dataString, type = "tag") => {
     if (!dataString || dataString === "" || dataString === "[]")
       return <span className="no-data-text">N/A</span>;
 
-    // Remove brackets, quotes and split by comma
     const items = dataString
       .replace(/[\[\]"']/g, "")
       .split(",")
@@ -266,9 +269,6 @@ const LeadsView = () => {
               <table className="leads-table">
                 <thead>
                   <tr>
-                    <th width="40">
-                      <input type="checkbox" />
-                    </th>
                     <th>CUSTOMER</th>
                     <th>COURSE</th>
                     <th>PHONE</th>
@@ -290,13 +290,12 @@ const LeadsView = () => {
                     leads.map((lead) => (
                       <tr key={lead.id}>
                         <td>
-                          <input type="checkbox" />
-                        </td>
-                        <td className="user-cell">
-                          <div className="user-avatar">
-                            {lead.name.charAt(0)}
+                          <div className="user-cell">
+                            <div className="user-avatar">
+                              {lead.name.charAt(0)}
+                            </div>
+                            <span className="user-name">{lead.name}</span>
                           </div>
-                          <span className="user-name">{lead.name}</span>
                         </td>
                         <td>
                           <span className="course-pill">{lead.course}</span>
@@ -406,7 +405,7 @@ const LeadsView = () => {
         leadId={selectedLeadId}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        onUpdate={fetchData} // <--- ADD THIS LINE
+        onUpdate={fetchData}
       />
     </div>
   );

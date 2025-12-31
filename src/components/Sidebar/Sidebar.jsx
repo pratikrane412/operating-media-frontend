@@ -59,10 +59,6 @@ const Sidebar = ({ isCollapsed }) => {
               <Circle size={6} fill="currentColor" className="sub-dot" />
               <span className="link-text">Leads View</span>
             </NavLink>
-            <NavLink to="/leads-create" className="sub-link">
-              <Circle size={6} fill="currentColor" className="sub-dot" />
-              <span className="link-text">Leads Create</span>
-            </NavLink>
           </div>
         </div>
 

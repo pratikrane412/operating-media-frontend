@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Search,
+  Plus,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -15,10 +16,12 @@ import {
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
+import LeadCreateDrawer from "../../components/LeadDrawer/LeadCreateDrawer";
 import LeadDrawer from "../../components/LeadDrawer/LeadDrawer";
 import "./LeadsView.css";
 
 const LeadsView = () => {
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [leads, setLeads] = useState([]);
@@ -148,6 +151,25 @@ const LeadsView = () => {
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
+          <div
+            className="leads-page-header"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2 style={{ fontSize: "24px", fontWeight: "800" }}>
+              Lead Directory
+            </h2>
+            <button
+              className="btn-add-primary"
+              onClick={() => setIsCreateOpen(true)}
+            >
+              <Plus size={18} /> ADD NEW LEAD
+            </button>
+          </div>
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
@@ -401,6 +423,11 @@ const LeadsView = () => {
           </div>
         </main>
       </div>
+      <LeadCreateDrawer
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onUpdate={fetchData}
+      />
       <LeadDrawer
         leadId={selectedLeadId}
         isOpen={isDrawerOpen}

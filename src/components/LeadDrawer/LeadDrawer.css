@@ -1,3 +1,4 @@
+/* Container Layout */
 .drawer-overlay {
   position: fixed;
   top: 0;
@@ -82,18 +83,18 @@
   padding: 25px;
 }
 .drawer-section {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 .section-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   color: #94a3b8;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   margin-bottom: 15px;
 }
 
-/* Contact & Course Styling */
+/* Contact Section */
 .info-grid {
   display: flex;
   flex-direction: column;
@@ -105,31 +106,32 @@
   gap: 12px;
   font-size: 14px;
   color: #475569;
-  font-weight: 500;
+  font-weight: 600;
 }
 .info-item svg {
   color: #cbd5e1;
 }
-.drawer-course-pill {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1e293b;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 8px 8px 0;
-}
 
-/* --- CLEAN TAGS & SOURCE SECTION --- */
+/* Tags Management */
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.btn-edit-small {
+  background: none;
+  border: none;
+  color: #003873;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .clean-tag-container {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding-bottom: 10px;
 }
 .pill-group {
   display: flex;
@@ -137,7 +139,7 @@
   gap: 6px;
 }
 .status-badge-pill {
-  background-color: #ebf0f5;
+  background-color: #f0f4f8;
   color: #003873;
   font-size: 11px;
   font-weight: 700;
@@ -145,20 +147,71 @@
   border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   border: 1px solid #d1dbe5;
 }
+.remove-tag-icon {
+  cursor: pointer;
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.tag-selection-area {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s ease;
+}
+.selection-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.tag-option {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  background: white;
+  border: 1px solid #eef1f6;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tag-option.selected {
+  background: #ebf0f5;
+  color: #003873;
+  border-color: #003873;
+}
+.btn-save-tags {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #003873;
+  color: white;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Source Box */
 .source-info-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f8fafc;
-  padding: 8px 12px;
-  border-radius: 8px;
+  background-color: #fcfdfe;
+  padding: 10px 14px;
+  border-radius: 10px;
   border: 1px solid #eef1f6;
 }
 .source-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   color: #94a3b8;
   letter-spacing: 1px;
@@ -169,48 +222,13 @@
   color: #ef4444;
 }
 
-/* --- FOLLOWUP FORM & TIMELINE --- */
-.section-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-.btn-add-inline {
-  background: #ebf0f5;
-  color: #003873;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.btn-add-inline:hover {
-  background: #003873;
-  color: white;
-}
-
+/* --- ALWAYS VISIBLE FOLLOWUP FORM --- */
 .followup-form-box {
-  background: #f8fafc;
+  background: #fcfdfe;
   border: 1.5px solid #eef1f6;
   border-radius: 12px;
   padding: 15px;
   margin-bottom: 25px;
-  animation: slideDownFade 0.3s ease;
-}
-@keyframes slideDownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 .followup-form-box textarea {
   width: 100%;
@@ -242,17 +260,6 @@
   font-size: 12px;
   color: #1e293b;
   outline: none;
-}
-.form-btns-mini {
-  display: flex;
-  gap: 10px;
-}
-.btn-cancel-mini {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 12px;
-  font-weight: 600;
   cursor: pointer;
 }
 .btn-save-mini {
@@ -266,8 +273,18 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: 0.2s;
+}
+.btn-save-mini:hover {
+  background: #002d5c;
+  transform: scale(1.05);
+}
+.btn-save-mini:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
+/* Timeline */
 .timeline {
   border-left: 2px solid #f1f5f9;
   margin-left: 10px;
@@ -310,117 +327,18 @@
   color: #94a3b8;
   padding: 40px;
   font-weight: 600;
+  font-style: italic;
 }
-
-/* --- CLEAN TAGS & SOURCE SECTION --- */
-.clean-tag-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-bottom: 5px;
+.no-history {
+  font-size: 12px;
+  color: #cbd5e1;
+  font-style: italic;
 }
-
-.pill-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
-/* Status Pill: Matches Duralux Shaded Blue */
-.status-badge-pill {
-    background-color: #f0f4f8; /* Soft Shaded Gray-Blue */
-    color: #003873;           /* Brand Dark Blue */
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 10px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border: 1px solid #d1dbe5;
-    transition: all 0.2s;
-}
-
-/* Source Container: Modern Shaded Box */
-.source-info-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #fcfdfe;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid #eef1f6;
-}
-
-.source-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: #94a3b8;
-    letter-spacing: 0.05em;
-}
-
-.source-values-list {
-    display: flex;
-    gap: 4px;
-}
-
-.source-value {
-    font-size: 12px;
-    font-weight: 700;
-    color: #ef4444; /* Clean Red for Source */
-}
-
-.no-tag-placeholder {
-    font-size: 12px;
-    color: #cbd5e1;
-    font-style: italic;
-}
-
-/* Add these new styles for Tag Management */
-
-.btn-edit-small {
-  background: none; border: none;
-  color: #003873; font-size: 11px; font-weight: 700;
-  text-decoration: underline; cursor: pointer;
-}
-
-.remove-tag-icon {
-  margin-left: 5px; cursor: pointer;
-  color: #ef4444; border-radius: 50%;
-  padding: 1px; transition: 0.2s;
-}
-.remove-tag-icon:hover { background: #fee2e2; }
-
-/* Selection Area for Manage Tags mode */
-.tag-selection-area {
-  background: #f8fafc; border: 1px solid #e2e8f0;
-  border-radius: 10px; padding: 15px; margin-bottom: 15px;
-  animation: fadeIn 0.3s ease;
-}
-
-.selection-hint { font-size: 11px; color: #94a3b8; font-weight: 700; margin-bottom: 10px; }
-
-.selection-grid {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;
-}
-
-.tag-option {
-  font-size: 12px; font-weight: 600; color: #64748b;
-  background: white; border: 1px solid #eef1f6;
-  padding: 5px 12px; border-radius: 6px;
-  cursor: pointer; display: flex; align-items: center; gap: 5px;
-  transition: 0.2s;
-}
-
-.tag-option:hover { border-color: #003873; color: #003873; }
-.tag-option.selected { background: #ebf0f5; color: #003873; border-color: #003873; }
-
-.btn-save-tags {
-  width: 100%; padding: 10px; border: none;
-  background: #003873; color: white;
-  border-radius: 8px; font-size: 12px; font-weight: 700;
-  cursor: pointer; transition: 0.2s;
-}
-.btn-save-tags:hover { background: #002d5c; transform: translateY(-1px); }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

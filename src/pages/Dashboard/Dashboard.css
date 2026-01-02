@@ -65,3 +65,75 @@
 .green .icon-box { background: #f0fdf4; color: #10b981; }
 
 .loader { text-align: center; padding: 100px; color: #94a3b8; font-weight: 700; }
+
+:root {
+    --sidebar-wide: 260px;
+    --sidebar-narrow: 72px;
+    --nav-height: 70px;
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-speed: 0.4s;
+    --brand-blue: #003873;
+    --main-margin: var(--sidebar-wide);
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    position: relative;
+}
+
+.main-viewport {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: var(--main-margin);
+    transition: margin-left var(--transition-speed) var(--ease-standard);
+    min-width: 0; /* Prevents flex children from breaking parent width */
+}
+
+.app-container.is-collapsed .main-viewport {
+    --main-margin: var(--sidebar-narrow);
+}
+
+.content-scroll-area {
+    margin-top: var(--nav-height);
+    padding: 35px;
+    min-height: calc(100vh - var(--nav-height));
+}
+
+/* Responsive Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
+@media (max-width: 1024px) {
+    .content-scroll-area { padding: 25px; }
+}
+
+@media (max-width: 768px) {
+    :root { --main-margin: 0px !important; }
+    
+    .content-scroll-area { padding: 20px; }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 15px;
+    }
+
+    /* Sidebar Overlay Logic (Assuming Sidebar has .sidebar class) */
+    .sidebar {
+        position: fixed;
+        z-index: 1000;
+        left: -100%;
+        transition: left 0.4s ease;
+    }
+    
+    .app-container.is-collapsed .sidebar {
+        left: 0;
+        width: var(--sidebar-wide);
+    }
+}

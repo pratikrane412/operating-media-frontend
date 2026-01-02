@@ -200,3 +200,21 @@ select.login-input {
     background-repeat: no-repeat;
     background-position: right 14px center;
 }
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;
+        margin: 15px;
+        border-radius: 15px;
+    }
+
+    .login-header h2 {
+        font-size: 22px;
+    }
+
+    .login-options {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}

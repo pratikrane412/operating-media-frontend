@@ -179,3 +179,27 @@
   font-weight: 600;
   font-style: italic;
 }
+
+@media (max-width: 768px) {
+    .batch-header, .course-header, .staff-header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .search-wrapper, .search-input-wrapper {
+        width: 100% !important;
+    }
+
+    .btn-add-new, .btn-primary-blue {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Important: Keeps the table from breaking the screen while allowing swipe */
+    .table-sticky-wrapper, .table-wrapper-scroll {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}

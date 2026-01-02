@@ -211,3 +211,40 @@
     overflow: hidden;
     text-overflow: ellipsis; /* This adds '...' if the tag list is too long */
 }
+
+@media (max-width: 768px) {
+  .duralux-card-form {
+    padding: 20px; /* Reduce padding on mobile */
+  }
+
+  .form-row-layout {
+    grid-template-columns: 1fr; /* Stack label on top of input */
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .form-row-layout label {
+    font-size: 13px;
+  }
+
+  .form-footer-actions {
+    flex-direction: column; /* Stack buttons */
+    gap: 10px;
+  }
+
+  .btn-primary-blue {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-secondary-flat {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .main-title {
+    font-size: 20px;
+  }
+}

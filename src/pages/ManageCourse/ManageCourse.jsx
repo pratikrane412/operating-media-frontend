@@ -25,11 +25,33 @@ const ManageCourse = () => {
 
   const navigate = useNavigate();
 
-  // Defined as a reusable function to refresh data after deletion
+  // --- DATE FORMATTING HELPER (Consistent with other pages) ---
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "N/A" || dateStr === "No Date") return dateStr;
+
+    // Checks if the date is in YYYY-MM-DD format
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    }
+
+    // Support for ISO strings (e.g. 2024-05-15T10:30:00Z)
+    if (dateStr.includes("T")) {
+      const [datePart] = dateStr.split("T");
+      const [y, m, d] = datePart.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    return dateStr;
+  };
+
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://operating-media-backend.onrender.com/api/courses/manage/`);
+      const res = await axios.get(
+        `https://operating-media-backend.onrender.com/api/courses/manage/`
+      );
       setCourses(res.data);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -48,11 +70,10 @@ const ManageCourse = () => {
   };
 
   const handleAddNewClick = () => {
-    setSelectedCourseId(null); // Ensure ID is null for "Add New" mode
+    setSelectedCourseId(null);
     setIsDrawerOpen(true);
   };
 
-  // --- NEW DELETE HANDLER ---
   const handleDeleteCourse = async (id) => {
     if (
       window.confirm(
@@ -60,8 +81,9 @@ const ManageCourse = () => {
       )
     ) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/courses/${id}/delete/`);
-        // Trigger data refresh
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/courses/${id}/delete/`
+        );
         fetchCourses();
       } catch (err) {
         console.error("Delete error:", err);
@@ -96,10 +118,7 @@ const ManageCourse = () => {
               </div>
               <h2 className="page-title">Course Directory</h2>
             </div>
-            <button
-              className="btn-add-new"
-              onClick={() => setIsDrawerOpen(true)}
-            >
+            <button className="btn-add-new" onClick={handleAddNewClick}>
               <Plus size={18} /> ADD NEW COURSE
             </button>
           </header>
@@ -172,7 +191,6 @@ const ManageCourse = () => {
                             >
                               <Edit3 size={16} />
                             </button>
-                            {/* --- ATTACHED DELETE LOGIC HERE --- */}
                             <button
                               className="btn-action delete"
                               title="Delete Course"
@@ -198,7 +216,7 @@ const ManageCourse = () => {
           setSelectedCourseId(null);
         }}
         onUpdate={fetchCourses}
-        courseId={selectedCourseId} // Pass the ID prop
+        courseId={selectedCourseId}
       />
     </div>
   );

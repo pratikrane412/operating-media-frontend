@@ -9,6 +9,7 @@ import {
   Users,
   Clock,
   ChevronRight,
+  Calendar, // Added icon for date display
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
@@ -16,7 +17,7 @@ import BatchDrawer from "../../components/BatchDrawer/BatchDrawer";
 import "./ManageBatch.css";
 
 const ManageBatch = () => {
-  const [selectedBatchId, setSelectedBatchId] = useState(null); // Track ID for edit
+  const [selectedBatchId, setSelectedBatchId] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,19 @@ const ManageBatch = () => {
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
+
+  // --- DATE FORMATTING HELPER ---
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "N/A" || dateStr === "No Date") return dateStr;
+
+    // Checks if format is YYYY-MM-DD
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    }
+    return dateStr;
+  };
 
   const fetchBatches = async () => {
     setLoading(true);
@@ -45,33 +59,21 @@ const ManageBatch = () => {
     fetchBatches();
   }, [user.branch_id]);
 
-  // --- NEW DELETE HANDLER ---
   const handleDeleteBatch = async (id) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this batch? This action cannot be undone."
-      )
-    ) {
+    if (window.confirm("Are you sure you want to delete this batch?")) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/batches/${id}/delete/`);
-        // Refresh the list after successful deletion
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/batches/${id}/delete/`
+        );
         fetchBatches();
       } catch (err) {
-        console.error("Delete error:", err);
-        alert(
-          "Failed to delete batch. It might be linked to existing students."
-        );
+        alert("Failed to delete batch.");
       }
     }
   };
 
   const handleEditClick = (id) => {
     setSelectedBatchId(id);
-    setIsDrawerOpen(true);
-  };
-
-  const handleAddNewClick = () => {
-    setSelectedBatchId(null); // Clear ID for "Add New" mode
     setIsDrawerOpen(true);
   };
 
@@ -101,7 +103,10 @@ const ManageBatch = () => {
             </div>
             <button
               className="btn-add-new"
-              onClick={() => setIsDrawerOpen(true)}
+              onClick={() => {
+                setSelectedBatchId(null);
+                setIsDrawerOpen(true);
+              }}
             >
               <Plus size={18} /> ADD NEW BATCH
             </button>
@@ -145,6 +150,8 @@ const ManageBatch = () => {
                         <td>
                           <div className="batch-primary">
                             <span className="batch-name">{batch.name}</span>
+                            {/* Displaying Formatted Starting Date */}
+                            
                           </div>
                         </td>
                         <td>
@@ -176,15 +183,12 @@ const ManageBatch = () => {
                           <div className="action-btns-group">
                             <button
                               className="btn-action edit"
-                              title="Edit Batch"
                               onClick={() => handleEditClick(batch.id)}
                             >
                               <Edit3 size={16} />
                             </button>
-                            {/* --- ATTACHED DELETE HANDLER HERE --- */}
                             <button
                               className="btn-action delete"
-                              title="Delete Batch"
                               onClick={() => handleDeleteBatch(batch.id)}
                             >
                               <Trash2 size={16} />
@@ -208,7 +212,7 @@ const ManageBatch = () => {
           setSelectedBatchId(null);
         }}
         onUpdate={fetchBatches}
-        batchId={selectedBatchId} // Pass the ID
+        batchId={selectedBatchId}
       />
     </div>
   );

@@ -31,6 +31,11 @@ const LeadsView = () => {
   const [pageSize, setPageSize] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
+
+  // Get user info from localStorage
+  const user = JSON.parse(localStorage.getItem("admin") || "{}");
+  const isBranchUser = !!user.branch_id;
+
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
@@ -70,7 +75,9 @@ const LeadsView = () => {
             page,
             size: pageSize,
             search,
-            branch: filters.branch,
+            // If branch user, force their branch_id, otherwise use the filter
+            branch_id: isBranchUser ? user.branch_id : undefined,
+            branch: isBranchUser ? "" : filters.branch,
             source: filters.source,
             from: filters.fromDate,
             to: filters.toDate,
@@ -89,6 +96,8 @@ const LeadsView = () => {
   useEffect(() => {
     fetchData();
   }, [page, pageSize]);
+
+  // ... (handleDeleteLead, renderPills, getPageNumbers, handleOpenDrawer, formatDate remain same)
 
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure you want to delete this lead?")) {
@@ -146,17 +155,14 @@ const LeadsView = () => {
   };
 
   const formatDate = (dateStr) => {
-  if (!dateStr || dateStr === "No Date" || dateStr === "N/A") return dateStr;
-  
-  // Checks if the date is in YYYY-MM-DD format
-  const parts = dateStr.split("-");
-  if (parts.length === 3) {
-    const [year, month, day] = parts;
-    return `${day}/${month}/${year}`;
-  }
-  
-  return dateStr; // Return original if it doesn't match expected pattern
-};
+    if (!dateStr || dateStr === "No Date" || dateStr === "N/A") return dateStr;
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    }
+    return dateStr;
+  };
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
@@ -183,6 +189,7 @@ const LeadsView = () => {
               <Plus size={18} /> ADD NEW LEAD
             </button>
           </div>
+
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
@@ -190,22 +197,26 @@ const LeadsView = () => {
               </div>
             </div>
             <div className="filter-grid">
-              <div className="filter-group">
-                <label>Select Branch</label>
-                <select
-                  value={filters.branch}
-                  onChange={(e) =>
-                    setFilters({ ...filters, branch: e.target.value })
-                  }
-                >
-                  <option value="">All Branch</option>
-                  {options.branches.map((b, i) => (
-                    <option key={i} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* CONDITIONALLY RENDER BRANCH FILTER */}
+              {!isBranchUser && (
+                <div className="filter-group">
+                  <label>Select Branch</label>
+                  <select
+                    value={filters.branch}
+                    onChange={(e) =>
+                      setFilters({ ...filters, branch: e.target.value })
+                    }
+                  >
+                    <option value="">All Branch</option>
+                    {options.branches.map((b, i) => (
+                      <option key={i} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="filter-group">
                 <label>Student Source</label>
                 <select
@@ -222,6 +233,7 @@ const LeadsView = () => {
                   ))}
                 </select>
               </div>
+
               <div className="filter-group range-group">
                 <label>Date Range</label>
                 <div className="date-input-container">
@@ -243,6 +255,7 @@ const LeadsView = () => {
                 </div>
               </div>
             </div>
+            {/* ... rest of the component remains the same ... */}
             <div className="filter-footer">
               <button
                 className="btn-reset"
@@ -350,7 +363,9 @@ const LeadsView = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="followup-cell">{formatDate(lead.followup_date)}</td>
+                        <td className="followup-cell">
+                          {formatDate(lead.followup_date)}
+                        </td>
                         <td>{renderPills(lead.tags, "tag")}</td>
                         <td className="notes-cell">
                           {lead.notes || "No remarks updated"}

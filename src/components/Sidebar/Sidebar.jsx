@@ -115,7 +115,9 @@ const Sidebar = ({ isCollapsed }) => {
             </NavLink>
           </div>
         </div>
-        {/* Students Dropdown */}
+
+        
+        {/* Students Dropdown
         <div className={`nav-dropdown-group ${studentsOpen ? "is-open" : ""}`}>
           <div
             className="nav-link trigger"
@@ -134,7 +136,7 @@ const Sidebar = ({ isCollapsed }) => {
               <span className="link-text">Manage Student</span>
             </NavLink>
           </div>
-        </div>
+        </div> */}
 
         {/* Admission Dropdown */}
         <div className={`nav-dropdown-group ${admissionOpen ? "is-open" : ""}`}>

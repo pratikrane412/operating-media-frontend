@@ -410,18 +410,23 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                   const num = i + 1;
                   return (
                     <div key={num} className="installment-row-container">
-                      <span className="inst-num-label">Inst. {num}</span>
+                      <span className="inst-num-label">Installment {num}</span>
                       <div className="inst-inputs">
+                        {/* Editable Amount */}
                         <input
                           type="number"
+                          name={`inst_${num}_amount`}
                           value={formData[`inst_${num}_amount`] || 0}
-                          readOnly
+                          onChange={handleChange}
                         />
+                        {/* Editable Date */}
                         <input
                           type="date"
+                          name={`inst_${num}_date`}
                           value={formData[`inst_${num}_date`] || ""}
-                          readOnly
+                          onChange={handleChange}
                         />
+                        {/* Status Dropdown */}
                         <select
                           name={`inst_${num}_status`}
                           value={formData[`inst_${num}_status`]}

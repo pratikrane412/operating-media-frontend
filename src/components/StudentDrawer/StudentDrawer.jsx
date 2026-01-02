@@ -294,7 +294,7 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate, studentId }) => {
             icon={CheckCircle}
             name="admission_type"
             value={formData.admission_type}
-            options={["Admission", "Trial"]}
+            options={["Admission", "Demo"]}
             onSelect={handleSelectChange}
           />
 

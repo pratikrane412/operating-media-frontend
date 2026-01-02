@@ -12,12 +12,14 @@ import {
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
+import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageAdmission.css";
 
 const ManageAdmission = () => {
   const navigate = useNavigate();
   const [selectedAdmissionId, setSelectedAdmissionId] = useState(null);
+  const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [admissions, setAdmissions] = useState([]);
@@ -28,6 +30,11 @@ const ManageAdmission = () => {
   const [search, setSearch] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
   const menuRef = useRef(null);
+
+  const handleViewClick = (id) => {
+    setSelectedAdmissionId(id);
+    setIsViewDrawerOpen(true);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -186,14 +193,15 @@ const ManageAdmission = () => {
                                 : "disabled"
                             }`}
                           >
-                            {item.employed_status === "Yes"
-                              ? "Yes"
-                              : "No"}
+                            {item.employed_status === "Yes" ? "Yes" : "No"}
                           </span>
                         </td>
                         <td>
                           <div className="action-btn-row">
-                            <button className="btn-icon-round">
+                            <button
+                              className="btn-icon-round"
+                              onClick={() => handleViewClick(item.id)}
+                            >
                               <Eye size={15} />
                             </button>
                             <div className="action-menu-container">
@@ -273,6 +281,14 @@ const ManageAdmission = () => {
           </div>
         </main>
       </div>
+      <AdmissionViewDrawer
+        isOpen={isViewDrawerOpen}
+        onClose={() => {
+          setIsViewDrawerOpen(false);
+          setSelectedAdmissionId(null);
+        }}
+        admissionId={selectedAdmissionId}
+      />
       <AdmissionDrawer
         isOpen={isDrawerOpen}
         admissionId={selectedAdmissionId}

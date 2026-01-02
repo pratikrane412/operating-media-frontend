@@ -28,7 +28,7 @@ const LeadsView = () => {
   const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState({ branches: [], sources: [] });
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
@@ -283,8 +283,9 @@ const LeadsView = () => {
                     setPage(1);
                   }}
                 >
-                  <option value="10">10</option>
                   <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
                 </select>{" "}
                 entries
               </div>

@@ -116,26 +116,6 @@ const Sidebar = ({ isCollapsed }) => {
           </div>
         </div>
 
-        {/* Students Dropdown */}
-        <div className={`nav-dropdown-group ${studentsOpen ? "is-open" : ""}`}>
-          <div
-            className="nav-link trigger"
-            onClick={() => !isCollapsed && setStudentsOpen(!studentsOpen)}
-          >
-            <div className="link-content">
-              <UserCheck size={20} className="nav-icon" />
-              <span className="link-text">Students</span>
-            </div>
-            <ChevronRight size={14} className="nav-arrow hide-on-collapse" />
-          </div>
-
-          <div className="nav-submenu">
-            <NavLink to="/manage-student" className="sub-link">
-              <Circle size={6} fill="currentColor" className="sub-dot" />
-              <span className="link-text">Manage Student</span>
-            </NavLink>
-          </div>
-        </div>
 
         {/* Admission Dropdown */}
         <div className={`nav-dropdown-group ${admissionOpen ? "is-open" : ""}`}>

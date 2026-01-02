@@ -12,6 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import StudentDrawer from "../../components/StudentDrawer/StudentDrawer.jsx";
+import StudentViewDrawer from "../../components/StudentViewDrawer/StudentViewDrawer.jsx";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStudent.css";
@@ -23,6 +24,8 @@ const ManageStudent = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
+  const [viewingStudentId, setViewingStudentId] = useState(null);
 
   // Pagination & Filter States
   const [page, setPage] = useState(1);
@@ -79,6 +82,12 @@ const ManageStudent = () => {
         alert("Failed to delete student. Check if they have linked records.");
       }
     }
+  };
+
+  // Function to open View Drawer
+  const handleViewClick = (id) => {
+    setViewingStudentId(id);
+    setIsViewDrawerOpen(true);
   };
 
   const handleEditClick = (id) => {
@@ -220,7 +229,10 @@ const ManageStudent = () => {
                         </td>
                         <td>
                           <div className="action-btn-row">
-                            <button className="btn-icon-round">
+                            <button
+                              className="btn-icon-round"
+                              onClick={() => handleViewClick(s.id)} // Added onClick
+                            >
                               <Eye size={15} />
                             </button>
 
@@ -300,6 +312,14 @@ const ManageStudent = () => {
           </div>
         </main>
       </div>
+      <StudentViewDrawer
+        isOpen={isViewDrawerOpen}
+        onClose={() => {
+          setIsViewDrawerOpen(false);
+          setViewingStudentId(null);
+        }}
+        studentId={viewingStudentId}
+      />
       <StudentDrawer
         isOpen={isDrawerOpen}
         onClose={() => {

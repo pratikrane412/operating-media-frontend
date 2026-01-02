@@ -1,0 +1,156 @@
+.view-drawer-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 500px;
+  height: 100vh;
+  background: white;
+  z-index: 3000;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.view-drawer-header {
+  padding: 30px;
+  background: #003873;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  backdrop-filter: blur(10px);
+}
+
+.profile-title-set h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.profile-id-tag {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.view-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.view-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.view-drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  background: #f8fafc;
+}
+
+.view-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border: 1px solid #eef1f6;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #003873;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  gap: 12px;
+}
+
+.info-icon {
+  width: 36px;
+  height: 36px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.info-text label {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.info-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.full-width-info {
+  display: flex;
+  gap: 15px;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.view-loader {
+  text-align: center;
+  padding: 50px;
+  color: #94a3b8;
+  font-style: italic;
+}

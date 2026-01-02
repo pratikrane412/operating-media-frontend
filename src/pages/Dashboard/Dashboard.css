@@ -353,3 +353,18 @@
   font-weight: 700;
   font-style: italic;
 }
+
+/* Stat card green variation for Revenue */
+.green .icon-box {
+  background: #dcfce7; /* Soft Green */
+  color: #166534;      /* Deep Green */
+}
+
+.green .card-body h3 {
+  color: #15803d;
+}
+
+.green:hover {
+  border-color: #10b981;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);
+}

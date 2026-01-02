@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
+import { Banknote, IndianRupee } from "lucide-react"; // Add these imports
 import {
   Calendar,
   Clock,
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 import "./Dashboard.css"; // Reusing your base dashboard styles
 
-const FollowupDashboard = () => {
+const Dashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [data, setData] = useState({ followups: [], stats: {} });
   const [loading, setLoading] = useState(true);
@@ -56,9 +57,9 @@ const FollowupDashboard = () => {
               <div className="breadcrumb-nav">
                 <span onClick={() => navigate("/dashboard")}>Dashboards</span>
                 <ChevronRight size={12} />
-                <span className="current-page">Followup Queue</span>
+                <span className="current-page">Dashboard Analysis</span>
               </div>
-              <h2 className="page-title-bold">Followup Schedule</h2>
+              <h2 className="page-title-bold">Dashboard Queue</h2>
             </div>
           </header>
 
@@ -90,6 +91,19 @@ const FollowupDashboard = () => {
                   <div className="card-body">
                     <h3>{data.stats.upcoming || 0}</h3>
                     <p>Scheduled for future</p>
+                  </div>
+                </div>
+                {/* NEW: REVENUE STAT CARD */}
+                <div className="crm-stat-card green">
+                  <div className="card-header">
+                    <div className="icon-box">
+                      <IndianRupee size={20} />
+                    </div>
+                    <span className="card-label">Revenue Generated</span>
+                  </div>
+                  <div className="card-body">
+                    <h3>₹{data.stats.revenue?.toLocaleString("en-IN") || 0}</h3>
+                    <p>Total Paid Collections</p>
                   </div>
                 </div>
               </div>
@@ -158,4 +172,4 @@ const FollowupDashboard = () => {
   );
 };
 
-export default FollowupDashboard;
+export default Dashboard;

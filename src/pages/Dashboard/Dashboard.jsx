@@ -1,92 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Sidebar from '../../components/Sidebar/Sidebar';
-import Navbar from '../../components/Navbar/Navbar';
-import { Users, MessageSquare, PlayCircle, CheckCircle, TrendingUp } from 'lucide-react';
-import './Dashboard.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Navbar from "../../components/Navbar/Navbar";
+import {
+  Calendar,
+  Clock,
+  AlertCircle,
+  User,
+  Phone,
+  ChevronRight,
+  ArrowRight,
+} from "lucide-react";
+import "./Dashboard.css"; // Reusing your base dashboard styles
 
-const Dashboard = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [stats, setStats] = useState([]);
-    const [loading, setLoading] = useState(true);
+const FollowupDashboard = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [data, setData] = useState({ followups: [], stats: {} });
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        axios.get("https://operating-media-backend.onrender.com/api/dashboard-stats/")
-            .then(res => {
-                setStats(res.data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("API Error:", err);
-                setLoading(false);
-            });
-    }, []);
+  const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
-    const StatCard = ({ title, value, monthly, icon: Icon, type }) => (
-        <div className={`crm-stat-card ${type}`}>
-            <div className="card-header">
-                <div className="icon-box"><Icon size={20} /></div>
-                <span className="card-label">{title}</span>
+  useEffect(() => {
+    const branchParam = user.branch_id ? `?branch_id=${user.branch_id}` : "";
+    axios
+      .get(
+        `https://operating-media-backend.onrender.com/api/followups-dashboard/${branchParam}`
+      )
+      .then((res) => {
+        setData(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [user.branch_id]);
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "N/A";
+    const [y, m, d] = dateStr.split("-");
+    return `${d}/${m}/${y}`;
+  };
+
+  return (
+    <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
+      <Sidebar isCollapsed={isCollapsed} />
+      <div className="main-viewport">
+        <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
+
+        <main className="content-scroll-area">
+          <header className="page-header-flex">
+            <div className="header-left">
+              <div className="breadcrumb-nav">
+                <span onClick={() => navigate("/dashboard")}>Dashboards</span>
+                <ChevronRight size={12} />
+                <span className="current-page">Followup Queue</span>
+              </div>
+              <h2 className="page-title-bold">Followup Schedule</h2>
             </div>
-            <div className="card-body">
-                {/* The ?. and || 0 prevents the "undefined" crash */}
-                <h3>{(value || 0).toLocaleString()}</h3>
-                <p><TrendingUp size={14} /> {(monthly || 0)} new this month</p>
-            </div>
-        </div>
-    );
+          </header>
 
-    return (
-        <div className={`app-container ${isCollapsed ? 'is-collapsed' : ''}`}>
-            <Sidebar isCollapsed={isCollapsed} />
-            
-            <div className="main-viewport">
-                <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
-                
-                <main className="content-scroll-area">
-                    {loading ? (
-                        <div className="loader">Syncing with Database...</div>
-                    ) : (
-                        stats.map((branch, index) => (
-                            <div key={index} className="branch-section">
-                                <h4 className="branch-title">{branch.branch_name} Overview</h4>
-                                <div className="dashboard-grid">
-                                    <StatCard 
-                                        title="Total Students" 
-                                        value={branch.students?.total} 
-                                        monthly={branch.students?.monthly} 
-                                        icon={Users} 
-                                        type="blue" 
-                                    />
-                                    <StatCard 
-                                        title="Total Enquiries" 
-                                        value={branch.enquiries?.total} 
-                                        monthly={branch.enquiries?.monthly} 
-                                        icon={MessageSquare} 
-                                        type="orange" 
-                                    />
-                                    <StatCard 
-                                        title="Trial Students" 
-                                        value={branch.trials?.total} 
-                                        monthly={branch.trials?.monthly} 
-                                        icon={PlayCircle} 
-                                        type="grey" 
-                                    />
-                                    <StatCard 
-                                        title="Passout Students" 
-                                        value={branch.passouts?.total} 
-                                        monthly={branch.passouts?.monthly} 
-                                        icon={CheckCircle} 
-                                        type="green" 
-                                    />
-                                </div>
+          {loading ? (
+            <div className="loader">Analyzing followups...</div>
+          ) : (
+            <>
+              {/* TOP STATS */}
+              <div className="dashboard-grid">
+                <div className="crm-stat-card red">
+                  <div className="card-header">
+                    <div className="icon-box">
+                      <AlertCircle size={20} />
+                    </div>
+                    <span className="card-label">Today's Followups</span>
+                  </div>
+                  <div className="card-body">
+                    <h3>{data.stats.today || 0}</h3>
+                    <p>Needs immediate action</p>
+                  </div>
+                </div>
+                <div className="crm-stat-card blue">
+                  <div className="card-header">
+                    <div className="icon-box">
+                      <Clock size={20} />
+                    </div>
+                    <span className="card-label">Upcoming</span>
+                  </div>
+                  <div className="card-body">
+                    <h3>{data.stats.upcoming || 0}</h3>
+                    <p>Scheduled for future</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* FOLLOWUP LIST */}
+              <div className="data-display-card mt-30">
+                <div className="data-toolbar">
+                  <span className="branch-title">Active Followup Queue</span>
+                </div>
+                <div className="table-sticky-wrapper">
+                  <table className="modern-data-table">
+                    <thead>
+                      <tr>
+                        <th>CUSTOMER</th>
+                        <th>PHONE</th>
+                        <th>FOLLOWUP DATE</th>
+                        <th>LAST REMARK</th>
+                        <th>PRIORITY</th>
+                        <th className="text-center">ACTION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.followups.map((item) => (
+                        <tr key={item.id}>
+                          <td>
+                            <div className="user-profile-cell">
+                              <div className="avatar-letter">
+                                {item.customer_name.charAt(0)}
+                              </div>
+                              <span className="user-full-name">
+                                {item.customer_name}
+                              </span>
                             </div>
-                        ))
-                    )}
-                </main>
-            </div>
-        </div>
-    );
+                          </td>
+                          <td className="phone-num-text">{item.mobile}</td>
+                          <td>
+                            <span className="join-date-text">
+                              {formatDate(item.followup_date)}
+                            </span>
+                          </td>
+                          <td className="email-text-truncate">{item.remark}</td>
+                          <td>
+                            <span className={`status-pill ${item.status}`}>
+                              {item.status.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="text-center">
+                            <button
+                              className="btn-icon-round"
+                              onClick={() => navigate("/leads")}
+                            >
+                              <ArrowRight size={15} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )}
+        </main>
+      </div>
+    </div>
+  );
 };
 
-export default Dashboard;
+export default FollowupDashboard;

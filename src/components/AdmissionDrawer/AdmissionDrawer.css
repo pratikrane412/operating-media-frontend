@@ -1,3 +1,4 @@
+/* --- DRAWER BASE --- */
 .drawer-overlay {
   position: fixed;
   top: 0;
@@ -15,13 +16,20 @@
   right: 0;
   width: 500px;
   height: 100vh;
-  background: #f8fafc; /* Shaded side bar background */
+  background: #f8fafc; /* Shaded sidebar background */
   z-index: 2001;
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  animation: slideIn 0.3s ease-out;
 }
 
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* --- HEADER --- */
 .drawer-header {
   padding: 20px 25px;
   background: white;
@@ -31,6 +39,12 @@
   align-items: center;
 }
 
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .header-title h3 {
   font-size: 18px;
   font-weight: 700;
@@ -38,11 +52,25 @@
   margin: 0;
 }
 
+.close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 5px;
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  color: #64748b;
+}
+
+/* --- BODY & SECTIONS --- */
 .drawer-body {
   flex: 1;
   padding: 25px;
   overflow-y: auto;
-  padding-bottom: 110px;
+  padding-bottom: 110px; /* Space for sticky footer */
 }
 
 .drawer-section-label {
@@ -57,6 +85,11 @@
   gap: 8px;
 }
 
+.drawer-section-label:first-child {
+  margin-top: 0;
+}
+
+/* --- FORM ROWS & INPUTS --- */
 .drawer-form-row {
   display: grid;
   grid-template-columns: 140px 1fr;
@@ -78,6 +111,12 @@
   border-radius: 10px;
   height: 44px;
   overflow: hidden;
+  transition: 0.2s;
+}
+
+.modern-input-group:focus-within {
+  border-color: #003873;
+  box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.04);
 }
 
 .drawer-icon-box {
@@ -91,16 +130,76 @@
   border-right: 1px solid #e2e8f0;
 }
 
-.modern-input-group input {
+.modern-input-group input,
+.modern-input-group select {
   flex: 1;
   border: none;
   outline: none;
   padding: 0 12px;
   font-size: 14px;
+  color: #1e293b;
   background: transparent;
+  width: 100%;
 }
 
-/* FOOTER */
+/* --- INSTALLMENT DYNAMIC ROWS --- */
+.installment-row-container {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #eef1f6;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.inst-num-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.inst-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 10px;
+}
+
+.inst-inputs input,
+.inst-inputs select {
+  height: 36px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0 8px;
+  font-size: 13px;
+  color: #1e293b;
+  outline: none;
+}
+
+.inst-inputs input[readonly] {
+  color: #64748b;
+  cursor: default;
+}
+
+/* Status Colors */
+select.status-paid {
+  color: #10b981; /* Green */
+  font-weight: 700;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+select.status-unpaid {
+  color: #ef4444; /* Red */
+  font-weight: 700;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+/* --- FOOTER --- */
 .drawer-footer-sticky {
   position: absolute;
   bottom: 0;
@@ -120,58 +219,57 @@
   border: none;
   color: #94a3b8;
   font-weight: 700;
+  font-size: 14px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-cancel:hover {
+  color: #64748b;
 }
 
 .btn-submit-primary {
   flex: 1;
+  max-width: 320px;
   background: #003873;
   color: white;
   border: none;
   height: 48px;
   border-radius: 8px;
   font-weight: 700;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-}
-.drawer-container {
-  position: fixed;
-  top: 0; right: 0;
-  width: 500px; height: 100vh;
-  background: #f8fafc; /* Shaded background */
-  z-index: 2001;
-  display: flex; flex-direction: column;
+  transition: 0.2s;
 }
 
-.modern-input-group {
-  display: flex; align-items: center;
-  background: white; border: 1px solid #e2e8f0;
-  border-radius: 10px; height: 44px; overflow: hidden;
+.btn-submit-primary:hover {
+  background: #002d5c;
+  transform: translateY(-1px);
 }
 
-.drawer-icon-box {
-  width: 44px; height: 100%;
-  background: #f1f5f9; /* Icon box shading */
-  display: flex; align-items: center; justify-content: center;
-  color: #64748b; border-right: 1px solid #e2e8f0;
+.btn-submit-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
-.modern-input-group input, .modern-input-group select {
-  flex: 1; border: none; outline: none;
-  padding: 0 12px; font-size: 14px; background: transparent;
-  width: 100%;
-}
-
+/* Loader */
 .loader-container {
-  padding: 50px; text-align: center; color: #94a3b8; font-weight: 600;
+  padding: 50px;
+  text-align: center;
+  color: #94a3b8;
+  font-weight: 600;
+  font-style: italic;
 }
 
-/* Footer remains exactly like your screenshot */
-.drawer-footer-sticky {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 15px 25px; background: white; border-top: 1px solid #eef1f6;
-  display: flex; justify-content: space-between; align-items: center;
+/* Custom Scrollbar */
+.drawer-body::-webkit-scrollbar {
+  width: 5px;
+}
+.drawer-body::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
 }

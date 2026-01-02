@@ -20,6 +20,8 @@ import {
   MapPinned,
   Globe,
   Hash,
+  Banknote,
+  ListOrdered,
 } from "lucide-react";
 import "./AdmissionDrawer.css";
 
@@ -59,7 +61,41 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     branch: "",
     emergency_name: "",
     emergency_phone: "",
+    // Fee Fields
+    total_fees: 0,
+    registration_amount: 0,
+    no_of_installments: 0,
+    inst_1_amount: 0,
+    inst_1_date: "",
+    inst_1_status: "Unpaid",
+    inst_2_amount: 0,
+    inst_2_date: "",
+    inst_2_status: "Unpaid",
+    inst_3_amount: 0,
+    inst_3_date: "",
+    inst_3_status: "Unpaid",
+    inst_4_amount: 0,
+    inst_4_date: "",
+    inst_4_status: "Unpaid",
+    inst_5_amount: 0,
+    inst_5_date: "",
+    inst_5_status: "Unpaid",
+    inst_6_amount: 0,
+    inst_6_date: "",
+    inst_6_status: "Unpaid",
+    inst_7_amount: 0,
+    inst_7_date: "",
+    inst_7_status: "Unpaid",
+    inst_8_amount: 0,
+    inst_8_date: "",
+    inst_8_status: "Unpaid",
   });
+
+  const addMonths = (date, months) => {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + months);
+    return d.toISOString().split("T")[0];
+  };
 
   // FETCH DATA LOGIC
   useEffect(() => {
@@ -70,7 +106,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
           `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`
         )
         .then((res) => {
-          setFormData(res.data); // This populates the inputs
+          setFormData(res.data);
           setLoading(false);
         })
         .catch((err) => {
@@ -79,6 +115,36 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
         });
     }
   }, [isOpen, admissionId]);
+
+  // FEE CALCULATION LOGIC
+  useEffect(() => {
+    const total = parseFloat(formData.total_fees) || 0;
+    const reg = parseFloat(formData.registration_amount) || 0;
+    const count = parseInt(formData.no_of_installments) || 0;
+    const today = new Date().toISOString().split("T")[0];
+
+    if (count > 0) {
+      const remaining = total - reg;
+      const installmentVal = remaining > 0 ? (remaining / count).toFixed(2) : 0;
+
+      let updatedInstallments = {};
+      for (let i = 1; i <= 8; i++) {
+        if (i <= count) {
+          updatedInstallments[`inst_${i}_amount`] = installmentVal;
+          updatedInstallments[`inst_${i}_date`] = addMonths(today, i - 1);
+        } else {
+          updatedInstallments[`inst_${i}_amount`] = 0;
+          updatedInstallments[`inst_${i}_date`] = "";
+          updatedInstallments[`inst_${i}_status`] = "Unpaid";
+        }
+      }
+      setFormData((prev) => ({ ...prev, ...updatedInstallments }));
+    }
+  }, [
+    formData.total_fees,
+    formData.registration_amount,
+    formData.no_of_installments,
+  ]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -121,7 +187,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
             <div className="loader-container">Fetching data from server...</div>
           ) : (
             <>
-              {/* SECTION 1 */}
               <h4 className="drawer-section-label">
                 <User size={15} /> 1. Personal Information
               </h4>
@@ -158,7 +223,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                   placeholder="YYYY-MM-DD"
                 />
               </FormRow>
-
               <FormRow label="Gender" icon={User}>
                 <select
                   name="gender"
@@ -169,7 +233,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                   <option value="Female">Female</option>
                 </select>
               </FormRow>
-
               <FormRow label="Marital Status" icon={HeartPulse}>
                 <select
                   name="status"
@@ -181,7 +244,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 </select>
               </FormRow>
 
-              {/* SECTION 2 */}
               <h4 className="drawer-section-label">
                 <Smartphone size={15} /> 2. Contact Details
               </h4>
@@ -250,7 +312,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 />
               </FormRow>
 
-              {/* SECTION 3 */}
               <h4 className="drawer-section-label">
                 <Briefcase size={15} /> 3. Professional & Course Info
               </h4>
@@ -289,7 +350,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 />
               </FormRow>
 
-              {/* SECTION 4 */}
               <h4 className="drawer-section-label">
                 <ShieldAlert size={15} /> 4. Emergency Contact
               </h4>
@@ -309,6 +369,77 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                   onChange={handleChange}
                 />
               </FormRow>
+
+              {/* SECTION 5: FEE CONTROL */}
+              <h4 className="drawer-section-label">
+                <Banknote size={15} /> 5. Financial Information
+              </h4>
+              <FormRow label="Total Fees" icon={Banknote}>
+                <input
+                  type="number"
+                  name="total_fees"
+                  value={formData.total_fees || ""}
+                  onChange={handleChange}
+                />
+              </FormRow>
+              <FormRow label="Reg. Amount" icon={CheckCircle}>
+                <input
+                  type="number"
+                  name="registration_amount"
+                  value={formData.registration_amount || ""}
+                  onChange={handleChange}
+                />
+              </FormRow>
+              <FormRow label="Installments" icon={ListOrdered}>
+                <select
+                  name="no_of_installments"
+                  value={formData.no_of_installments || 0}
+                  onChange={handleChange}
+                >
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </FormRow>
+
+              {/* DYNAMIC INSTALLMENT ROWS */}
+              {Array.from({ length: formData.no_of_installments || 0 }).map(
+                (_, i) => {
+                  const num = i + 1;
+                  return (
+                    <div key={num} className="installment-row-container">
+                      <span className="inst-num-label">Inst. {num}</span>
+                      <div className="inst-inputs">
+                        <input
+                          type="number"
+                          value={formData[`inst_${num}_amount`] || 0}
+                          readOnly
+                        />
+                        <input
+                          type="date"
+                          value={formData[`inst_${num}_date`] || ""}
+                          readOnly
+                        />
+                        <select
+                          name={`inst_${num}_status`}
+                          value={formData[`inst_${num}_status`]}
+                          onChange={handleChange}
+                          className={
+                            formData[`inst_${num}_status`] === "Paid"
+                              ? "status-paid"
+                              : "status-unpaid"
+                          }
+                        >
+                          <option value="Unpaid">Unpaid</option>
+                          <option value="Paid">Paid</option>
+                        </select>
+                      </div>
+                    </div>
+                  );
+                }
+              )}
             </>
           )}
 

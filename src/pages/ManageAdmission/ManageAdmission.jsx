@@ -11,11 +11,14 @@ import {
   Trash2,
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageAdmission.css";
 
 const ManageAdmission = () => {
   const navigate = useNavigate();
+  const [selectedAdmissionId, setSelectedAdmissionId] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +58,28 @@ const ManageAdmission = () => {
     fetchAdmissions();
   }, [page, pageSize]);
 
+  const handleEditClick = (id) => {
+    setSelectedAdmissionId(id);
+    setIsDrawerOpen(true);
+    setActiveMenuId(null);
+  };
+
+  const handleDeleteAdmission = async (id) => {
+    if (
+      window.confirm("Are you sure you want to delete this admission record?")
+    ) {
+      try {
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/admissions/${id}/delete/`
+        );
+        setActiveMenuId(null);
+        fetchAdmissions();
+      } catch (err) {
+        alert("Failed to delete admission record.");
+      }
+    }
+  };
+
   const getPageNumbers = () => {
     const pages = [];
     let start = Math.max(1, page - 2);
@@ -73,22 +98,17 @@ const ManageAdmission = () => {
           <header className="page-header-flex">
             <div className="header-left">
               <div className="breadcrumb-nav">
-                <span
-                  onClick={() => navigate("/dashboard")}
-                  style={{ cursor: "pointer" }}
-                >
-                  Dashboards
-                </span>
-                <ChevronRight size={12} className="sep" />
-                <span className="current">Manage Admission</span>
+                <span onClick={() => navigate("/dashboard")}>Dashboards</span>
+                <ChevronRight size={12} className="breadcrumb-sep" />
+                <span className="current-page">Manage Admission</span>
               </div>
               <h2 className="page-title-bold">Admission Directory</h2>
             </div>
           </header>
 
-          <div className="data-card-white">
+          <div className="data-display-card">
             <div className="data-toolbar">
-              <div className="entries-box">
+              <div className="entries-select">
                 Show{" "}
                 <select
                   value={pageSize}
@@ -97,20 +117,20 @@ const ManageAdmission = () => {
                     setPage(1);
                   }}
                 >
+                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
-                  <option value="100">100</option>
                 </select>{" "}
                 entries
               </div>
-              <div className="search-input-wrapper">
+              <div className="search-input-box">
                 <Search size={16} />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyUp={(e) => e.key === "Enter" && fetchAdmissions()}
-                  placeholder="Search admissions..."
+                  placeholder="Search name or ID..."
                 />
               </div>
             </div>
@@ -119,64 +139,66 @@ const ManageAdmission = () => {
               <table className="modern-data-table">
                 <thead>
                   <tr>
-                    <th width="240">FULL NAME</th>
-                    <th width="150">PHONE</th>
-                    <th width="220">EMAIL</th>
-                    <th width="200">COURSE</th>
-                    <th width="120">BRANCH</th>
-                    <th width="100">EMPLOYED</th>
-                    <th className="text-right" width="120">
-                      ACTIONS
-                    </th>
+                    <th>CUSTOMER</th>
+                    <th>PHONE</th>
+                    <th>EMAIL</th>
+                    <th>COURSE</th>
+                    <th>BRANCH</th>
+                    <th>EMPLOYED</th>
+                    <th className="text-center">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="7" className="table-loader-text">
-                        Refreshing data...
+                      <td colSpan="7" className="table-loading-msg">
+                        Refreshing records...
                       </td>
                     </tr>
                   ) : (
                     admissions.map((item) => (
                       <tr key={item.id}>
-                        <td className="user-profile-cell">
-                          <div className="avatar-letter-box">
-                            {item.name ? item.name.charAt(0) : "?"}
+                        <td>
+                          <div className="user-profile-cell">
+                            <div className="avatar-letter">
+                              {item.name?.charAt(0) || "?"}
+                            </div>
+                            <span className="user-full-name">{item.name}</span>
                           </div>
-                          <span className="user-fullname">{item.name}</span>
                         </td>
-                        <td className="text-muted-sm">{item.phone}</td>
-                        <td className="text-muted-sm text-truncate">
-                          {item.email}
+                        <td className="phone-num-text">{item.phone}</td>
+                        <td className="email-text-truncate">{item.email}</td>
+                        <td>
+                          <span className="main-course-pill">
+                            {item.course}
+                          </span>
                         </td>
                         <td>
-                          <span className="pill-info-blue">{item.course}</span>
-                        </td>
-                        <td>
-                          <span className="pill-branch-gray">
+                          <span className="branch-label-text">
                             {item.branch}
                           </span>
                         </td>
                         <td>
                           <span
-                            className={`status-tag ${
+                            className={`status-pill ${
                               item.employed_status === "Yes"
                                 ? "active"
-                                : "inactive"
+                                : "disabled"
                             }`}
                           >
-                            {item.employed_status}
+                            {item.employed_status === "Yes"
+                              ? "Yes"
+                              : "No"}
                           </span>
                         </td>
-                        <td className="text-right">
-                          <div className="actions-cluster">
-                            <button className="btn-action-circle">
+                        <td>
+                          <div className="action-btn-row">
+                            <button className="btn-icon-round">
                               <Eye size={15} />
                             </button>
-                            <div className="menu-anchor">
+                            <div className="action-menu-container">
                               <button
-                                className={`btn-action-circle ${
+                                className={`btn-icon-round ${
                                   activeMenuId === item.id ? "active" : ""
                                 }`}
                                 onClick={() =>
@@ -189,14 +211,22 @@ const ManageAdmission = () => {
                               </button>
                               {activeMenuId === item.id && (
                                 <div
-                                  className="menu-dropdown-box"
+                                  className="action-dropdown-list"
                                   ref={menuRef}
                                 >
-                                  <button className="drop-btn">
-                                    <Edit3 size={13} /> Edit
+                                  <button
+                                    className="drop-item"
+                                    onClick={() => handleEditClick(item.id)}
+                                  >
+                                    <Edit3 size={14} /> Edit Request
                                   </button>
-                                  <button className="drop-btn delete">
-                                    <Trash2 size={13} /> Delete
+                                  <button
+                                    className="drop-item delete"
+                                    onClick={() =>
+                                      handleDeleteAdmission(item.id)
+                                    }
+                                  >
+                                    <Trash2 size={14} /> Delete Record
                                   </button>
                                 </div>
                               )}
@@ -210,13 +240,13 @@ const ManageAdmission = () => {
               </table>
             </div>
 
-            <div className="pagination-footer-clean">
-              <span className="summary-label">
+            <div className="pagination-footer">
+              <span className="footer-count">
                 Showing page {page} of {totalPages}
               </span>
-              <div className="pagination-nav-group">
+              <div className="pagination-nav">
                 <button
-                  className="nav-btn-box"
+                  className="nav-arrow-btn"
                   disabled={page === 1}
                   onClick={() => setPage(page - 1)}
                 >
@@ -225,14 +255,14 @@ const ManageAdmission = () => {
                 {getPageNumbers().map((n) => (
                   <button
                     key={n}
-                    className={`num-btn ${page === n ? "active" : ""}`}
+                    className={`nav-num-btn ${page === n ? "active" : ""}`}
                     onClick={() => setPage(n)}
                   >
                     {n}
                   </button>
                 ))}
                 <button
-                  className="nav-btn-box"
+                  className="nav-arrow-btn"
                   disabled={page === totalPages}
                   onClick={() => setPage(page + 1)}
                 >
@@ -243,6 +273,12 @@ const ManageAdmission = () => {
           </div>
         </main>
       </div>
+      <AdmissionDrawer
+        isOpen={isDrawerOpen}
+        admissionId={selectedAdmissionId}
+        onClose={() => setIsDrawerOpen(false)}
+        onUpdate={fetchAdmissions}
+      />
     </div>
   );
 };

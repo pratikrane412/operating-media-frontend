@@ -1,30 +1,45 @@
-/* --- LAYOUT & HEADER --- */
+/* --- CONTENT AREA SPACING --- */
 .content-area {
-  padding: 30px;
   margin-top: 70px;
+  padding: 30px;
   background-color: #f8fafc;
+  min-height: calc(100vh - 70px);
 }
+
+/* --- HEADER --- */
 .page-header-flex {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 25px;
+  margin-bottom: 32px;
 }
+
 .breadcrumb-nav {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
   margin-bottom: 6px;
+  font-weight: 500;
 }
-.breadcrumb-nav .sep {
+
+.breadcrumb-nav span {
+  cursor: pointer;
+  transition: 0.2s;
+}
+.breadcrumb-nav span:hover {
+  color: #003873;
+}
+.breadcrumb-sep {
   color: #cbd5e1;
 }
-.breadcrumb-nav .current {
+.breadcrumb-nav .current-page {
   color: #475569;
   font-weight: 600;
+  cursor: default;
 }
+
 .page-title-bold {
   font-size: 26px;
   font-weight: 800;
@@ -34,14 +49,16 @@
 }
 
 /* --- DATA CARD --- */
-.data-card-white {
+.data-display-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid #eef1f6;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   height: fit-content;
+  margin-bottom: 30px;
 }
+
 .data-toolbar {
   padding: 16px 24px;
   display: flex;
@@ -49,17 +66,22 @@
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
 }
-.entries-box {
+
+.entries-select {
   font-size: 13px;
   color: #64748b;
+  font-weight: 500;
 }
-.entries-box select {
+.entries-select select {
   padding: 4px 8px;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   margin: 0 8px;
+  outline: none;
+  transition: 0.2s;
 }
-.search-input-wrapper {
+
+.search-input-box {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -69,56 +91,65 @@
   border-radius: 8px;
   width: 300px;
 }
-.search-input-wrapper input {
+
+.search-input-box input {
   border: none;
   background: transparent;
   outline: none;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-/* --- TABLE ARCHITECTURE --- */
+/* --- TABLE --- */
 .table-sticky-wrapper {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 65vh;
+  max-height: 68vh;
   position: relative;
 }
+
 .modern-data-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  min-width: 1200px;
 }
+
 .modern-data-table thead th {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: #f8fafc;
-  padding: 14px 24px;
+  background-color: #f8fafc;
+  padding: 12px 16px;
   text-align: left;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   color: #94a3b8;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
   border-bottom: 1.5px solid #eef1f6;
   box-shadow: inset 0 -1px 0 #eef1f6;
-  white-space: nowrap;
 }
+
 .modern-data-table td {
-  padding: 16px 24px;
+  padding: 12px 16px;
   border-bottom: 1px solid #f8fafc;
-  font-size: 13.5px;
+  font-size: 13px;
   color: #1e293b;
   vertical-align: middle;
 }
 
-/* --- UI COMPONENTS --- */
 .user-profile-cell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
-.avatar-letter-box {
+.user-full-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.avatar-letter {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -128,63 +159,59 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 11px;
   flex-shrink: 0;
 }
-.user-fullname {
-  font-weight: 700;
-  color: #0f172a;
-  white-space: nowrap;
-}
 
-.pill-info-blue {
+.main-course-pill {
   background: #f1f5f9;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 3px 8px;
+  border-radius: 5px;
   font-size: 11px;
   font-weight: 700;
   color: #475569;
-  white-space: nowrap;
+  display: inline-block;
 }
-.pill-branch-gray {
-  font-size: 13px;
+
+.phone-num-text,
+.branch-label-text {
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 12px;
 }
-.text-muted-sm {
+
+.email-text-truncate {
   color: #64748b;
-  font-size: 13px;
-}
-.text-truncate {
-  max-width: 200px;
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 12px;
 }
 
-.status-tag {
-  padding: 4px 12px;
+.status-pill {
+  padding: 3px 10px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
 }
-.status-tag.active {
+.status-pill.active {
   background: #dcfce7;
   color: #166534;
 }
-.status-tag.inactive {
+.status-pill.disabled {
   background: #f1f5f9;
   color: #64748b;
 }
 
 /* --- ACTIONS --- */
-.actions-cluster {
+.action-btn-row {
   display: flex;
   gap: 8px;
-  justify-content: flex-end;
+  justify-content: center;
 }
-.btn-action-circle {
+.btn-icon-round {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -197,63 +224,55 @@
   justify-content: center;
   transition: 0.2s;
 }
-.btn-action-circle:hover {
+.btn-icon-round:hover,
+.btn-icon-round.active {
   color: #003873;
   border-color: #003873;
-  transform: translateY(-1px);
+  background-color: #f8fafc;
 }
-.menu-anchor {
+
+.action-menu-container {
   position: relative;
 }
-.menu-dropdown-box {
+.action-dropdown-list {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 130px;
   background: white;
+  width: 160px;
   border: 1px solid #eef1f6;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 5px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   z-index: 100;
+  padding: 6px;
   margin-top: 5px;
-  animation: dropdownFade 0.2s ease;
 }
-@keyframes dropdownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.drop-btn {
+
+.drop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  text-align: left;
-  padding: 8px 12px;
+  padding: 10px 12px;
   border: none;
   background: transparent;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #475569;
   cursor: pointer;
   border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  text-align: left;
 }
-.drop-btn:hover {
-  background: #f8fafc;
+.drop-item:hover {
+  background-color: #f8fafc;
   color: #003873;
 }
-.drop-btn.delete {
+.drop-item.delete {
   color: #ef4444;
 }
 
-/* --- PAGINATION --- */
-.pagination-footer-clean {
+/* --- FOOTER --- */
+.pagination-footer {
   padding: 16px 24px;
   display: flex;
   justify-content: space-between;
@@ -261,60 +280,57 @@
   border-top: 1px solid #eef1f6;
   background: #fff;
 }
-.pagination-nav-group {
+.footer-count {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.pagination-nav {
   display: flex;
+  gap: 6px;
   align-items: center;
-  gap: 5px;
 }
-.num-btn {
-  border: 1px solid #e2e8f0;
-  background: #fff;
-  min-width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 800;
-  color: #475569;
-  cursor: pointer;
-}
-.num-btn.active {
-  background: #003873;
-  color: #fff;
-  border-color: #003873;
-}
-.nav-btn-box {
+.nav-arrow-btn,
+.nav-num-btn {
   width: 32px;
   height: 32px;
   border: 1px solid #e2e8f0;
   background: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #64748b;
-  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 800;
+  font-size: 13px;
+}
+.nav-num-btn.active {
+  background: #003873;
+  color: white;
+  border-color: #003873;
+  box-shadow: 0 4px 10px rgba(0, 56, 115, 0.2);
+}
+
+.table-loading-msg {
+  padding: 60px;
+  text-align: center;
+  font-weight: 600;
+  color: #94a3b8;
+  font-style: italic;
 }
 
 @media (max-width: 768px) {
-    .batch-header, .course-header, .staff-header-flex {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .search-wrapper, .search-input-wrapper {
-        width: 100% !important;
-    }
-
-    .btn-add-new, .btn-primary-blue {
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* Important: Keeps the table from breaking the screen while allowing swipe */
-    .table-sticky-wrapper, .table-wrapper-scroll {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+  .page-header-flex,
+  .data-toolbar,
+  .pagination-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .search-input-box {
+    width: 100%;
+  }
 }

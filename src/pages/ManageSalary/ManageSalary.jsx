@@ -43,6 +43,19 @@ const ManageSalary = () => {
     fetchSalaryData();
   }, [user.branch_id]);
 
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "N/A") return dateStr;
+    
+    // Check if the date contains '-' (standard YYYY-MM-DD)
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    }
+    
+    return dateStr; // Return original if format doesn't match
+  };
+
   const filteredStaff = staffList.filter((s) =>
     s.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -119,7 +132,7 @@ const ManageSalary = () => {
                         </td>
                         <td>
                           <div className="info-row">
-                            <Calendar size={14} /> {s.joining_date}
+                            <Calendar size={14} /> {formatDate(s.joining_date)}
                           </div>
                         </td>
                         <td>

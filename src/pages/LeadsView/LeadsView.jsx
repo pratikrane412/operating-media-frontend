@@ -145,6 +145,19 @@ const LeadsView = () => {
     setIsDrawerOpen(true);
   };
 
+  const formatDate = (dateStr) => {
+  if (!dateStr || dateStr === "No Date" || dateStr === "N/A") return dateStr;
+  
+  // Checks if the date is in YYYY-MM-DD format
+  const parts = dateStr.split("-");
+  if (parts.length === 3) {
+    const [year, month, day] = parts;
+    return `${day}/${month}/${year}`;
+  }
+  
+  return dateStr; // Return original if it doesn't match expected pattern
+};
+
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
       <Sidebar isCollapsed={isCollapsed} />
@@ -326,7 +339,7 @@ const LeadsView = () => {
                         <td>
                           <div className="date-cell">
                             <span className="date-text">
-                              {lead.enquiry_date}
+                              {formatDate(lead.enquiry_date)}
                             </span>
                             <div className="source-row-stack">
                               <span className="source-label-prefix">
@@ -336,7 +349,7 @@ const LeadsView = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="followup-cell">{lead.followup_date}</td>
+                        <td className="followup-cell">{formatDate(lead.followup_date)}</td>
                         <td>{renderPills(lead.tags, "tag")}</td>
                         <td className="notes-cell">
                           {lead.notes || "No remarks updated"}

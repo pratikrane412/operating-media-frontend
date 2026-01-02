@@ -95,6 +95,19 @@ const ManageStudent = () => {
     setIsDrawerOpen(true);
   };
 
+  const formatDate = (dateStr) => {
+  if (!dateStr || dateStr === "N/A" || dateStr === "No Date") return dateStr;
+  
+  // Checks for YYYY-MM-DD format
+  const parts = dateStr.split("-");
+  if (parts.length === 3) {
+    const [year, month, day] = parts;
+    return `${day}/${month}/${year}`;
+  }
+  
+  return dateStr; // Fallback if format is different
+};
+
   const getPageNumbers = () => {
     const pages = [];
     let start = Math.max(1, page - 2);
@@ -210,7 +223,7 @@ const ManageStudent = () => {
                         <td>
                           <div className="date-source-stack">
                             <span className="join-date-text">
-                              {s.joining_date}
+                              {formatDate(s.joining_date)}
                             </span>
                             <span className="source-label-red">
                               Source:{" "}

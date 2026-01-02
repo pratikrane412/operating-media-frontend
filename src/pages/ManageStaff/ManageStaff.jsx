@@ -66,6 +66,19 @@ const ManageStaff = () => {
     fetchStaff();
   }, [user.branch_id]);
 
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "N/A") return dateStr;
+    
+    // Check if the date contains '-' (standard YYYY-MM-DD)
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    }
+    
+    return dateStr; // Return original if format doesn't match
+  };
+
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to remove this staff member?")) {
       try {
@@ -165,7 +178,7 @@ const ManageStaff = () => {
                         </td>
                         <td>
                           <div className="item-row">
-                            <Calendar size={14} /> {member.joining_date}
+                            <Calendar size={14} /> {formatDate(member.joining_date)}
                           </div>
                         </td>
                         <td>

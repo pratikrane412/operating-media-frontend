@@ -65,7 +65,7 @@ const Dashboard = () => {
           </header>
 
           {loading ? (
-            <div className="loader">Analyzing followups...</div>
+            <div className="loader">Analyzing Dashboard...</div>
           ) : (
             <>
               {/* TOP STATS */}

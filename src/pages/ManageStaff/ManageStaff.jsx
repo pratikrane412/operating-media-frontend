@@ -10,16 +10,19 @@ import {
   Briefcase,
   Calendar,
   ChevronRight,
-  PlusSquare, // Added for Assign Batch
+  PlusSquare,
+  ShieldCheck, // Added for Permissions
 } from "lucide-react";
 import StaffDrawer from "../../components/StaffDrawer/StaffDrawer";
 import StaffBatchDrawer from "../../components/StaffBatchDrawer/StaffBatchDrawer";
+import StaffPermDrawer from "../../components/StaffPermDrawer/StaffPermDrawer";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStaff.css";
 
 const ManageStaff = () => {
   const [isAssignDrawerOpen, setIsAssignDrawerOpen] = useState(false);
+  const [isPermDrawerOpen, setIsPermDrawerOpen] = useState(false); // New state
   const [currentStaff, setCurrentStaff] = useState({ id: null, name: "" });
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -41,10 +44,15 @@ const ManageStaff = () => {
     setIsDrawerOpen(true);
   };
 
-  // Logic for when the Assign button is clicked
   const handleAssignClick = (id, name) => {
     setCurrentStaff({ id, name });
     setIsAssignDrawerOpen(true);
+  };
+
+  // Logic for when Permissions button is clicked
+  const handlePermClick = (id, name) => {
+    setCurrentStaff({ id, name });
+    setIsPermDrawerOpen(true);
   };
 
   const fetchStaff = async () => {
@@ -68,21 +76,20 @@ const ManageStaff = () => {
 
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "N/A") return dateStr;
-    
-    // Check if the date contains '-' (standard YYYY-MM-DD)
     const parts = dateStr.split("-");
     if (parts.length === 3) {
       const [year, month, day] = parts;
       return `${day}/${month}/${year}`;
     }
-    
-    return dateStr; // Return original if format doesn't match
+    return dateStr;
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to remove this staff member?")) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/staff/delete/${id}/`);
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/staff/delete/${id}/`
+        );
         fetchStaff();
       } catch (err) {
         console.error("Delete error:", err);
@@ -178,7 +185,8 @@ const ManageStaff = () => {
                         </td>
                         <td>
                           <div className="item-row">
-                            <Calendar size={14} /> {formatDate(member.joining_date)}
+                            <Calendar size={14} />{" "}
+                            {formatDate(member.joining_date)}
                           </div>
                         </td>
                         <td>
@@ -194,9 +202,10 @@ const ManageStaff = () => {
                         </td>
                         <td>
                           <div className="action-row-group">
-                            {/* --- NEW ASSIGN BATCH BUTTON (BLUE) --- */}
+                            {/* --- ASSIGN BATCH --- */}
                             <button
                               className="btn-round-action assign-blue"
+                              title="Assign Batch"
                               onClick={() =>
                                 handleAssignClick(member.id, member.name)
                               }
@@ -204,7 +213,17 @@ const ManageStaff = () => {
                               <PlusSquare size={16} />
                             </button>
 
-                            {/* Existing Edit and Delete */}
+                            {/* --- NEW ASSIGN PERMISSIONS BUTTON (PURPLE) --- */}
+                            <button
+                              className="btn-round-action perm-purple"
+                              title="Assign Permissions"
+                              onClick={() =>
+                                handlePermClick(member.id, member.name)
+                              }
+                            >
+                              <ShieldCheck size={16} />
+                            </button>
+
                             <button
                               className="btn-round-action edit-green"
                               title="Edit"
@@ -242,6 +261,12 @@ const ManageStaff = () => {
       <StaffBatchDrawer
         isOpen={isAssignDrawerOpen}
         onClose={() => setIsAssignDrawerOpen(false)}
+        staffId={currentStaff.id}
+        staffName={currentStaff.name}
+      />
+      <StaffPermDrawer
+        isOpen={isPermDrawerOpen}
+        onClose={() => setIsPermDrawerOpen(false)}
         staffId={currentStaff.id}
         staffName={currentStaff.name}
       />

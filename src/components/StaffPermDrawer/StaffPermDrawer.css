@@ -1,0 +1,266 @@
+/* --- PERMISSION DRAWER CONTAINER --- */
+.perm-drawer-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 650px; /* Wider to accommodate 2-column grid */
+  height: 100vh;
+  background: #f8fafc; /* Shaded background for CRM depth */
+  z-index: 3001;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* --- HEADER SECTION --- */
+.perm-drawer-header {
+  background: white;
+  padding: 20px 30px;
+  border-bottom: 1px solid #eef1f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #003873;
+}
+
+.header-text h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.header-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.header-text p span {
+  color: #003873;
+  font-weight: 700;
+}
+
+/* --- WARNING BANNER --- */
+.perm-warning-banner {
+  background: #fff1f2;
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e11d48;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid #ffe4e6;
+}
+
+/* --- BODY SECTION --- */
+.perm-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 25px 30px;
+}
+
+/* Global Select/Clear Buttons */
+.global-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.all-perms-toggle {
+  flex: 1;
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+.all-perms-toggle:hover {
+  border-color: #003873;
+  color: #003873;
+  background: #f0f7ff;
+}
+
+.all-perms-toggle.clear:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fff1f2;
+}
+
+/* --- PERMISSION GROUPS --- */
+.perm-group-section {
+  margin-bottom: 30px;
+}
+
+.group-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.group-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #003873;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.group-toggle-btn {
+  background: #ebf0f5;
+  border: none;
+  color: #003873;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.group-toggle-btn:hover {
+  background: #003873;
+  color: white;
+}
+
+/* Permission Grid */
+.perm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Clean 2-column layout */
+  gap: 10px;
+}
+
+.perm-item {
+  background: white;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #eef1f6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.perm-item:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.perm-item.active {
+  border-color: #003873;
+  background: #f0f7ff;
+}
+
+/* Custom Checkbox Design */
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.perm-item.active .custom-checkbox {
+  background: #003873;
+  border-color: #003873;
+  color: white;
+}
+
+.perm-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: capitalize; /* Clean display for "add batch" -> "Add Batch" */
+}
+
+/* --- FOOTER SECTION --- */
+.perm-drawer-footer {
+  padding: 20px 30px;
+  background: white;
+  border-top: 1px solid #eef1f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-save-perms {
+  background: #003873;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 56, 115, 0.15);
+}
+
+.btn-save-perms:hover {
+  background: #002d5c;
+  transform: translateY(-2px);
+}
+
+.btn-cancel-text {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-cancel-text:hover {
+  color: #475569;
+}
+
+/* Custom Scrollbar */
+.perm-drawer-body::-webkit-scrollbar {
+  width: 5px;
+}
+.perm-drawer-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.perm-drawer-body::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}

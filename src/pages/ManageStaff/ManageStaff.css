@@ -196,6 +196,24 @@
   color: #94a3b8;
   font-weight: 600;
 }
+
+/* ... Keep all existing CSS ... */
+
+/* Purple Highlight for Permissions */
+.btn-round-action.perm-purple:hover {
+  color: #7c3aed; /* Modern Purple */
+  border-color: #7c3aed;
+  background-color: #f5f3ff;
+  transform: translateY(-2px);
+}
+
+/* Ensure tooltips or specific spacing if needed */
+.action-row-group {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 @media (max-width: 768px) {
     .batch-header, .course-header, .staff-header-flex {
         flex-direction: column;

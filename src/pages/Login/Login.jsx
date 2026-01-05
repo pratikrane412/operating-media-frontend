@@ -21,19 +21,26 @@ const Login = () => {
     }, []);
 
     const handleLogin = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-            const res = await axios.post('https://operating-media-backend.onrender.com/api/login/', { email, password });
-            if (rememberMe) localStorage.setItem('rememberedEmail', email);
-            else localStorage.removeItem('rememberedEmail');
+    e.preventDefault();
+    setError('');
+    try {
+        // This hits the Django view we just wrote
+        const res = await axios.post('https://operating-media-backend.onrender.com/api/login/', { 
+            email, 
+            password 
+        });
+        
+        if (rememberMe) localStorage.setItem('rememberedEmail', email);
+        else localStorage.removeItem('rememberedEmail');
 
-            localStorage.setItem('admin', JSON.stringify(res.data.admin));
-            navigate('/dashboard');
-        } catch (err) {
-            setError('Invalid email or password');
-        }
-    };
+        // Stores name, email, role, and branch_id
+        localStorage.setItem('admin', JSON.stringify(res.data.admin));
+        navigate('/dashboard');
+    } catch (err) {
+        // Shows the error message from Django (Invalid password, user not found, etc)
+        setError(err.response?.data?.error || 'Login failed');
+    }
+};
 
     return (
         <div className="login-page-wrapper">

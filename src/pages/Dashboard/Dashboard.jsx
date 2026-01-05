@@ -159,7 +159,7 @@ const Dashboard = () => {
                             <td className="text-center">
                               <button
                                 className="btn-icon-round"
-                                onClick={() => navigate("/leads")}
+                                onClick={() => navigate("/leads-view")}
                               >
                                 <ArrowRight size={15} />
                               </button>

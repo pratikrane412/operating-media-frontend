@@ -126,40 +126,46 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.followups.map((item) => (
-                        <tr key={item.id}>
-                          <td>
-                            <div className="user-profile-cell">
-                              <div className="avatar-letter">
-                                {item.customer_name.charAt(0)}
+                      {data.followups
+                        .filter(
+                          (f) => f.status === "today" || f.status === "upcoming"
+                        ) // ADD THIS LINE
+                        .map((item) => (
+                          <tr key={item.id}>
+                            <td>
+                              <div className="user-profile-cell">
+                                <div className="avatar-letter">
+                                  {item.customer_name.charAt(0)}
+                                </div>
+                                <span className="user-full-name">
+                                  {item.customer_name}
+                                </span>
                               </div>
-                              <span className="user-full-name">
-                                {item.customer_name}
+                            </td>
+                            <td className="phone-num-text">{item.mobile}</td>
+                            <td>
+                              <span className="join-date-text">
+                                {formatDate(item.followup_date)}
                               </span>
-                            </div>
-                          </td>
-                          <td className="phone-num-text">{item.mobile}</td>
-                          <td>
-                            <span className="join-date-text">
-                              {formatDate(item.followup_date)}
-                            </span>
-                          </td>
-                          <td className="email-text-truncate">{item.remark}</td>
-                          <td>
-                            <span className={`status-pill ${item.status}`}>
-                              {item.status.toUpperCase()}
-                            </span>
-                          </td>
-                          <td className="text-center">
-                            <button
-                              className="btn-icon-round"
-                              onClick={() => navigate("/leads")}
-                            >
-                              <ArrowRight size={15} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="email-text-truncate">
+                              {item.remark}
+                            </td>
+                            <td>
+                              <span className={`status-pill ${item.status}`}>
+                                {item.status.toUpperCase()}
+                              </span>
+                            </td>
+                            <td className="text-center">
+                              <button
+                                className="btn-icon-round"
+                                onClick={() => navigate("/leads")}
+                              >
+                                <ArrowRight size={15} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>

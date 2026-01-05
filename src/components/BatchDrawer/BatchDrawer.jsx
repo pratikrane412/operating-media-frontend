@@ -12,6 +12,8 @@ import {
   Check,
   ChevronDown,
   Search as SearchIcon,
+  UserPlus,
+  UserMinus,
 } from "lucide-react";
 import "./BatchDrawer.css";
 
@@ -32,7 +34,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [studentsList, setStudentsList] = useState([]);
   const [isDropOpen, setIsDropOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // --- NEW SEARCH STATE ---
+  const [searchTerm, setSearchTerm] = useState("");
   const dropRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -47,7 +49,15 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
 
   useEffect(() => {
     if (isOpen) {
-      setSearchTerm(""); // Reset search on open
+      setSearchTerm("");
+      // Fetch All Students
+      axios
+        .get(
+          `https://operating-media-backend.onrender.com/api/admissions/manage/`
+        )
+        .then((res) => setStudentsList(res.data.admissions || []))
+        .catch((err) => console.error("Error fetching students", err));
+
       if (batchId) {
         axios
           .get(
@@ -66,13 +76,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
           selected_student_ids: [],
         });
       }
-
-      axios
-        .get(
-          `https://operating-media-backend.onrender.com/api/admissions/manage/`
-        )
-        .then((res) => setStudentsList(res.data.admissions || []))
-        .catch((err) => console.error("Error fetching students", err));
     }
   }, [isOpen, batchId, user.branch_id]);
 
@@ -85,7 +88,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // --- FILTER LOGIC ---
   const filteredStudents = studentsList.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -97,6 +99,17 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
         : [...prev.selected_student_ids, id];
       return { ...prev, selected_student_ids: ids };
     });
+  };
+
+  // Helper to Select All/Deselect All filtered students
+  const handleSelectAll = (select) => {
+    const filteredIds = filteredStudents.map((s) => s.id);
+    setFormData((prev) => ({
+      ...prev,
+      selected_student_ids: select
+        ? [...new Set([...prev.selected_student_ids, ...filteredIds])]
+        : prev.selected_student_ids.filter((id) => !filteredIds.includes(id)),
+    }));
   };
 
   const handleChange = (e) =>
@@ -149,7 +162,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                 type="text"
                 name="name"
                 value={formData.name}
-                placeholder="e.g. Weekend Master"
                 required
                 onChange={handleChange}
               />
@@ -170,7 +182,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                   <div className="selected-placeholder">
                     {formData.selected_student_ids.length > 0
                       ? `${formData.selected_student_ids.length} Students Selected`
-                      : "Choose Students..."}
+                      : "Search & Select Students..."}
                   </div>
                   <ChevronDown
                     size={14}
@@ -180,17 +192,32 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
 
                 {isDropOpen && (
                   <div className="multi-dropdown-list">
-                    {/* --- SEARCH BOX INSIDE DROPDOWN --- */}
                     <div className="dropdown-search-container">
                       <SearchIcon size={14} className="inner-search-icon" />
                       <input
                         type="text"
                         className="inner-search-input"
-                        placeholder="Search student..."
+                        placeholder="Type name to search..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        onClick={(e) => e.stopPropagation()} // Prevent closing dropdown on click
+                        onClick={(e) => e.stopPropagation()}
                       />
+                    </div>
+
+                    {/* Select All Buttons */}
+                    <div className="select-actions-row">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectAll(true)}
+                      >
+                        <UserPlus size={12} /> Select Filtered
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSelectAll(false)}
+                      >
+                        <UserMinus size={12} /> Clear Filtered
+                      </button>
                     </div>
 
                     <div className="options-scroll-area">
@@ -210,6 +237,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                                 student.id
                               ) && <Check size={12} />}
                             </div>
+                            {/* FIX: Ensure this is {student.name} and not a hardcoded index */}
                             <span>{student.name}</span>
                           </div>
                         ))
@@ -243,15 +271,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
               />
             </FormRow>
 
-            <FormRow label="End Date" icon={Calendar}>
-              <input
-                type="date"
-                name="end_date"
-                value={formData.end_date}
-                onChange={handleChange}
-              />
-            </FormRow>
-
             <FormRow label="Status" icon={CheckCircle}>
               <select
                 name="status"
@@ -262,19 +281,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                 <option value={1}>Disabled</option>
               </select>
             </FormRow>
-
-            {!user.branch_id && (
-              <FormRow label="Branch" icon={Building2}>
-                <select
-                  name="branch_id"
-                  value={formData.branch_id}
-                  onChange={handleChange}
-                >
-                  <option value={1}>Andheri</option>
-                  <option value={2}>Borivali</option>
-                </select>
-              </FormRow>
-            )}
           </div>
 
           <div className="drawer-footer">
@@ -282,12 +288,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
               Cancel
             </button>
             <button type="submit" className="btn-save" disabled={isSubmitting}>
-              <Send size={16} />{" "}
-              {isSubmitting
-                ? "Saving..."
-                : batchId
-                ? "Update Batch"
-                : "Create Batch"}
+              <Send size={16} /> Submit Batch
             </button>
           </div>
         </form>

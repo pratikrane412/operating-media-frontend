@@ -368,3 +368,86 @@
   border-color: #10b981;
   box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);
 }
+/* --- FEES REMINDER SPECIFIC STYLES --- */
+.mt-40 { margin-top: 40px; }
+
+.fee-reminder-card {
+    border-left: 4px solid #f97316; /* Subtle orange indicator for payments */
+}
+
+.fee-toolbar {
+    background: #fffcfb;
+    display: flex;
+    align-items: center;
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title-icon-blue { color: #003873; }
+
+.fee-avatar {
+    background: #fff7ed !important;
+    color: #f97316 !important;
+}
+
+.course-pill-lite {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #eef1f6;
+}
+
+.inst-text {
+    font-size: 12px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.due-date-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.due-date-text svg { color: #94a3b8; }
+
+.fee-amount-bold {
+    font-weight: 800;
+    color: #003873;
+    font-size: 14px;
+}
+
+/* Priority Statuses */
+.status-pill.due-soon {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+}
+
+.status-pill.overdue {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.fee-btn:hover {
+    background: #003873 !important;
+    color: white !important;
+}

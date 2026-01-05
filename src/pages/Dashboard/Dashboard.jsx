@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import { Banknote, IndianRupee } from "lucide-react"; // Add these imports
+import { HandCoins, CalendarClock, AlertTriangle } from "lucide-react";
 import {
   Calendar,
   Clock,
@@ -166,6 +167,81 @@ const Dashboard = () => {
                             </td>
                           </tr>
                         ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="data-display-card mt-40 fee-reminder-card">
+                <div className="data-toolbar fee-toolbar">
+                  <div className="toolbar-left">
+                    <HandCoins size={18} className="title-icon-blue" />
+                    <span className="branch-title">Fees Payment Reminders</span>
+                  </div>
+                </div>
+                <div className="table-sticky-wrapper">
+                  <table className="modern-data-table">
+                    <thead>
+                      <tr>
+                        <th>STUDENT</th>
+                        <th>COURSE</th>
+                        <th>INSTALLMENT</th>
+                        <th>DUE DATE</th>
+                        <th>AMOUNT</th>
+                        <th>STATUS</th>
+                        <th className="text-center">ACTION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.reminders?.length === 0 ? (
+                        <tr>
+                          <td colSpan="7" className="loader">
+                            No pending fees for this period.
+                          </td>
+                        </tr>
+                      ) : (
+                        data.reminders?.map((fee, index) => (
+                          <tr key={`${fee.id}-${index}`}>
+                            <td>
+                              <div className="user-profile-cell">
+                                <div className="avatar-letter fee-avatar">
+                                  {fee.customer_name.charAt(0)}
+                                </div>
+                                <span className="user-full-name">
+                                  {fee.customer_name}
+                                </span>
+                              </div>
+                            </td>
+                            <td>
+                              <span className="course-pill-lite">
+                                {fee.course}
+                              </span>
+                            </td>
+                            <td className="inst-text">
+                              Installment {fee.installment_no}
+                            </td>
+                            <td className="due-date-text">
+                              <CalendarClock size={14} />{" "}
+                              {formatDate(fee.due_date)}
+                            </td>
+                            <td className="fee-amount-bold">₹{fee.amount}</td>
+                            <td>
+                              <span className={`status-pill ${fee.priority}`}>
+                                {fee.priority === "overdue"
+                                  ? "OVERDUE"
+                                  : "DUE SOON"}
+                              </span>
+                            </td>
+                            <td className="text-center">
+                              <button
+                                className="btn-icon-round fee-btn"
+                                onClick={() => navigate("/manage-admission")}
+                              >
+                                <ArrowRight size={15} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

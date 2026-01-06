@@ -4,13 +4,26 @@ export const hasPermission = (requiredPerm) => {
 
   const user = JSON.parse(adminData);
 
-  // 1. Super Admin bypass (from the 'admin' table)
-  if (user.role === "super_admin") return true;
+  // 1. THE SUPER ADMIN BYPASS
+  // If the user email is exactly the super admin email, or the role is super_admin,
+  // they pass every check automatically.
+  if (user.email === "admin@ims247.com" || user.role === "super_admin") {
+    return true;
+  }
 
-  // 2. Staff check (from the 'users' table 'perm' column)
-  // We split the string "add batch,view student" into an array
-  const userPerms = user.role_perms ? user.role_perms.toLowerCase().split(",").map(p => p.trim()) : [];
+  // 2. STAFF RESTRICTED ACCESS
+  // If not the super admin, check the permission string from the 'users' table
+  if (!user.role_perms) return false;
 
-  // Return true if the required permission is in their list
+  const userPerms = user.role_perms
+    .toLowerCase()
+    .split(",")
+    .map((p) => p.trim())
+    .filter((p) => p !== "");
+
+  // Special case: check for a global 'all' keyword in staff perms if applicable
+  if (userPerms.includes("all")) return true;
+
+  // Final check: Is the specific required permission in the user's list?
   return userPerms.includes(requiredPerm.toLowerCase());
 };

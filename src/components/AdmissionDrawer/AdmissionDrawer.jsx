@@ -24,6 +24,7 @@ import {
   ListOrdered,
 } from "lucide-react";
 import "./AdmissionDrawer.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const FormRow = ({ label, icon: Icon, children }) => (
   <div className="drawer-form-row">
@@ -61,7 +62,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     branch: "",
     emergency_name: "",
     emergency_phone: "",
-    // Fee Fields
     total_fees: 0,
     registration_amount: 0,
     no_of_installments: 0,
@@ -97,7 +97,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     return d.toISOString().split("T")[0];
   };
 
-  // FETCH DATA LOGIC
   useEffect(() => {
     if (isOpen && admissionId) {
       setLoading(true);
@@ -116,7 +115,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     }
   }, [isOpen, admissionId]);
 
-  // FEE CALCULATION LOGIC
   useEffect(() => {
     const total = parseFloat(formData.total_fees) || 0;
     const reg = parseFloat(formData.registration_amount) || 0;
@@ -187,6 +185,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
             <div className="loader-container">Fetching data from server...</div>
           ) : (
             <>
+              {/* Sections 1 to 4 */}
               <h4 className="drawer-section-label">
                 <User size={15} /> 1. Personal Information
               </h4>
@@ -404,7 +403,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 </select>
               </FormRow>
 
-              {/* DYNAMIC INSTALLMENT ROWS */}
               {Array.from({ length: formData.no_of_installments || 0 }).map(
                 (_, i) => {
                   const num = i + 1;
@@ -412,21 +410,18 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                     <div key={num} className="installment-row-container">
                       <span className="inst-num-label">Installment {num}</span>
                       <div className="inst-inputs">
-                        {/* Editable Amount */}
                         <input
                           type="number"
                           name={`inst_${num}_amount`}
                           value={formData[`inst_${num}_amount`] || 0}
                           onChange={handleChange}
                         />
-                        {/* Editable Date */}
                         <input
                           type="date"
                           name={`inst_${num}_date`}
                           value={formData[`inst_${num}_date`] || ""}
                           onChange={handleChange}
                         />
-                        {/* Status Dropdown */}
                         <select
                           name={`inst_${num}_status`}
                           value={formData[`inst_${num}_status`]}
@@ -452,14 +447,27 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
-            <button
-              type="submit"
-              className="btn-submit-primary"
-              disabled={isSubmitting}
-            >
-              <Send size={18} />{" "}
-              {isSubmitting ? "Updating..." : "Update Admission"}
-            </button>
+            {/* PERMISSION CHECK: UPDATE ADMISSION */}
+            {hasPermission("make admission") ? (
+              <button
+                type="submit"
+                className="btn-submit-primary"
+                disabled={isSubmitting}
+              >
+                <Send size={18} />{" "}
+                {isSubmitting ? "Updating..." : "Update Admission"}
+              </button>
+            ) : (
+              <span
+                style={{
+                  fontSize: "11px",
+                  fontWeight: "800",
+                  color: "#ef4444",
+                }}
+              >
+                READ ONLY MODE
+              </span>
+            )}
           </div>
         </form>
       </div>

@@ -15,6 +15,7 @@ import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageAdmission.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const ManageAdmission = () => {
   const navigate = useNavigate();
@@ -198,6 +199,7 @@ const ManageAdmission = () => {
                         </td>
                         <td>
                           <div className="action-btn-row">
+                            {/* View button is visible to anyone who can see this page */}
                             <button
                               className="btn-icon-round"
                               onClick={() => handleViewClick(item.id)}
@@ -222,20 +224,27 @@ const ManageAdmission = () => {
                                   className="action-dropdown-list"
                                   ref={menuRef}
                                 >
-                                  <button
-                                    className="drop-item"
-                                    onClick={() => handleEditClick(item.id)}
-                                  >
-                                    <Edit3 size={14} /> Edit Request
-                                  </button>
-                                  <button
-                                    className="drop-item delete"
-                                    onClick={() =>
-                                      handleDeleteAdmission(item.id)
-                                    }
-                                  >
-                                    <Trash2 size={14} /> Delete Record
-                                  </button>
+                                  {/* PERMISSION CHECK: EDIT (make admission) */}
+                                  {hasPermission("make admission") && (
+                                    <button
+                                      className="drop-item"
+                                      onClick={() => handleEditClick(item.id)}
+                                    >
+                                      <Edit3 size={14} /> Edit Request
+                                    </button>
+                                  )}
+
+                                  {/* PERMISSION CHECK: DELETE (Assuming delete admission or same as make) */}
+                                  {hasPermission("make admission") && (
+                                    <button
+                                      className="drop-item delete"
+                                      onClick={() =>
+                                        handleDeleteAdmission(item.id)
+                                      }
+                                    >
+                                      <Trash2 size={14} /> Delete Record
+                                    </button>
+                                  )}
                                 </div>
                               )}
                             </div>

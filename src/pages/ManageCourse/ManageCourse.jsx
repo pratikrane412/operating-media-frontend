@@ -14,6 +14,7 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import CourseDrawer from "../../components/CourseDrawer/CourseDrawer";
 import "./ManageCourse.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const ManageCourse = () => {
   const [selectedCourseId, setSelectedCourseId] = useState(null);
@@ -24,27 +25,6 @@ const ManageCourse = () => {
   const [search, setSearch] = useState("");
 
   const navigate = useNavigate();
-
-  // --- DATE FORMATTING HELPER (Consistent with other pages) ---
-  const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "N/A" || dateStr === "No Date") return dateStr;
-
-    // Checks if the date is in YYYY-MM-DD format
-    const parts = dateStr.split("-");
-    if (parts.length === 3) {
-      const [year, month, day] = parts;
-      return `${day}/${month}/${year}`;
-    }
-
-    // Support for ISO strings (e.g. 2024-05-15T10:30:00Z)
-    if (dateStr.includes("T")) {
-      const [datePart] = dateStr.split("T");
-      const [y, m, d] = datePart.split("-");
-      return `${d}/${m}/${y}`;
-    }
-
-    return dateStr;
-  };
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -75,21 +55,14 @@ const ManageCourse = () => {
   };
 
   const handleDeleteCourse = async (id) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this course? This will remove all records related to it."
-      )
-    ) {
+    if (window.confirm("Are you sure you want to delete this course?")) {
       try {
         await axios.delete(
           `https://operating-media-backend.onrender.com/api/courses/${id}/delete/`
         );
         fetchCourses();
       } catch (err) {
-        console.error("Delete error:", err);
-        alert(
-          "Failed to delete course. It might be linked to existing students."
-        );
+        alert("Failed to delete course.");
       }
     }
   };
@@ -118,9 +91,13 @@ const ManageCourse = () => {
               </div>
               <h2 className="page-title">Course Directory</h2>
             </div>
-            <button className="btn-add-new" onClick={handleAddNewClick}>
-              <Plus size={18} /> ADD NEW COURSE
-            </button>
+
+            {/* PERMISSION CHECK: ADD COURSE */}
+            {hasPermission("add course") && (
+              <button className="btn-add-new" onClick={handleAddNewClick}>
+                <Plus size={18} /> ADD NEW COURSE
+              </button>
+            )}
           </header>
 
           <div className="course-card">
@@ -184,20 +161,27 @@ const ManageCourse = () => {
                         </td>
                         <td className="text-right">
                           <div className="action-btns-group">
-                            <button
-                              className="btn-action edit"
-                              title="Edit Course"
-                              onClick={() => handleEditClick(course.id)}
-                            >
-                              <Edit3 size={16} />
-                            </button>
-                            <button
-                              className="btn-action delete"
-                              title="Delete Course"
-                              onClick={() => handleDeleteCourse(course.id)}
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {/* PERMISSION CHECK: EDIT COURSE */}
+                            {hasPermission("edit course") && (
+                              <button
+                                className="btn-action edit"
+                                title="Edit Course"
+                                onClick={() => handleEditClick(course.id)}
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                            )}
+
+                            {/* PERMISSION CHECK: DELETE COURSE */}
+                            {hasPermission("delete course") && (
+                              <button
+                                className="btn-action delete"
+                                title="Delete Course"
+                                onClick={() => handleDeleteCourse(course.id)}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

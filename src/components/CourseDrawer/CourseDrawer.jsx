@@ -9,8 +9,8 @@ import {
   Send,
 } from "lucide-react";
 import "./CourseDrawer.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
-// Shaded Row Helper (Matches Duralux style)
 const FormRow = ({ label, icon: Icon, children }) => (
   <div className="drawer-form-row">
     <label>{label}:</label>
@@ -32,16 +32,15 @@ const CourseDrawer = ({ isOpen, onClose, onUpdate, courseId }) => {
     status: 0,
   });
 
-  // Detect mode: Edit or Create
   useEffect(() => {
     if (isOpen && courseId) {
-      // Edit Mode: Fetch existing data
       axios
-        .get(`https://operating-media-backend.onrender.com/api/courses/${courseId}/`)
+        .get(
+          `https://operating-media-backend.onrender.com/api/courses/${courseId}/`
+        )
         .then((res) => setFormData(res.data))
         .catch((err) => console.error("Error fetching course", err));
     } else {
-      // Create Mode: Reset form
       setFormData({ name: "", fee: "", duration: "", status: 0 });
     }
   }, [isOpen, courseId]);
@@ -54,25 +53,29 @@ const CourseDrawer = ({ isOpen, onClose, onUpdate, courseId }) => {
     setIsSubmitting(true);
     try {
       if (courseId) {
-        // UPDATE
         await axios.put(
           `https://operating-media-backend.onrender.com/api/courses/${courseId}/`,
           formData
         );
       } else {
-        // CREATE
-        await axios.post("https://operating-media-backend.onrender.com/api/courses/manage/", formData);
+        await axios.post(
+          "https://operating-media-backend.onrender.com/api/courses/manage/",
+          formData
+        );
       }
-      onUpdate(); // Refresh table
-      onClose(); // Close drawer
+      onUpdate();
+      onClose();
     } catch (err) {
-      alert(courseId ? "Failed to update course" : "Failed to create course");
+      alert("Action failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   if (!isOpen) return null;
+
+  // Determine required permission based on mode
+  const requiredPermission = courseId ? "edit course" : "add course";
 
   return (
     <>
@@ -139,14 +142,32 @@ const CourseDrawer = ({ isOpen, onClose, onUpdate, courseId }) => {
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="btn-save" disabled={isSubmitting}>
-              <Send size={16} />
-              {isSubmitting
-                ? "Processing..."
-                : courseId
-                ? "Update Course"
-                : "Create Course"}
-            </button>
+
+            {/* PERMISSION CHECKED SUBMIT BUTTON */}
+            {hasPermission(requiredPermission) ? (
+              <button
+                type="submit"
+                className="btn-save"
+                disabled={isSubmitting}
+              >
+                <Send size={16} />
+                {isSubmitting
+                  ? "Processing..."
+                  : courseId
+                  ? "Update Course"
+                  : "Create Course"}
+              </button>
+            ) : (
+              <span
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "700",
+                  color: "#ef4444",
+                }}
+              >
+                READ ONLY MODE
+              </span>
+            )}
           </div>
         </form>
       </div>

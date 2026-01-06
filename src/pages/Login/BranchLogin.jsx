@@ -93,7 +93,7 @@ const BranchLogin = () => {
                     <button type="submit" className="login-submit-btn">Login to Branch</button>
 
                     <div className="login-footer-link">
-                        <span onClick={() => navigate('/admin')}>Back to Admin Login</span>
+                        <span onClick={() => navigate('/')}>Back to Admin Login</span>
                     </div>
                 </form>
             </div>

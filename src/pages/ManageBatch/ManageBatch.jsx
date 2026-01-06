@@ -9,12 +9,13 @@ import {
   Users,
   Clock,
   ChevronRight,
-  Calendar, // Added icon for date display
+  Calendar,
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import BatchDrawer from "../../components/BatchDrawer/BatchDrawer";
 import "./ManageBatch.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const ManageBatch = () => {
   const [selectedBatchId, setSelectedBatchId] = useState(null);
@@ -27,11 +28,8 @@ const ManageBatch = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
-  // --- DATE FORMATTING HELPER ---
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "N/A" || dateStr === "No Date") return dateStr;
-
-    // Checks if format is YYYY-MM-DD
     const parts = dateStr.split("-");
     if (parts.length === 3) {
       const [year, month, day] = parts;
@@ -101,15 +99,19 @@ const ManageBatch = () => {
               </div>
               <h2 className="page-title">Batch Directory</h2>
             </div>
-            <button
-              className="btn-add-new"
-              onClick={() => {
-                setSelectedBatchId(null);
-                setIsDrawerOpen(true);
-              }}
-            >
-              <Plus size={18} /> ADD NEW BATCH
-            </button>
+
+            {/* PERMISSION CHECK: ADD BATCH */}
+            {hasPermission("add batch") && (
+              <button
+                className="btn-add-new"
+                onClick={() => {
+                  setSelectedBatchId(null);
+                  setIsDrawerOpen(true);
+                }}
+              >
+                <Plus size={18} /> ADD NEW BATCH
+              </button>
+            )}
           </header>
 
           <div className="batch-card">
@@ -150,8 +152,6 @@ const ManageBatch = () => {
                         <td>
                           <div className="batch-primary">
                             <span className="batch-name">{batch.name}</span>
-                            {/* Displaying Formatted Starting Date */}
-                            
                           </div>
                         </td>
                         <td>
@@ -181,18 +181,25 @@ const ManageBatch = () => {
                         </td>
                         <td className="text-right">
                           <div className="action-btns-group">
-                            <button
-                              className="btn-action edit"
-                              onClick={() => handleEditClick(batch.id)}
-                            >
-                              <Edit3 size={16} />
-                            </button>
-                            <button
-                              className="btn-action delete"
-                              onClick={() => handleDeleteBatch(batch.id)}
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {/* PERMISSION CHECK: EDIT BATCH */}
+                            {hasPermission("edit batch") && (
+                              <button
+                                className="btn-action edit"
+                                onClick={() => handleEditClick(batch.id)}
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                            )}
+
+                            {/* PERMISSION CHECK: DELETE BATCH */}
+                            {hasPermission("delete batch") && (
+                              <button
+                                className="btn-action delete"
+                                onClick={() => handleDeleteBatch(batch.id)}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

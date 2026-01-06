@@ -12,8 +12,8 @@ import {
   Users,
 } from "lucide-react";
 import "./StaffDrawer.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
-// Shaded Row Helper (Moved outside to fix the typing focus issue)
 const FormRow = ({ label, icon: Icon, children }) => (
   <div className="drawer-form-row">
     <label>{label}:</label>
@@ -33,19 +33,20 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
     name: "",
     phone: "",
     email: "",
-    joining_date: new Date().toISOString().split("T")[0],
     job: "",
     type: 1,
     status: 0,
+    joining_date: new Date().toISOString().split("T")[0],
     branch_id: user.branch_id || 1,
   });
 
   useEffect(() => {
     if (isOpen && staffId) {
       axios
-        .get(`https://operating-media-backend.onrender.com/api/staff/${staffId}/`)
-        .then((res) => setFormData(res.data))
-        .catch((err) => console.error(err));
+        .get(
+          `https://operating-media-backend.onrender.com/api/staff/${staffId}/`
+        )
+        .then((res) => setFormData(res.data));
     } else if (isOpen) {
       setFormData({
         name: "",
@@ -73,7 +74,10 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
           formData
         );
       } else {
-        await axios.post("https://operating-media-backend.onrender.com/api/staff/manage/", formData);
+        await axios.post(
+          "https://operating-media-backend.onrender.com/api/staff/manage/",
+          formData
+        );
       }
       onUpdate();
       onClose();
@@ -86,13 +90,15 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
 
   if (!isOpen) return null;
 
+  const requiredPerm = staffId ? "edit staff" : "add staff";
+
   return (
     <>
       <div className="drawer-overlay" onClick={onClose}></div>
       <div className={`drawer-container ${isOpen ? "open" : ""}`}>
         <div className="drawer-header">
           <div className="header-title">
-            <Users size={20} />{" "}
+            <Users size={20} />
             <h3>{staffId ? "Update Staff Profile" : "Add New Staff"}</h3>
           </div>
           <button className="close-btn" onClick={onClose}>
@@ -106,7 +112,6 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 type="text"
                 name="name"
                 value={formData.name}
-                placeholder="Enter name"
                 required
                 onChange={handleChange}
               />
@@ -116,7 +121,6 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 type="text"
                 name="phone"
                 value={formData.phone}
-                placeholder="Mobile"
                 required
                 onChange={handleChange}
               />
@@ -126,7 +130,6 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 type="email"
                 name="email"
                 value={formData.email}
-                placeholder="Email"
                 onChange={handleChange}
               />
             </FormRow>
@@ -144,7 +147,6 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 type="text"
                 name="job"
                 value={formData.job}
-                placeholder="Job Title"
                 onChange={handleChange}
               />
             </FormRow>
@@ -169,19 +171,30 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
-            {/* CHANGED TO BLUE CLASS */}
-            <button
-              type="submit"
-              className="btn-save-blue"
-              disabled={isSubmitting}
-            >
-              <Send size={16} />
-              {isSubmitting
-                ? "Saving..."
-                : staffId
-                ? "Update Changes"
-                : "Create Account"}
-            </button>
+            {hasPermission(requiredPerm) ? (
+              <button
+                type="submit"
+                className="btn-save-blue"
+                disabled={isSubmitting}
+              >
+                <Send size={16} />{" "}
+                {isSubmitting
+                  ? "Saving..."
+                  : staffId
+                  ? "Update Changes"
+                  : "Create Account"}
+              </button>
+            ) : (
+              <span
+                style={{
+                  fontSize: "11px",
+                  fontWeight: "800",
+                  color: "#ef4444",
+                }}
+              >
+                READ ONLY MODE
+              </span>
+            )}
           </div>
         </form>
       </div>

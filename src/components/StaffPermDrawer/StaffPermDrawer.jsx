@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { X, ShieldCheck, Check, Save, Info, Stars, Trash2 } from "lucide-react";
 import "./StaffPermDrawer.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const PERMISSION_DATA = {
   "Manage Batch": ["add batch", "edit batch", "delete batch", "view batch"],
@@ -93,7 +94,6 @@ const StaffPermDrawer = ({ isOpen, onClose, staffId, staffName }) => {
   const [selectedPerms, setSelectedPerms] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // FETCH FROM BACKEND
   useEffect(() => {
     if (isOpen && staffId) {
       setLoading(true);
@@ -103,19 +103,15 @@ const StaffPermDrawer = ({ isOpen, onClose, staffId, staffName }) => {
         )
         .then((res) => {
           const permString = res.data.perm || "";
-          // Convert comma string from DB to Array for Checkboxes
-          const permsArray = permString
-            .split(",")
-            .map((p) => p.trim())
-            .filter((p) => p !== "");
-          setSelectedPerms(permsArray);
+          setSelectedPerms(
+            permString
+              .split(",")
+              .map((p) => p.trim())
+              .filter((p) => p !== "")
+          );
           setLoading(false);
         })
-        .catch((err) => {
-          console.error("Error fetching perms:", err);
-          setSelectedPerms([]); // Reset if not found
-          setLoading(false);
-        });
+        .catch(() => setLoading(false));
     }
   }, [isOpen, staffId]);
 
@@ -139,21 +135,17 @@ const StaffPermDrawer = ({ isOpen, onClose, staffId, staffName }) => {
     setSelectedPerms(Object.values(PERMISSION_DATA).flat());
   const deselectAll = () => setSelectedPerms([]);
 
-  // SAVE TO BACKEND
   const handleSave = async () => {
     try {
-      // Join Array into Comma-Separated string for 'perm' column
       const permString = selectedPerms.join(",");
       await axios.put(
         `https://operating-media-backend.onrender.com/api/staff/${staffId}/permissions/`,
-        {
-          perm: permString,
-        }
+        { perm: permString }
       );
-      alert("Permissions saved to database!");
+      alert("Permissions saved successfully!");
       onClose();
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to update permissions");
+      alert("Failed to update permissions");
     }
   };
 
@@ -177,12 +169,10 @@ const StaffPermDrawer = ({ isOpen, onClose, staffId, staffName }) => {
             <X size={20} />
           </button>
         </div>
-
         <div className="perm-warning-banner">
           <Info size={14} />
           <p>This staff can access only modules that you will assign here.</p>
         </div>
-
         <div className="perm-drawer-body">
           {loading ? (
             <div className="loader">Fetching data...</div>
@@ -196,7 +186,6 @@ const StaffPermDrawer = ({ isOpen, onClose, staffId, staffName }) => {
                   <Trash2 size={16} /> Clear All
                 </div>
               </div>
-
               {Object.entries(PERMISSION_DATA).map(([group, list]) => (
                 <div key={group} className="perm-group-section">
                   <div className="group-header-flex">
@@ -232,22 +221,28 @@ const StaffPermDrawer = ({ isOpen, onClose, staffId, staffName }) => {
             </>
           )}
         </div>
-
         <div className="perm-drawer-footer">
           <button className="btn-cancel-text" onClick={onClose}>
             Cancel
           </button>
-          <button
-            className="btn-save-perms"
-            onClick={handleSave}
-            disabled={loading}
-          >
-            <Save size={18} /> Save Permissions
-          </button>
+          {hasPermission("staff permission") ? (
+            <button
+              className="btn-save-perms"
+              onClick={handleSave}
+              disabled={loading}
+            >
+              <Save size={18} /> Save Permissions
+            </button>
+          ) : (
+            <span
+              style={{ fontSize: "11px", fontWeight: "800", color: "#ef4444" }}
+            >
+              VIEW ONLY
+            </span>
+          )}
         </div>
       </div>
     </>
   );
 };
-
 export default StaffPermDrawer;

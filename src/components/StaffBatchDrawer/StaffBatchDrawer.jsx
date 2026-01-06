@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { X, Layers, Calendar, Clock, Send } from "lucide-react";
 import "./StaffBatchDrawer.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const StaffBatchDrawer = ({
   isOpen,
@@ -12,7 +13,6 @@ const StaffBatchDrawer = ({
 }) => {
   const [batches, setBatches] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [formData, setFormData] = useState({
     batch_name: "",
     start_date: "",
@@ -20,20 +20,18 @@ const StaffBatchDrawer = ({
     end_time: "09:00",
   });
 
-  // Fetch batches when drawer opens
   useEffect(() => {
     if (isOpen && staffId) {
       axios
-        .get(`https://operating-media-backend.onrender.com/api/staff/${staffId}/assign-batch/`)
-        .then((res) => setBatches(res.data))
-        .catch((err) => console.error(err));
+        .get(
+          `https://operating-media-backend.onrender.com/api/staff/${staffId}/assign-batch/`
+        )
+        .then((res) => setBatches(res.data));
     }
   }, [isOpen, staffId]);
 
-  // Simple change handler
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,14 +66,11 @@ const StaffBatchDrawer = ({
             <X size={20} />
           </button>
         </div>
-
         <form className="drawer-body" onSubmit={handleSubmit}>
           <div className="drawer-section">
-            {/* SELECT BATCH - RAW JSX TO PREVENT FOCUS LOSS */}
             <div className="drawer-form-row">
               <label>Select Batch:</label>
               <div className="drawer-input-wrapper">
-                {/* Change size to 20 */}
                 <div className="drawer-icon-box">
                   <Layers size={20} />
                 </div>
@@ -94,7 +89,6 @@ const StaffBatchDrawer = ({
                 </select>
               </div>
             </div>
-
             <div className="drawer-form-row">
               <label>Batch Start Date:</label>
               <div className="drawer-input-wrapper">
@@ -110,7 +104,6 @@ const StaffBatchDrawer = ({
                 />
               </div>
             </div>
-
             <div className="drawer-form-row">
               <label>Batch Start Time:</label>
               <div className="drawer-input-wrapper">
@@ -126,7 +119,6 @@ const StaffBatchDrawer = ({
                 />
               </div>
             </div>
-
             <div className="drawer-form-row">
               <label>Batch End Time:</label>
               <div className="drawer-input-wrapper">
@@ -143,24 +135,34 @@ const StaffBatchDrawer = ({
               </div>
             </div>
           </div>
-
           <div className="drawer-footer">
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
-            <button
-              type="submit"
-              className="btn-save-blue"
-              disabled={isSubmitting || !formData.batch_name}
-            >
-              <Send size={16} />
-              {isSubmitting ? "Assigning..." : "Submit Assignment"}
-            </button>
+            {hasPermission("manage staff") ? (
+              <button
+                type="submit"
+                className="btn-save-blue"
+                disabled={isSubmitting || !formData.batch_name}
+              >
+                <Send size={16} />{" "}
+                {isSubmitting ? "Assigning..." : "Submit Assignment"}
+              </button>
+            ) : (
+              <span
+                style={{
+                  fontSize: "11px",
+                  fontWeight: "800",
+                  color: "#ef4444",
+                }}
+              >
+                ACTION RESTRICTED
+              </span>
+            )}
           </div>
         </form>
       </div>
     </>
   );
 };
-
 export default StaffBatchDrawer;

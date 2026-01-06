@@ -11,7 +11,7 @@ import {
   Calendar,
   ChevronRight,
   PlusSquare,
-  ShieldCheck, // Added for Permissions
+  ShieldCheck,
 } from "lucide-react";
 import StaffDrawer from "../../components/StaffDrawer/StaffDrawer";
 import StaffBatchDrawer from "../../components/StaffBatchDrawer/StaffBatchDrawer";
@@ -19,10 +19,11 @@ import StaffPermDrawer from "../../components/StaffPermDrawer/StaffPermDrawer";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStaff.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added import
 
 const ManageStaff = () => {
   const [isAssignDrawerOpen, setIsAssignDrawerOpen] = useState(false);
-  const [isPermDrawerOpen, setIsPermDrawerOpen] = useState(false); // New state
+  const [isPermDrawerOpen, setIsPermDrawerOpen] = useState(false);
   const [currentStaff, setCurrentStaff] = useState({ id: null, name: "" });
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -49,7 +50,6 @@ const ManageStaff = () => {
     setIsAssignDrawerOpen(true);
   };
 
-  // Logic for when Permissions button is clicked
   const handlePermClick = (id, name) => {
     setCurrentStaff({ id, name });
     setIsPermDrawerOpen(true);
@@ -122,9 +122,12 @@ const ManageStaff = () => {
               </div>
               <h2 className="page-title">Staff Management</h2>
             </div>
-            <button className="btn-primary-blue" onClick={handleAddNewClick}>
-              <Plus size={18} /> ADD NEW STAFF
-            </button>
+            {/* PERMISSION CHECK: ADD STAFF */}
+            {hasPermission("add staff") && (
+              <button className="btn-primary-blue" onClick={handleAddNewClick}>
+                <Plus size={18} /> ADD NEW STAFF
+              </button>
+            )}
           </header>
 
           <div className="staff-card-ui">
@@ -202,42 +205,53 @@ const ManageStaff = () => {
                         </td>
                         <td>
                           <div className="action-row-group">
-                            {/* --- ASSIGN BATCH --- */}
-                            <button
-                              className="btn-round-action assign-blue"
-                              title="Assign Batch"
-                              onClick={() =>
-                                handleAssignClick(member.id, member.name)
-                              }
-                            >
-                              <PlusSquare size={16} />
-                            </button>
+                            {/* PERMISSION CHECK: MANAGE STAFF */}
+                            {hasPermission("manage staff") && (
+                              <button
+                                className="btn-round-action assign-blue"
+                                title="Assign Batch"
+                                onClick={() =>
+                                  handleAssignClick(member.id, member.name)
+                                }
+                              >
+                                <PlusSquare size={16} />
+                              </button>
+                            )}
 
-                            {/* --- NEW ASSIGN PERMISSIONS BUTTON (PURPLE) --- */}
-                            <button
-                              className="btn-round-action perm-purple"
-                              title="Assign Permissions"
-                              onClick={() =>
-                                handlePermClick(member.id, member.name)
-                              }
-                            >
-                              <ShieldCheck size={16} />
-                            </button>
+                            {/* PERMISSION CHECK: STAFF PERMISSION */}
+                            {hasPermission("staff permission") && (
+                              <button
+                                className="btn-round-action perm-purple"
+                                title="Assign Permissions"
+                                onClick={() =>
+                                  handlePermClick(member.id, member.name)
+                                }
+                              >
+                                <ShieldCheck size={16} />
+                              </button>
+                            )}
 
-                            <button
-                              className="btn-round-action edit-green"
-                              title="Edit"
-                              onClick={() => handleEditClick(member.id)}
-                            >
-                              <Edit3 size={16} />
-                            </button>
-                            <button
-                              className="btn-round-action delete-red"
-                              title="Delete"
-                              onClick={() => handleDelete(member.id)}
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {/* PERMISSION CHECK: EDIT STAFF */}
+                            {hasPermission("edit staff") && (
+                              <button
+                                className="btn-round-action edit-green"
+                                title="Edit"
+                                onClick={() => handleEditClick(member.id)}
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                            )}
+
+                            {/* PERMISSION CHECK: DELETE STAFF */}
+                            {hasPermission("delete staff") && (
+                              <button
+                                className="btn-round-action delete-red"
+                                title="Delete"
+                                onClick={() => handleDelete(member.id)}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

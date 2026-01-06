@@ -18,6 +18,7 @@ import {
   Building2,
   UserCheck,
 } from "lucide-react";
+import { hasPermission } from "../../utils/permissionCheck";
 import "./LeadCreateDrawer.css";
 
 const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
@@ -379,13 +380,13 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
           </div>
 
           <div className="drawer-footer-sticky">
-            <button
-              type="submit"
-              className="btn-save-lead-blue"
-              disabled={isSubmitting}
-            >
-              <Send size={16} /> {isSubmitting ? "CREATING..." : "CREATE LEAD"}
-            </button>
+            {hasPermission("add enquiry") ? (
+              <button type="submit" className="btn-save-lead-blue" disabled={isSubmitting}>
+                <Send size={16} /> {isSubmitting ? "CREATING..." : "CREATE LEAD"}
+              </button>
+            ) : (
+               <span className="text-muted">Viewing Mode Only</span>
+            )}
           </div>
         </form>
       </div>

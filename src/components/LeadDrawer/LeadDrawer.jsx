@@ -14,6 +14,7 @@ import {
   Check,
 } from "lucide-react";
 import "./LeadDrawer.css";
+import { hasPermission } from "../../utils/permissionCheck"; // Added permission utility
 
 const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const [details, setDetails] = useState(null);
@@ -158,12 +159,15 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
               <div className="drawer-section">
                 <div className="section-header-row">
                   <h4 className="section-title">Tags & Status</h4>
-                  <button
-                    className="btn-edit-small"
-                    onClick={() => setIsEditingTags(!isEditingTags)}
-                  >
-                    {isEditingTags ? "Cancel" : "Manage"}
-                  </button>
+                  {/* PROTECTED: Only show Manage button if user has 'edit enquiry' permission */}
+                  {hasPermission("edit enquiry") && (
+                    <button
+                      className="btn-edit-small"
+                      onClick={() => setIsEditingTags(!isEditingTags)}
+                    >
+                      {isEditingTags ? "Cancel" : "Manage"}
+                    </button>
+                  )}
                 </div>
 
                 <div className="clean-tag-container">
@@ -247,34 +251,37 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
               <div className="drawer-section">
                 <h4 className="section-title">Timeline & Remarks</h4>
 
-                <div className="followup-form-box">
-                  <textarea
-                    placeholder="Type new followup remark here..."
-                    value={newRemark}
-                    onChange={(e) => setNewRemark(e.target.value)}
-                    required
-                  />
-                  <div className="form-row-mini">
-                    <div className="date-input-mini">
-                      <Calendar size={14} />
-                      <input
-                        type="date"
-                        value={nextDate}
-                        onChange={(e) => setNextDate(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="form-btns-mini">
-                      <button
-                        className="btn-save-mini"
-                        onClick={handleAddFollowup}
-                        disabled={submitting || !newRemark || !nextDate}
-                      >
-                        {submitting ? "..." : <Send size={14} />}
-                      </button>
+                {/* PROTECTED: Only show Followup Form if user has 'enquiry followup' permission */}
+                {hasPermission("enquiry followup") && (
+                  <div className="followup-form-box">
+                    <textarea
+                      placeholder="Type new followup remark here..."
+                      value={newRemark}
+                      onChange={(e) => setNewRemark(e.target.value)}
+                      required
+                    />
+                    <div className="form-row-mini">
+                      <div className="date-input-mini">
+                        <Calendar size={14} />
+                        <input
+                          type="date"
+                          value={nextDate}
+                          onChange={(e) => setNextDate(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="form-btns-mini">
+                        <button
+                          className="btn-save-mini"
+                          onClick={handleAddFollowup}
+                          disabled={submitting || !newRemark || !nextDate}
+                        >
+                          {submitting ? "..." : <Send size={14} />}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 <div className="timeline">
                   {details?.history?.map((h, i) => (

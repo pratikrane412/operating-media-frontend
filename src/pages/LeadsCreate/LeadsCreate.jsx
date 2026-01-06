@@ -20,6 +20,7 @@ import {
   Check,
   Tag,
 } from "lucide-react";
+import { hasPermission } from "../../utils/permissionCheck";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./LeadsCreate.css";
@@ -319,9 +320,14 @@ const LeadsCreate = () => {
 
               <div className="form-footer-actions">
                 <button type="button" className="btn-secondary-flat" onClick={() => navigate("/leads-view")}>CANCEL</button>
-                <button type="submit" className="btn-primary-blue" disabled={isSubmitting}>
-                  <Send size={14} /> {isSubmitting ? "CREATING..." : "CREATE"}
-                </button>
+                {/* WRAP CREATE BUTTON */}
+                {hasPermission("add enquiry") ? (
+                  <button type="submit" className="btn-primary-blue" disabled={isSubmitting}>
+                    <Send size={14} /> {isSubmitting ? "CREATING..." : "CREATE"}
+                  </button>
+                ) : (
+                  <p className="permission-denied-text">You don't have permission to add enquiries.</p>
+                )}
               </div>
             </form>
           </div>

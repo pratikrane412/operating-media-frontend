@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import StudentDrawer from "../../components/StudentDrawer/StudentDrawer.jsx";
 import StudentViewDrawer from "../../components/StudentViewDrawer/StudentViewDrawer.jsx";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStudent.css";
 
@@ -119,7 +119,7 @@ const ManageStudent = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 

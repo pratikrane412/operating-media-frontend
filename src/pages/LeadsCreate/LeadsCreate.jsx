@@ -21,7 +21,7 @@ import {
   Tag,
 } from "lucide-react";
 import { hasPermission } from "../../utils/permissionCheck";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./LeadsCreate.css";
 
@@ -181,7 +181,7 @@ const LeadsCreate = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 

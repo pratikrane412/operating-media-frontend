@@ -1,7 +1,7 @@
 /* --- CORE VARIABLES --- */
 :root {
-  --sidebar-wide: 260px;
-  --sidebar-narrow: 72px;
+  --sidebar-wide: 0px; /* Changed to 0 */
+  --sidebar-narrow: 0px; /* Changed to 0 */
   --nav-height: 70px;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-speed: 0.4s;
@@ -10,7 +10,7 @@
   --border-color: #eef1f6;
 
   /* Responsive Helpers */
-  --main-margin: var(--sidebar-wide);
+  --main-margin: 0px; /* Forced to 0 */
   --content-padding: 35px;
 }
 
@@ -21,26 +21,24 @@
   background-color: var(--bg-body);
   position: relative;
   overflow-x: hidden;
+  width: 100%;
 }
 
 .main-viewport {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: var(--main-margin);
-  transition: margin-left var(--transition-speed) var(--ease-standard);
+  margin-left: 0 !important; /* Forces margin to 0 */
+  transition: none;
   min-width: 0;
-}
-
-/* Collapsed Sidebar State */
-.app-container.is-collapsed .main-viewport {
-  --main-margin: var(--sidebar-narrow);
+  width: 100%;
 }
 
 .content-scroll-area {
   margin-top: var(--nav-height);
   padding: var(--content-padding);
   min-height: calc(100vh - var(--nav-height));
+  width: 100%;
 }
 
 /* --- HEADER & BREADCRUMBS --- */
@@ -165,7 +163,6 @@
   color: #64748b;
 }
 
-/* --- DATA TABLE CARD --- */
 .data-display-card {
   background: white;
   border-radius: 16px;
@@ -187,7 +184,6 @@
   letter-spacing: 1px;
 }
 
-/* --- MODERN DATA TABLE --- */
 .table-sticky-wrapper {
   overflow-x: auto;
 }
@@ -219,13 +215,11 @@
   vertical-align: middle;
 }
 
-/* User Profile Cell in Table */
 .user-profile-cell {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .avatar-letter {
   width: 32px;
   height: 32px;
@@ -243,13 +237,11 @@
   font-weight: 700;
   color: #0f172a;
 }
-
 .phone-num-text {
   color: #64748b;
   font-weight: 500;
 }
 
-/* --- FOLLOWUP STATUS PILLS --- */
 .status-pill {
   padding: 6px 12px;
   border-radius: 20px;
@@ -263,18 +255,15 @@
   background: #fef2f2;
   color: #e11d48;
 }
-
 .status-pill.upcoming {
   background: #eff6ff;
   color: #3b82f6;
 }
-
 .status-pill.overdue {
   background: #fff7ed;
   color: #f97316;
 }
 
-/* Action Button */
 .btn-icon-round {
   width: 34px;
   height: 34px;
@@ -295,159 +284,90 @@
   background: #f8fafc;
 }
 
-/* --- RESPONSIVE MEDIA QUERIES --- */
-@media (max-width: 1024px) {
-  :root {
-    --content-padding: 25px;
-  }
-}
-
 @media (max-width: 768px) {
   :root {
-    --main-margin: 0px !important;
     --content-padding: 20px;
   }
-
-  /* Stack Header */
-  .page-header-flex {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  /* Force Grid to single column */
   .dashboard-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
   }
-
-  /* Sidebar Mobile Logic */
-  .sidebar {
-    position: fixed;
-    z-index: 1000;
-    left: -100%;
-    transition: left 0.4s ease;
-  }
-
-  .app-container.is-collapsed .sidebar {
-    left: 0;
-    width: var(--sidebar-wide);
-  }
-
   .page-title-bold {
     font-size: 22px;
   }
 }
 
-/* Utilities */
 .mt-30 {
   margin-top: 30px;
 }
-.text-center {
-  text-align: center;
+.mt-40 {
+  margin-top: 40px;
 }
-.loader {
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-  font-weight: 700;
-  font-style: italic;
-}
-
-/* Stat card green variation for Revenue */
-.green .icon-box {
-  background: #dcfce7; /* Soft Green */
-  color: #166534;      /* Deep Green */
-}
-
-.green .card-body h3 {
-  color: #15803d;
-}
-
-.green:hover {
-  border-color: #10b981;
-  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);
-}
-/* --- FEES REMINDER SPECIFIC STYLES --- */
-.mt-40 { margin-top: 40px; }
 
 .fee-reminder-card {
-    border-left: 4px solid #f97316; /* Subtle orange indicator for payments */
+  border-left: 4px solid #f97316;
 }
-
 .fee-toolbar {
-    background: #fffcfb;
-    display: flex;
-    align-items: center;
+  background: #fffcfb;
+  display: flex;
+  align-items: center;
 }
-
 .toolbar-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-
-.title-icon-blue { color: #003873; }
-
+.title-icon-blue {
+  color: #003873;
+}
 .fee-avatar {
-    background: #fff7ed !important;
-    color: #f97316 !important;
+  background: #fff7ed !important;
+  color: #f97316 !important;
 }
 
 .course-pill-lite {
-    font-size: 11px;
-    font-weight: 600;
-    color: #64748b;
-    background: #f8fafc;
-    padding: 3px 8px;
-    border-radius: 4px;
-    border: 1px solid #eef1f6;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  background: #f8fafc;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid #eef1f6;
 }
 
 .inst-text {
-    font-size: 12px;
-    color: #475569;
-    font-weight: 500;
+  font-size: 12px;
+  color: #475569;
+  font-weight: 500;
 }
-
 .due-date-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
 }
-
-.due-date-text svg { color: #94a3b8; }
-
 .fee-amount-bold {
-    font-weight: 800;
-    color: #003873;
-    font-size: 14px;
+  font-weight: 800;
+  color: #003873;
+  font-size: 14px;
 }
 
-/* Priority Statuses */
 .status-pill.due-soon {
-    background: #fff7ed;
-    color: #c2410c;
-    border: 1px solid #ffedd5;
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #ffedd5;
 }
-
 .status-pill.overdue {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fee2e2;
-    animation: pulse-red 2s infinite;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
 }
 
-@keyframes pulse-red {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+.green .icon-box {
+  background: #dcfce7;
+  color: #166534;
 }
-
-.fee-btn:hover {
-    background: #003873 !important;
-    color: white !important;
+.green .card-body h3 {
+  color: #15803d;
 }

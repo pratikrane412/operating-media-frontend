@@ -10,7 +10,7 @@ import {
   Clock,
   ChevronRight,
 } from "lucide-react";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import CourseDrawer from "../../components/CourseDrawer/CourseDrawer";
 import "./ManageCourse.css";
@@ -73,7 +73,7 @@ const ManageCourse = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">

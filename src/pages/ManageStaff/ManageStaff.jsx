@@ -16,7 +16,7 @@ import {
 import StaffDrawer from "../../components/StaffDrawer/StaffDrawer";
 import StaffBatchDrawer from "../../components/StaffBatchDrawer/StaffBatchDrawer";
 import StaffPermDrawer from "../../components/StaffPermDrawer/StaffPermDrawer";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageStaff.css";
 import { hasPermission } from "../../utils/permissionCheck"; // Added import
@@ -104,7 +104,7 @@ const ManageStaff = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">

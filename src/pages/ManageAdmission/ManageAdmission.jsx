@@ -10,7 +10,7 @@ import {
   Edit3,
   Trash2,
 } from "lucide-react";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
 import Navbar from "../../components/Navbar/Navbar";
@@ -99,7 +99,7 @@ const ManageAdmission = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">

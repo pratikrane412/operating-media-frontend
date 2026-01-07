@@ -4,10 +4,12 @@
   border: 1px solid #eef1f6;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  height: fit-content;
   margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
+  width: 100%; /* Ensure 100% width */
+}
+
+.main-viewport {
+    margin-left: 0 !important;
 }
 
 /* --- TOOLBAR (Top Section) --- */

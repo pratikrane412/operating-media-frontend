@@ -11,7 +11,7 @@ import {
   ChevronRight,
   Calendar,
 } from "lucide-react";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import BatchDrawer from "../../components/BatchDrawer/BatchDrawer";
 import "./ManageBatch.css";
@@ -81,7 +81,7 @@ const ManageBatch = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">

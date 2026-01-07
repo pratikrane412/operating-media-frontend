@@ -5,7 +5,7 @@ import {
   User, Mail, Phone, MapPin, Calendar, Edit3, Send, Smartphone, 
   ChevronDown, ChevronRight, Link2, Building2, Briefcase, Check, Tag, BookOpen
 } from "lucide-react";
-import Sidebar from "../../components/Sidebar/Sidebar";
+// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import "../LeadsCreate/LeadsCreate.css"; // Reusing the same CSS
 
@@ -135,7 +135,7 @@ const LeadsEdit = () => {
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      <Sidebar isCollapsed={isCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">

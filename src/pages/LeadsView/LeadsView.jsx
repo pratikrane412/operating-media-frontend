@@ -340,9 +340,9 @@ const LeadsView = () => {
                       <tr key={lead.id}>
                         <td>
                           <div className="user-cell">
-                            <div className="user-avatar">
+                            {/* <div className="user-avatar">
                               {lead.name.charAt(0)}
-                            </div>
+                            </div> */}
                             <span className="user-name">{lead.name}</span>
                           </div>
                         </td>

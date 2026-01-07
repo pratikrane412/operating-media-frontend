@@ -168,9 +168,9 @@ const ManageAdmission = () => {
                       <tr key={item.id}>
                         <td>
                           <div className="user-profile-cell">
-                            <div className="avatar-letter">
+                            {/* <div className="avatar-letter">
                               {item.name?.charAt(0) || "?"}
-                            </div>
+                            </div> */}
                             <span className="user-full-name">{item.name}</span>
                           </div>
                         </td>

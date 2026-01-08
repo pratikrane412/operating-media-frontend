@@ -10,9 +10,10 @@ import {
   CheckCircle,
   Send,
   Users,
+  Lock, // Added Lock icon
 } from "lucide-react";
 import "./StaffDrawer.css";
-import { hasPermission } from "../../utils/permissionCheck"; // Added import
+import { hasPermission } from "../../utils/permissionCheck";
 
 const FormRow = ({ label, icon: Icon, children }) => (
   <div className="drawer-form-row">
@@ -33,10 +34,11 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
     name: "",
     phone: "",
     email: "",
+    password: "", // Added password field
+    joining_date: new Date().toISOString().split("T")[0],
     job: "",
     type: 1,
     status: 0,
-    joining_date: new Date().toISOString().split("T")[0],
     branch_id: user.branch_id || 1,
   });
 
@@ -46,12 +48,13 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
         .get(
           `https://operating-media-backend.onrender.com/api/staff/${staffId}/`
         )
-        .then((res) => setFormData(res.data));
+        .then((res) => setFormData({ ...res.data, password: "" })); // Keep password empty on edit
     } else if (isOpen) {
       setFormData({
         name: "",
         phone: "",
         email: "",
+        password: "",
         job: "",
         type: 1,
         status: 0,
@@ -82,7 +85,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
       onUpdate();
       onClose();
     } catch (err) {
-      alert("Failed to save staff member");
+      alert(err.response?.data?.error || "Failed to save staff member");
     } finally {
       setIsSubmitting(false);
     }
@@ -114,6 +117,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 value={formData.name}
                 required
                 onChange={handleChange}
+                placeholder="Enter name"
               />
             </FormRow>
             <FormRow label="Phone" icon={Phone}>
@@ -123,16 +127,34 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 value={formData.phone}
                 required
                 onChange={handleChange}
+                placeholder="Mobile"
               />
             </FormRow>
-            <FormRow label="Email" icon={Mail}>
+            <FormRow label="Email / Login" icon={Mail}>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
+                required
                 onChange={handleChange}
+                placeholder="Email"
               />
             </FormRow>
+
+            {/* NEW PASSWORD FIELD - Only required for new staff */}
+            {!staffId && (
+              <FormRow label="Login Password" icon={Lock}>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  required={!staffId}
+                  onChange={handleChange}
+                  placeholder="Set Password"
+                />
+              </FormRow>
+            )}
+
             <FormRow label="Joining Date" icon={Calendar}>
               <input
                 type="date"
@@ -148,6 +170,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 name="job"
                 value={formData.job}
                 onChange={handleChange}
+                placeholder="Job Title"
               />
             </FormRow>
             <FormRow label="Staff Type" icon={Users}>
@@ -177,7 +200,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 className="btn-save-blue"
                 disabled={isSubmitting}
               >
-                <Send size={16} />{" "}
+                <Send size={16} />
                 {isSubmitting
                   ? "Saving..."
                   : staffId
@@ -185,15 +208,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                   : "Create Account"}
               </button>
             ) : (
-              <span
-                style={{
-                  fontSize: "11px",
-                  fontWeight: "800",
-                  color: "#ef4444",
-                }}
-              >
-                READ ONLY MODE
-              </span>
+              <span className="read-only-tag">READ ONLY MODE</span>
             )}
           </div>
         </form>

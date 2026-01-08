@@ -50,6 +50,8 @@ const Navbar = () => {
             <LayoutDashboard size={18} /> <span>Dashboard</span>
           </NavLink>
 
+          {/* Inside Navbar.jsx */}
+
           {(hasPermission("view enquiry") ||
             hasPermission("manage enquiry")) && (
             <div

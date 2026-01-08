@@ -188,14 +188,19 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: #f8fafc;
+  background: #003873; /* Primary blue */
   padding: 12px 8px;
   text-align: center;
-  font-size: 10px;
-  font-weight: 800;
-  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900; /* EXTRA BOLD */
+  color: #ffffff; /* WHITE TEXT */
   text-transform: uppercase;
-  border-bottom: 2px solid #eef1f6;
+  letter-spacing: 0.6px;
+  border-bottom: 2px solid #00284d;
+}
+
+.leads-table thead {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 /* CUSTOMER NAMES CENTERED */

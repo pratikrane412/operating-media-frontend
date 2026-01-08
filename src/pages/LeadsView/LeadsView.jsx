@@ -14,15 +14,19 @@ import {
   Trash2,
   Edit3,
 } from "lucide-react";
-// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import LeadCreateDrawer from "../../components/LeadDrawer/LeadCreateDrawer";
 import LeadDrawer from "../../components/LeadDrawer/LeadDrawer";
 import "./LeadsView.css";
 
 const LeadsView = () => {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const navigate = useNavigate();
+  const menuRef = useRef(null);
+
+  // --- ALL STATES DEFINED AT THE TOP ---
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,11 +35,7 @@ const LeadsView = () => {
   const [pageSize, setPageSize] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-
-  // Get user info from localStorage
-  const user = JSON.parse(localStorage.getItem("admin") || "{}");
-  const isBranchUser = !!user.branch_id;
-
+  const [activeMenuId, setActiveMenuId] = useState(null);
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
@@ -43,9 +43,60 @@ const LeadsView = () => {
     toDate: "",
   });
 
-  const [activeMenuId, setActiveMenuId] = useState(null);
-  const menuRef = useRef(null);
+  const user = JSON.parse(localStorage.getItem("admin") || "{}");
+  const isBranchUser = !!user.branch_id;
 
+  // --- HELPERS ---
+  const getCourseShortName = (name) => {
+    if (!name || name === "NA") return "NA";
+    const n = name.toLowerCase();
+    if (n.includes("wordpress")) return "WP";
+    if (n.includes("social media")) return "SMM";
+    if (n.includes("digital marketing")) return "DM";
+    if (n.includes("search engine optimization")) return "SEO";
+    if (n.includes("graphic")) return "GD";
+    return name
+      .split(" ")
+      .map((word) => word[0].toUpperCase())
+      .join("");
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "No Date" || dateStr === "N/A") return dateStr;
+    const parts = dateStr.split("-");
+    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    return dateStr;
+  };
+
+  const renderPills = (dataString, type = "tag") => {
+    if (
+      !dataString ||
+      dataString === "" ||
+      dataString === "[]" ||
+      dataString === "No Tag"
+    )
+      return <span className="no-tag-pill">No Tag</span>;
+
+    const items = dataString
+      .replace(/[\[\]"']/g, "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    return (
+      <div className="pill-stack">
+        {items.map((item, index) => (
+          <span
+            key={index}
+            className={type === "source" ? "source-pill-item" : "tag-pill"}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  // --- LOGIC ---
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -75,7 +126,6 @@ const LeadsView = () => {
             page,
             size: pageSize,
             search,
-            // If branch user, force their branch_id, otherwise use the filter
             branch_id: isBranchUser ? user.branch_id : undefined,
             branch: isBranchUser ? "" : filters.branch,
             source: filters.source,
@@ -97,44 +147,17 @@ const LeadsView = () => {
     fetchData();
   }, [page, pageSize]);
 
-  // ... (handleDeleteLead, renderPills, getPageNumbers, handleOpenDrawer, formatDate remain same)
-
   const handleDeleteLead = async (id) => {
-    if (window.confirm("Are you sure you want to delete this lead?")) {
+    if (window.confirm("Are you sure?")) {
       try {
         await axios.delete(
           `https://operating-media-backend.onrender.com/api/leads/${id}/delete/`
         );
-        setActiveMenuId(null);
         fetchData();
       } catch (err) {
         alert("Failed to delete lead");
       }
     }
-  };
-
-  const renderPills = (dataString, type = "tag") => {
-    if (!dataString || dataString === "" || dataString === "[]")
-      return <span className="no-data-text">N/A</span>;
-
-    const items = dataString
-      .replace(/[\[\]"']/g, "")
-      .split(",")
-      .map((item) => item.trim())
-      .filter((item) => item !== "");
-
-    return (
-      <div className="pill-stack">
-        {items.map((item, index) => (
-          <span
-            key={index}
-            className={type === "source" ? "source-pill-item" : "tag-pill"}
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    );
   };
 
   const getPageNumbers = () => {
@@ -146,42 +169,18 @@ const LeadsView = () => {
     return pages;
   };
 
-  const [selectedLeadId, setSelectedLeadId] = useState(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   const handleOpenDrawer = (id) => {
     setSelectedLeadId(id);
     setIsDrawerOpen(true);
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "No Date" || dateStr === "N/A") return dateStr;
-    const parts = dateStr.split("-");
-    if (parts.length === 3) {
-      const [year, month, day] = parts;
-      return `${day}/${month}/${year}`;
-    }
-    return dateStr;
-  };
-
   return (
-    <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      {/* <Sidebar isCollapsed={isCollapsed} /> */}
+    <div className="app-container">
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
-          <div
-            className="leads-page-header"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <h2 style={{ fontSize: "24px", fontWeight: "800" }}>
-              Lead Directory
-            </h2>
+          <div className="leads-page-header">
+            <h2 className="main-title-text">Lead Directory</h2>
             <button
               className="btn-add-primary"
               onClick={() => setIsCreateOpen(true)}
@@ -197,7 +196,6 @@ const LeadsView = () => {
               </div>
             </div>
             <div className="filter-grid">
-              {/* CONDITIONALLY RENDER BRANCH FILTER */}
               {!isBranchUser && (
                 <div className="filter-group">
                   <label>Select Branch</label>
@@ -216,7 +214,6 @@ const LeadsView = () => {
                   </select>
                 </div>
               )}
-
               <div className="filter-group">
                 <label>Student Source</label>
                 <select
@@ -233,7 +230,6 @@ const LeadsView = () => {
                   ))}
                 </select>
               </div>
-
               <div className="filter-group range-group">
                 <label>Date Range</label>
                 <div className="date-input-container">
@@ -255,7 +251,6 @@ const LeadsView = () => {
                 </div>
               </div>
             </div>
-            {/* ... rest of the component remains the same ... */}
             <div className="filter-footer">
               <button
                 className="btn-reset"
@@ -298,7 +293,6 @@ const LeadsView = () => {
                 >
                   <option value="25">25</option>
                   <option value="50">50</option>
-                  <option value="100">100</option>
                 </select>{" "}
                 entries
               </div>
@@ -318,69 +312,61 @@ const LeadsView = () => {
               <table className="leads-table">
                 <thead>
                   <tr>
-                    <th>CUSTOMER</th>
-                    <th>COURSE</th>
-                    <th>PHONE</th>
-                    <th>DATE</th>
-                    <th>FOLLOWUP</th>
-                    <th>TAGS</th>
-                    <th>NOTES</th>
-                    <th className="text-center">ACTIONS</th>
+                    <th width="200">CUSTOMER</th>
+                    <th width="80">COURSE</th>
+                    <th width="140">PHONE</th>
+                    <th width="160">DATE</th>
+                    <th width="120">FOLLOWUP</th>
+                    <th width="140">TAGS</th>
+                    <th width="350">NOTES</th>
+                    <th width="120">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="9" className="table-loader">
-                        Fetching lead records...
+                      <td colSpan="8" className="table-loader">
+                        Syncing data...
                       </td>
                     </tr>
                   ) : (
                     leads.map((lead) => (
                       <tr key={lead.id}>
-                        <td>
-                          <div className="user-cell">
-                            {/* <div className="user-avatar">
-                              {lead.name.charAt(0)}
-                            </div> */}
-                            <span className="user-name">{lead.name}</span>
-                          </div>
+                        <td className="text-left-cell">
+                          <span className="user-name-small">{lead.name}</span>
                         </td>
                         <td>
-                          <span className="course-pill">{lead.course}</span>
+                          <span className="course-pill-sm">
+                            {getCourseShortName(lead.course)}
+                          </span>
                         </td>
-                        <td>{lead.mobile}</td>
                         <td>
-                          <div className="date-cell">
-                            <span className="date-text">
+                          <span className="phone-text-sm">{lead.mobile}</span>
+                        </td>
+                        <td>
+                          <div className="date-cell-sm">
+                            <span className="date-text-val">
                               {formatDate(lead.enquiry_date)}
                             </span>
-                            <div className="source-row-stack">
-                              <span className="source-label-prefix">
-                                Source:
-                              </span>
-                              {renderPills(lead.source, "source")}
-                            </div>
+                            {renderPills(lead.source, "source")}
                           </div>
                         </td>
-                        <td className="followup-cell">
+                        <td className="followup-cell-sm">
                           {formatDate(lead.followup_date)}
                         </td>
                         <td>{renderPills(lead.tags, "tag")}</td>
-                        <td className="notes-cell">
-                          {lead.notes || "No remarks updated"}
-                        </td>
+                        <td className="notes-cell-sm">{lead.notes || "—"}</td>
                         <td>
-                          <div className="action-btns">
+                          <div className="action-btns-sm">
                             <button
-                              className="icon-btn"
+                              className="icon-btn-sm"
                               onClick={() => handleOpenDrawer(lead.id)}
                             >
                               <Eye size={16} />
                             </button>
                             <div className="action-menu-container">
                               <button
-                                className={`icon-btn ${
+                                className={`icon-btn-sm ${
                                   activeMenuId === lead.id ? "active" : ""
                                 }`}
                                 onClick={() =>
@@ -399,13 +385,13 @@ const LeadsView = () => {
                                       navigate(`/leads-edit/${lead.id}`)
                                     }
                                   >
-                                    <Edit3 size={14} /> Edit Lead
+                                    <Edit3 size={14} /> Edit
                                   </button>
                                   <button
                                     className="drop-item delete"
                                     onClick={() => handleDeleteLead(lead.id)}
                                   >
-                                    <Trash2 size={14} /> Delete Lead
+                                    <Trash2 size={14} /> Delete
                                   </button>
                                 </div>
                               )}

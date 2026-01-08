@@ -198,21 +198,17 @@ const LeadsView = () => {
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
-          <div className="leads-page-header">
-            <h2 className="main-title-text">Lead Directory</h2>
-            <button
-              className="btn-add-primary"
-              onClick={() => setIsCreateOpen(true)}
-            >
-              <Plus size={18} /> ADD NEW LEAD
-            </button>
-          </div>
-
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
-                <Filter size={16} /> FILTERS
+                <Filter size={16} /> LEAD DIRECTORY
               </div>
+              <button
+                className="btn-add-primary"
+                onClick={() => setIsCreateOpen(true)}
+              >
+                <Plus size={18} /> ADD NEW LEAD
+              </button>
             </div>
             <div className="filter-grid">
               {!isBranchUser && (

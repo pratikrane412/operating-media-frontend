@@ -12,8 +12,9 @@ export const hasPermission = (requiredPerm) => {
   }
 
   // 2. STAFF RESTRICTED ACCESS
+  const rawPerms = user.role_perms || user.permissions || "";
   // If not the super admin, check the permission string from the 'users' table
-  if (!user.role_perms) return false;
+  if (!rawPerms) return false;
 
   const userPerms = user.role_perms
     .toLowerCase()
@@ -21,9 +22,8 @@ export const hasPermission = (requiredPerm) => {
     .map((p) => p.trim())
     .filter((p) => p !== "");
 
-  // Special case: check for a global 'all' keyword in staff perms if applicable
-  if (userPerms.includes("all")) return true;
-
   // Final check: Is the specific required permission in the user's list?
-  return userPerms.includes(requiredPerm.toLowerCase());
+  return (
+    userPerms.includes(requiredPerm.toLowerCase()) || userPerms.includes("all")
+  );
 };

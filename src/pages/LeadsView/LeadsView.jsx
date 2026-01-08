@@ -22,6 +22,7 @@ import "./LeadsView.css";
 const LeadsView = () => {
   const navigate = useNavigate();
   const menuRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
 
   // --- ALL STATES DEFINED AT THE TOP ---
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -147,6 +148,24 @@ const LeadsView = () => {
     fetchData();
   }, [page, pageSize]);
 
+  // Dynamic search with debounce
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setPage(1);
+      fetchData();
+    }, 500);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [search]);
+
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
@@ -250,33 +269,35 @@ const LeadsView = () => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="filter-footer">
-              <button
-                className="btn-reset"
-                onClick={() => {
-                  setFilters({
-                    branch: "",
-                    source: "",
-                    fromDate: "",
-                    toDate: "",
-                  });
-                  setSearch("");
-                  setPage(1);
-                  fetchData();
-                }}
-              >
-                <RotateCcw size={14} /> RESET
-              </button>
-              <button
-                className="btn-apply"
-                onClick={() => {
-                  setPage(1);
-                  fetchData();
-                }}
-              >
-                <Check size={14} /> APPLY
-              </button>
+
+              {/* BUTTONS MOVED INTO GRID FOR PERFECT BOX ALIGNMENT */}
+              <div className="filter-actions-inline">
+                <button
+                  className="btn-reset"
+                  onClick={() => {
+                    setFilters({
+                      branch: "",
+                      source: "",
+                      fromDate: "",
+                      toDate: "",
+                    });
+                    setSearch("");
+                    setPage(1);
+                    fetchData();
+                  }}
+                >
+                  <RotateCcw size={14} /> RESET
+                </button>
+                <button
+                  className="btn-apply"
+                  onClick={() => {
+                    setPage(1);
+                    fetchData();
+                  }}
+                >
+                  <Check size={14} /> APPLY
+                </button>
+              </div>
             </div>
           </div>
 
@@ -303,7 +324,6 @@ const LeadsView = () => {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search student name..."
-                  onKeyUp={(e) => e.key === "Enter" && fetchData()}
                 />
               </div>
             </div>
@@ -312,14 +332,14 @@ const LeadsView = () => {
               <table className="leads-table">
                 <thead>
                   <tr>
-                    <th width="200">CUSTOMER</th>
+                    <th width="160">CUSTOMER</th>
                     <th width="80">COURSE</th>
-                    <th width="140">PHONE</th>
-                    <th width="160">DATE</th>
+                    <th width="130">PHONE</th>
+                    <th width="140">DATE</th>
                     <th width="120">FOLLOWUP</th>
-                    <th width="140">TAGS</th>
-                    <th width="350">NOTES</th>
-                    <th width="120">ACTIONS</th>
+                    <th width="120">TAGS</th>
+                    <th width="400">NOTES</th>
+                    <th width="100">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -332,8 +352,8 @@ const LeadsView = () => {
                   ) : (
                     leads.map((lead) => (
                       <tr key={lead.id}>
-                        <td className="text-left-cell">
-                          <span className="user-name-small">{lead.name}</span>
+                        <td className="customer-name-cell">
+                          <span>{lead.name}</span>
                         </td>
                         <td>
                           <span className="course-pill-sm">

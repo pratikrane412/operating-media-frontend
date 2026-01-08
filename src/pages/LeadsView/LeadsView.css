@@ -264,7 +264,6 @@
   white-space: normal;
   word-break: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Show up to 3 lines then truncate */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

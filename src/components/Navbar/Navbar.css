@@ -12,12 +12,13 @@
   padding: 0 40px;
   z-index: 1000;
   width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .nav-left-section {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 30px; /* Adjusted for better spacing */
   height: 100%;
 }
 
@@ -26,6 +27,7 @@
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .brand-logo {
@@ -50,27 +52,38 @@
 .top-menu-links {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   height: 100%;
 }
 
+/* --- DURALUX BLUE TAB STYLING --- */
 .top-link {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-radius: 8px;
-  color: #64748b;
+  color: #64748b; /* Muted gray for inactive */
   text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
+/* Active State and Hover State */
 .top-link:hover,
-.top-link.active {
-  background: #f1f5f9;
-  color: var(--brand-blue);
+.top-link.active,
+.top-nav-dropdown.is-open .top-link.trigger {
+  background: var(--brand-blue); /* Duralux Blue #003873 */
+  color: #ffffff !important; /* Pure White text */
+}
+
+/* Ensure icons turn white when tab is blue */
+.top-link:hover .nav-icon,
+.top-link.active .nav-icon,
+.top-nav-dropdown.is-open .top-link.trigger .nav-icon {
+  color: #ffffff;
 }
 
 .top-nav-dropdown {
@@ -80,24 +93,36 @@
   align-items: center;
 }
 
+/* --- SUBMENU STYLING --- */
 .top-submenu {
   position: absolute;
-  top: 100%;
+  top: calc(100% - 10px);
   left: 0;
   background: white;
   min-width: 200px;
   border: 1px solid #eef1f6;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 56, 115, 0.1);
   padding: 8px;
   display: none;
   flex-direction: column;
   z-index: 1001;
-  margin-top: -5px;
 }
 
 .top-nav-dropdown.is-open .top-submenu {
   display: flex;
+  animation: slideInDown 0.2s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .top-submenu a {
@@ -107,18 +132,21 @@
   color: #475569;
   text-decoration: none;
   border-radius: 8px;
+  transition: 0.2s;
 }
 
 .top-submenu a:hover {
-  background: #f8fafc;
+  background: #f0f7ff;
   color: var(--brand-blue);
 }
 
+/* --- HEADER ACTIONS --- */
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
+
 .action-btn {
   background: transparent;
   border: none;
@@ -126,11 +154,29 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
+  transition: 0.2s;
 }
+
+.action-btn:hover {
+  background: #f1f5f9;
+  color: var(--brand-blue);
+}
+
 .header-avatar {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: 10px; /* Rounded square style for Duralux */
   cursor: pointer;
   border: 2px solid #f1f5f9;
+  object-fit: cover;
+  transition: 0.2s;
+}
+
+.header-avatar:hover {
+  border-color: var(--brand-blue);
+}
+
+.profile-container {
+  position: relative;
+  margin-left: 10px;
 }

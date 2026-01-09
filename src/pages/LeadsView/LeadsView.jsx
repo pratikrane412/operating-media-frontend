@@ -40,6 +40,7 @@ const LeadsView = () => {
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
+    counsellor: "",
     fromDate: "",
     toDate: "",
   });
@@ -252,6 +253,22 @@ const LeadsView = () => {
                   {options.sources.map((s, i) => (
                     <option key={i} value={s}>
                       {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <label>Counsellor</label>
+                <select
+                  value={filters.counsellor}
+                  onChange={(e) =>
+                    setFilters({ ...filters, counsellor: e.target.value })
+                  }
+                >
+                  <option value="">All Counsellors</option>
+                  {options.counsellors?.map((c, i) => (
+                    <option key={i} value={c}>
+                      {c}
                     </option>
                   ))}
                 </select>

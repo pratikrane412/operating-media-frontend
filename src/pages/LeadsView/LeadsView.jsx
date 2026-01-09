@@ -6,6 +6,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
+  Eye,
   MoreHorizontal,
   Filter,
   RotateCcw,
@@ -338,14 +339,14 @@ const LeadsView = () => {
               <table className="leads-table">
                 <thead>
                   <tr>
-                    <th width="160">CUSTOMER</th>
                     <th width="80">COURSE</th>
+                    <th width="160">CUSTOMER</th>
                     <th width="130">PHONE</th>
                     <th width="140">DATE</th>
                     <th width="120">FOLLOWUP</th>
                     <th width="120">TAGS</th>
                     <th width="400">NOTES</th>
-                    <th width="80">ACTIONS</th>
+                    <th width="100">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -362,13 +363,13 @@ const LeadsView = () => {
                         className="clickable-row"
                         onClick={(e) => handleRowClick(lead.id, e)}
                       >
-                        <td className="customer-name-cell">
-                          <span>{lead.name}</span>
-                        </td>
                         <td>
                           <span className="course-pill-sm">
                             {getCourseShortName(lead.course)}
                           </span>
+                        </td>
+                        <td className="customer-name-cell">
+                          <span>{lead.name}</span>
                         </td>
                         <td>
                           <span className="phone-text-sm">{lead.mobile}</span>
@@ -388,6 +389,15 @@ const LeadsView = () => {
                         <td className="notes-cell-sm">{lead.notes || "—"}</td>
                         <td>
                           <div className="action-btns-sm">
+                            <button
+                              className="icon-btn-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenDrawer(lead.id);
+                              }}
+                            >
+                              <Eye size={16} />
+                            </button>
                             <div className="action-menu-container">
                               <button
                                 className={`icon-btn-sm ${

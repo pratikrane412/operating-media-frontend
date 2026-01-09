@@ -7,7 +7,7 @@ export const hasPermission = (requiredPerm) => {
   // 1. THE SUPER ADMIN BYPASS
   // If the user email is exactly the super admin email, or the role is super_admin,
   // they pass every check automatically.
-  if (user.email === "admin@ims247.com" || user.role === "super_admin") {
+  if (user.email === "info@operatingmedia.com" || user.role === "super_admin") {
     return true;
   }
 

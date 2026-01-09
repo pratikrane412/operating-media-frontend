@@ -425,6 +425,14 @@
   background: #f8fafc;
   border-color: #003873;
 }
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #f8fafc;
+}
 
 @media (max-width: 1366px) {
   .content-area {

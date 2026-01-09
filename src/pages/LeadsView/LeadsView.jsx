@@ -6,7 +6,6 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
-  Eye,
   MoreHorizontal,
   Filter,
   RotateCcw,
@@ -193,6 +192,17 @@ const LeadsView = () => {
     setIsDrawerOpen(true);
   };
 
+  const handleRowClick = (leadId, event) => {
+    // Don't open drawer if clicking on action buttons
+    if (
+      event.target.closest(".action-btns-sm") ||
+      event.target.closest(".action-dropdown")
+    ) {
+      return;
+    }
+    handleOpenDrawer(leadId);
+  };
+
   return (
     <div className="app-container">
       <div className="main-viewport">
@@ -335,7 +345,7 @@ const LeadsView = () => {
                     <th width="120">FOLLOWUP</th>
                     <th width="120">TAGS</th>
                     <th width="400">NOTES</th>
-                    <th width="100">ACTIONS</th>
+                    <th width="80">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -347,7 +357,11 @@ const LeadsView = () => {
                     </tr>
                   ) : (
                     leads.map((lead) => (
-                      <tr key={lead.id}>
+                      <tr
+                        key={lead.id}
+                        className="clickable-row"
+                        onClick={(e) => handleRowClick(lead.id, e)}
+                      >
                         <td className="customer-name-cell">
                           <span>{lead.name}</span>
                         </td>
@@ -374,22 +388,17 @@ const LeadsView = () => {
                         <td className="notes-cell-sm">{lead.notes || "—"}</td>
                         <td>
                           <div className="action-btns-sm">
-                            <button
-                              className="icon-btn-sm"
-                              onClick={() => handleOpenDrawer(lead.id)}
-                            >
-                              <Eye size={16} />
-                            </button>
                             <div className="action-menu-container">
                               <button
                                 className={`icon-btn-sm ${
                                   activeMenuId === lead.id ? "active" : ""
                                 }`}
-                                onClick={() =>
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setActiveMenuId(
                                     activeMenuId === lead.id ? null : lead.id
-                                  )
-                                }
+                                  );
+                                }}
                               >
                                 <MoreHorizontal size={16} />
                               </button>
@@ -397,15 +406,19 @@ const LeadsView = () => {
                                 <div className="action-dropdown" ref={menuRef}>
                                   <button
                                     className="drop-item"
-                                    onClick={() =>
-                                      navigate(`/leads-edit/${lead.id}`)
-                                    }
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(`/leads-edit/${lead.id}`);
+                                    }}
                                   >
                                     <Edit3 size={14} /> Edit
                                   </button>
                                   <button
                                     className="drop-item delete"
-                                    onClick={() => handleDeleteLead(lead.id)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteLead(lead.id);
+                                    }}
                                   >
                                     <Trash2 size={14} /> Delete
                                   </button>

@@ -31,7 +31,11 @@ const LeadsView = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [options, setOptions] = useState({ branches: [], sources: [] });
+  const [options, setOptions] = useState({
+    branches: [],
+    sources: [],
+    counsellors: [],
+  });
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
@@ -112,9 +116,34 @@ const LeadsView = () => {
   useEffect(() => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
-      .then((res) =>
-        setOptions({ branches: res.data.branches, sources: res.data.sources })
-      )
+      .then((res) => {
+        // --- CLEANUP SOURCES LOGIC ---
+        const rawSources = res.data.sources || [];
+        const cleanedSet = new Set([
+          "Direct Call",
+          "Website",
+          "Google",
+          "Reference",
+          "WhatsApp",
+          "Facebook",
+          "Instagram",
+        ]);
+
+        rawSources.forEach((src) => {
+          const items = src.replace(/[\[\]"']/g, "").split(",");
+          items.forEach((item) => {
+            const trimmed = item.trim();
+            if (trimmed && trimmed !== "" && trimmed !== "No Tag")
+              cleanedSet.add(trimmed);
+          });
+        });
+
+        setOptions({
+          branches: res.data.branches,
+          sources: Array.from(cleanedSet).sort(),
+          counsellors: res.data.counsellors,
+        });
+      })
       .catch((err) => console.error(err));
   }, []);
 
@@ -131,6 +160,7 @@ const LeadsView = () => {
             branch_id: isBranchUser ? user.branch_id : undefined,
             branch: isBranchUser ? "" : filters.branch,
             source: filters.source,
+            counsellor: filters.counsellor,
             from: filters.fromDate,
             to: filters.toDate,
           },
@@ -149,21 +179,16 @@ const LeadsView = () => {
     fetchData();
   }, [page, pageSize]);
 
-  // Dynamic search with debounce
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
-
     searchTimeoutRef.current = setTimeout(() => {
       setPage(1);
       fetchData();
     }, 500);
-
     return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
   }, [search]);
 
@@ -195,7 +220,6 @@ const LeadsView = () => {
   };
 
   const handleRowClick = (leadId, event) => {
-    // Don't open drawer if clicking on action buttons
     if (
       event.target.closest(".action-btns-sm") ||
       event.target.closest(".action-dropdown")
@@ -293,8 +317,6 @@ const LeadsView = () => {
                   />
                 </div>
               </div>
-
-              {/* BUTTONS MOVED INTO GRID FOR PERFECT BOX ALIGNMENT */}
               <div className="filter-actions-inline">
                 <button
                   className="btn-reset"
@@ -302,6 +324,7 @@ const LeadsView = () => {
                     setFilters({
                       branch: "",
                       source: "",
+                      counsellor: "",
                       fromDate: "",
                       toDate: "",
                     });
@@ -361,15 +384,16 @@ const LeadsView = () => {
                     <th width="130">PHONE</th>
                     <th width="140">DATE</th>
                     <th width="120">FOLLOWUP</th>
-                    <th width="120">TAGS</th>
-                    <th width="400">NOTES</th>
+                    <th width="130">TAGS</th>
+                    <th width="130">COUNSELLOR</th>
+                    <th width="350">NOTES</th>
                     <th width="100">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="8" className="table-loader">
+                      <td colSpan="9" className="table-loader">
                         Syncing data...
                       </td>
                     </tr>
@@ -403,6 +427,11 @@ const LeadsView = () => {
                           {formatDate(lead.followup_date)}
                         </td>
                         <td>{renderPills(lead.tags, "tag")}</td>
+                        <td>
+                          <span className="counsellor-text-sm">
+                            {lead.counsellor}
+                          </span>
+                        </td>
                         <td className="notes-cell-sm">{lead.notes || "—"}</td>
                         <td>
                           <div className="action-btns-sm">

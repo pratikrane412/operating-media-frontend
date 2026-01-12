@@ -204,22 +204,17 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                 <h4 className="section-title">Tags & Status</h4>
                 <div className="tag-selection-area">
                   <div className="selection-grid">
-                    {allAvailableTags.map((tag) => (
+                    {allAvailableSources.map((src) => (
                       <div
-                        key={tag}
+                        key={src}
                         className={`tag-option ${
-                          tempTags.includes(tag)
-                            ? `selected ${getTagColorClass(tag)}`
+                          tempSources.includes(src)
+                            ? `selected ${getTagColorClass(src)}`
                             : ""
-                        }`}
-                        onClick={() => handleToggleTag(tag)}
-                        style={{
-                          cursor: hasPermission("edit enquiry")
-                            ? "pointer"
-                            : "not-allowed",
-                        }}
+                        }`} // <--- Make sure this is 'src', not 'tag'
+                        onClick={() => handleToggleSource(src)}
                       >
-                        {tag} {tempTags.includes(tag) && <Check size={10} />}
+                        {src} {tempSources.includes(src) && <Check size={10} />}
                       </div>
                     ))}
                   </div>

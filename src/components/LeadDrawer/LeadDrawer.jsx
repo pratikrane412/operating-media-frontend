@@ -17,6 +17,33 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const [tempTags, setTempTags] = useState([]);
   const [tempSources, setTempSources] = useState([]);
 
+  const getTagColorClass = (val) => {
+    if (!val) return "";
+    const t = val.toLowerCase();
+    if (t === "enrolled") return "tag-green";
+    if (["interested", "call back"].includes(t)) return "tag-yellow";
+    if (
+      [
+        "invalid",
+        "looking for job",
+        "not interested",
+        "placement inquiry",
+      ].includes(t)
+    )
+      return "tag-red";
+    if (
+      [
+        "will visit",
+        "visited",
+        "counseling done",
+        "online counseling",
+      ].includes(t)
+    )
+      return "tag-orange";
+    if (t === "future admission") return "tag-purple";
+    return "";
+  };
+
   const allAvailableTags = [
     "Enrolled",
     "Interested",
@@ -181,7 +208,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                       <div
                         key={tag}
                         className={`tag-option ${
-                          tempTags.includes(tag) ? "selected" : ""
+                          tempTags.includes(tag)
+                            ? `selected ${getTagColorClass(tag)}`
+                            : ""
                         }`}
                         onClick={() => handleToggleTag(tag)}
                         style={{

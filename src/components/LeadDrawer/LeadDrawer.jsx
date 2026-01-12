@@ -5,16 +5,14 @@ import {
   User,
   Mail,
   Phone,
-  MapPin,
   Calendar,
-  BookOpen,
   Tag,
   Send,
-  Plus,
   Check,
+  Link2,
 } from "lucide-react";
 import "./LeadDrawer.css";
-import { hasPermission } from "../../utils/permissionCheck"; // Added permission utility
+import { hasPermission } from "../../utils/permissionCheck";
 
 const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const [details, setDetails] = useState(null);
@@ -26,8 +24,8 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const [submitting, setSubmitting] = useState(false);
 
   // Tags Management States
-  const [isEditingTags, setIsEditingTags] = useState(false);
   const [tempTags, setTempTags] = useState([]);
+  const [tempSources, setTempSources] = useState([]); // NEW: Temporary state for editing sources
 
   const allAvailableTags = [
     "Enrolled",
@@ -46,11 +44,23 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     "Online Counseling",
   ];
 
-  // Helper to clean database stringified arrays: "['A', 'B']" -> ["A", "B"]
+  const allAvailableSources = [
+    "Direct Call",
+    "Website",
+    "Google",
+    "Reference",
+    "WhatsApp",
+    "Facebook",
+    "Instagram",
+    "LinkedIn",
+  ];
+
   const formatList = (val) => {
-    if (!val || val === "[]") return [];
-    const cleanStr = val.replace(/[\[\]'"]/g, "");
-    return cleanStr
+    if (!val || val === "[]" || val === "No Tag" || val === "Reference")
+      return [];
+    // Handles cleanup for both bracketed strings and plain comma-separated strings
+    return val
+      .replace(/[\[\]"']/g, "")
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
@@ -63,6 +73,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
       .then((res) => {
         setDetails(res.data);
         setTempTags(formatList(res.data.tags));
+        setTempSources(formatList(res.data.source)); // Set initial sources
         setLoading(false);
       })
       .catch((err) => {
@@ -74,29 +85,60 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   useEffect(() => {
     if (isOpen && leadId) {
       fetchLeadDetails();
-      setIsEditingTags(false);
     }
   }, [leadId, isOpen]);
 
+  // --- TAG LOGIC ---
   const handleToggleTag = (tag) => {
-    if (tempTags.includes(tag)) {
-      setTempTags(tempTags.filter((t) => t !== tag));
-    } else {
-      setTempTags([...tempTags, tag]);
-    }
+    setTempTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   const handleSaveTags = async () => {
     try {
-      await axios.patch(
-        `https://operating-media-backend.onrender.com/api/leads/${leadId}/tags/`,
-        { tags: tempTags }
+      // Use PUT to the edit endpoint
+      const res = await axios.put(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
+        {
+          tags: tempTags, // The array of selected tags
+        }
       );
-      setIsEditingTags(false);
-      fetchLeadDetails();
-      if (onUpdate) onUpdate();
+
+      if (res.status === 200) {
+        alert("Tags updated successfully");
+        if (onUpdate) onUpdate(); // This refreshes the table in the background
+        onClose(); // This closes the drawer automatically
+      }
     } catch (err) {
       alert("Failed to update tags");
+    }
+  };
+
+  // --- SOURCE LOGIC (NEW) ---
+  const handleToggleSource = (src) => {
+    setTempSources((prev) =>
+      prev.includes(src) ? prev.filter((s) => s !== src) : [...prev, src]
+    );
+  };
+
+  const handleSaveSources = async () => {
+    try {
+      // Use PUT to the edit endpoint
+      const res = await axios.put(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
+        {
+          source: tempSources, // The array of selected sources
+        }
+      );
+
+      if (res.status === 200) {
+        alert("Sources updated successfully");
+        if (onUpdate) onUpdate(); // Refresh table
+        onClose(); // Close drawer
+      }
+    } catch (err) {
+      alert("Failed to update sources");
     }
   };
 
@@ -108,13 +150,10 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     }
     setSubmitting(true);
     try {
-      await axios.post(
-        `https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`,
-        {
-          remark: newRemark,
-          next_date: nextDate,
-        }
-      );
+      await axios.post(`https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`, {
+        remark: newRemark,
+        next_date: nextDate,
+      });
       fetchLeadDetails();
       setNewRemark("");
       setNextDate("");
@@ -132,7 +171,6 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     <>
       <div className="drawer-overlay" onClick={onClose}></div>
       <div className={`drawer-container ${isOpen ? "open" : ""}`}>
-        {/* HEADER */}
         <div className="drawer-header">
           <div className="header-user">
             <div className="drawer-avatar">
@@ -155,82 +193,56 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
             <div className="drawer-loader">Loading details...</div>
           ) : (
             <>
-              {/* TAGS & SOURCE SECTION */}
+              {/* TAGS SECTION */}
               <div className="drawer-section">
-                <div className="section-header-row">
-                  <h4 className="section-title">Tags & Status</h4>
-                  {/* PROTECTED: Only show Manage button if user has 'edit enquiry' permission */}
+                <h4 className="section-title">Tags & Status</h4>
+                <div className="tag-selection-area">
+                  <div className="selection-grid">
+                    {allAvailableTags.map((tag) => (
+                      <div
+                        key={tag}
+                        className={`tag-option ${
+                          tempTags.includes(tag) ? "selected" : ""
+                        }`}
+                        onClick={() => handleToggleTag(tag)}
+                      >
+                        {tag} {tempTags.includes(tag) && <Check size={10} />}
+                      </div>
+                    ))}
+                  </div>
                   {hasPermission("edit enquiry") && (
-                    <button
-                      className="btn-edit-small"
-                      onClick={() => setIsEditingTags(!isEditingTags)}
-                    >
-                      {isEditingTags ? "Cancel" : "Manage"}
+                    <button className="btn-save-tags" onClick={handleSaveTags}>
+                      Save Tag Changes
                     </button>
                   )}
                 </div>
+              </div>
 
-                <div className="clean-tag-container">
-                  <div className="pill-group">
-                    {tempTags.length > 0
-                      ? tempTags.map((tag, i) => (
-                          <span key={i} className="status-badge-pill">
-                            <Tag size={10} /> {tag}
-                            {isEditingTags && (
-                              <X
-                                size={12}
-                                className="remove-tag-icon"
-                                onClick={() => handleToggleTag(tag)}
-                              />
-                            )}
-                          </span>
-                        ))
-                      : !isEditingTags && (
-                          <span className="no-tag-placeholder">
-                            No Tags Assigned
-                          </span>
-                        )}
-                  </div>
-
-                  {isEditingTags && (
-                    <div className="tag-selection-area">
-                      <p className="selection-hint">Select tags to apply:</p>
-                      <div className="selection-grid">
-                        {allAvailableTags.map((tag) => (
-                          <div
-                            key={tag}
-                            className={`tag-option ${
-                              tempTags.includes(tag) ? "selected" : ""
-                            }`}
-                            onClick={() => handleToggleTag(tag)}
-                          >
-                            {tag}{" "}
-                            {tempTags.includes(tag) && <Check size={10} />}
-                          </div>
-                        ))}
-                      </div>
-                      <button
-                        className="btn-save-tags"
-                        onClick={handleSaveTags}
+              {/* SOURCE SECTION - NOW EDITABLE */}
+              <div className="drawer-section">
+                <h4 className="section-title">Lead Source</h4>
+                <div className="tag-selection-area">
+                  <div className="selection-grid">
+                    {allAvailableSources.map((src) => (
+                      <div
+                        key={src}
+                        className={`tag-option ${
+                          tempSources.includes(src) ? "selected" : ""
+                        }`}
+                        onClick={() => handleToggleSource(src)}
                       >
-                        Save Changes
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="source-info-box">
-                    <span className="source-label">SOURCE</span>
-                    <div className="source-values-list">
-                      {formatList(details?.source).map((src, i) => (
-                        <span key={i} className="source-value">
-                          {src}
-                          {i < formatList(details?.source).length - 1
-                            ? ", "
-                            : ""}
-                        </span>
-                      ))}
-                    </div>
+                        {src} {tempSources.includes(src) && <Check size={10} />}
+                      </div>
+                    ))}
                   </div>
+                  {hasPermission("edit enquiry") && (
+                    <button
+                      className="btn-save-tags"
+                      onClick={handleSaveSources}
+                    >
+                      Update Source
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -247,11 +259,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                 </div>
               </div>
 
-              {/* TIMELINE & ALWAYS-VISIBLE FOLLOWUP FORM */}
+              {/* TIMELINE & REMARKS */}
               <div className="drawer-section">
                 <h4 className="section-title">Timeline & Remarks</h4>
-
-                {/* PROTECTED: Only show Followup Form if user has 'enquiry followup' permission */}
                 {hasPermission("enquiry followup") && (
                   <div className="followup-form-box">
                     <textarea
@@ -282,7 +292,6 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                     </div>
                   </div>
                 )}
-
                 <div className="timeline">
                   {details?.history?.map((h, i) => (
                     <div key={i} className="timeline-item">

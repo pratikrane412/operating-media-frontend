@@ -254,8 +254,8 @@ const StudentDrawer = ({ isOpen, onClose, onUpdate, studentId }) => {
       } else {
         // CREATE MODE
         await axios.post(
-          "https://operating-media-backend.onrender.com/api/students/create/",
-          formData
+              "https://operating-media-backend.onrender.com/api/students/create/",
+              formData  
         );
       }
       onUpdate();

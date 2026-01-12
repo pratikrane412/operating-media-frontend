@@ -6,6 +6,8 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Eye,
   MoreHorizontal,
   Filter,
@@ -35,6 +37,7 @@ const LeadsView = () => {
     branches: [],
     sources: [],
     counsellors: [],
+    tags: [],
   });
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -45,9 +48,12 @@ const LeadsView = () => {
     branch: "",
     source: "",
     counsellor: "",
+    tags: "",
     fromDate: "",
     toDate: "",
   });
+  const [sortField, setSortField] = useState("enquiry_date");
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
   const isBranchUser = !!user.branch_id;
@@ -68,9 +74,22 @@ const LeadsView = () => {
   };
 
   const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "No Date" || dateStr === "N/A") return dateStr;
-    const parts = dateStr.split("-");
-    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    if (
+      !dateStr ||
+      dateStr === "No Date" ||
+      dateStr === "N/A" ||
+      dateStr === "—"
+    )
+      return dateStr;
+
+    const parts = dateStr.replace(/\//g, "-").split("-");
+
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return `${parts[0]}/${parts[1]}/${parts[2]}`;
+    }
     return dateStr;
   };
 
@@ -102,6 +121,61 @@ const LeadsView = () => {
     );
   };
 
+  // --- SORTING FUNCTIONS ---
+  const parseDate = (dateStr) => {
+    if (
+      !dateStr ||
+      dateStr === "No Date" ||
+      dateStr === "N/A" ||
+      dateStr === "—"
+    ) {
+      return new Date(0);
+    }
+
+    const parts = dateStr.replace(/\//g, "-").split("-");
+
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    return new Date(dateStr);
+  };
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("desc");
+    }
+  };
+
+  const getSortedLeads = () => {
+    if (!leads || leads.length === 0) return [];
+
+    return [...leads].sort((a, b) => {
+      let aValue, bValue;
+
+      if (sortField === "enquiry_date" || sortField === "followup_date") {
+        aValue = parseDate(a[sortField]);
+        bValue = parseDate(b[sortField]);
+      } else if (sortField === "name") {
+        aValue = a.name.toLowerCase();
+        bValue = b.name.toLowerCase();
+      } else {
+        aValue = a[sortField] || "";
+        bValue = b[sortField] || "";
+      }
+
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
+
   // --- LOGIC ---
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -117,7 +191,6 @@ const LeadsView = () => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
-        // --- CLEANUP SOURCES LOGIC ---
         const rawSources = res.data.sources || [];
         const cleanedSet = new Set([
           "Direct Call",
@@ -142,6 +215,7 @@ const LeadsView = () => {
           branches: res.data.branches,
           sources: Array.from(cleanedSet).sort(),
           counsellors: res.data.counsellors,
+          tags: res.data.tags,
         });
       })
       .catch((err) => console.error(err));
@@ -150,22 +224,20 @@ const LeadsView = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `https://operating-media-backend.onrender.com/api/leads-view/`,
-        {
-          params: {
-            page,
-            size: pageSize,
-            search,
-            branch_id: isBranchUser ? user.branch_id : undefined,
-            branch: isBranchUser ? "" : filters.branch,
-            source: filters.source,
-            counsellor: filters.counsellor,
-            from: filters.fromDate,
-            to: filters.toDate,
-          },
-        }
-      );
+      const res = await axios.get(`https://operating-media-backend.onrender.com/api/leads-view/`, {
+        params: {
+          page,
+          size: pageSize,
+          search,
+          branch_id: isBranchUser ? user.branch_id : undefined,
+          branch: isBranchUser ? "" : filters.branch,
+          source: filters.source,
+          counsellor: filters.counsellor,
+          tags: filters.tags,
+          from: filters.fromDate,
+          to: filters.toDate,
+        },
+      });
       setLeads(res.data.leads);
       setTotalPages(res.data.total_pages);
       setLoading(false);
@@ -195,9 +267,7 @@ const LeadsView = () => {
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await axios.delete(
-          `https://operating-media-backend.onrender.com/api/leads/${id}/delete/`
-        );
+        await axios.delete(`https://operating-media-backend.onrender.com/api/leads/${id}/delete/`);
         fetchData();
       } catch (err) {
         alert("Failed to delete lead");
@@ -249,14 +319,14 @@ const LeadsView = () => {
             <div className="filter-grid">
               {!isBranchUser && (
                 <div className="filter-group">
-                  <label>Select Branch</label>
+                  <label>Branch</label>
                   <select
                     value={filters.branch}
                     onChange={(e) =>
                       setFilters({ ...filters, branch: e.target.value })
                     }
                   >
-                    <option value="">All Branch</option>
+                    <option value="">All</option>
                     {options.branches.map((b, i) => (
                       <option key={i} value={b}>
                         {b}
@@ -266,14 +336,14 @@ const LeadsView = () => {
                 </div>
               )}
               <div className="filter-group">
-                <label>Student Source</label>
+                <label>Source</label>
                 <select
                   value={filters.source}
                   onChange={(e) =>
                     setFilters({ ...filters, source: e.target.value })
                   }
                 >
-                  <option value="">All Sources</option>
+                  <option value="">All</option>
                   {options.sources.map((s, i) => (
                     <option key={i} value={s}>
                       {s}
@@ -289,10 +359,26 @@ const LeadsView = () => {
                     setFilters({ ...filters, counsellor: e.target.value })
                   }
                 >
-                  <option value="">All Counsellors</option>
+                  <option value="">All</option>
                   {options.counsellors?.map((c, i) => (
                     <option key={i} value={c}>
                       {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <label>Tags</label>
+                <select
+                  value={filters.tags}
+                  onChange={(e) =>
+                    setFilters({ ...filters, tags: e.target.value })
+                  }
+                >
+                  <option value="">All</option>
+                  {options.tags?.map((t, i) => (
+                    <option key={i} value={t}>
+                      {t}
                     </option>
                   ))}
                 </select>
@@ -325,6 +411,7 @@ const LeadsView = () => {
                       branch: "",
                       source: "",
                       counsellor: "",
+                      tags: "",
                       fromDate: "",
                       toDate: "",
                     });
@@ -333,7 +420,7 @@ const LeadsView = () => {
                     fetchData();
                   }}
                 >
-                  <RotateCcw size={14} /> RESET
+                  <RotateCcw size={14} />
                 </button>
                 <button
                   className="btn-apply"
@@ -380,13 +467,37 @@ const LeadsView = () => {
                 <thead>
                   <tr>
                     <th width="80">COURSE</th>
-                    <th width="160">CUSTOMER</th>
+                    <th
+                      width="160"
+                      className="sortable-header"
+                      onClick={() => handleSort("name")}
+                    >
+                      CUSTOMER{" "}
+                      {sortField === "name" &&
+                        (sortOrder === "asc" ? "↑" : "↓")}
+                    </th>
                     <th width="130">PHONE</th>
-                    <th width="140">DATE</th>
-                    <th width="120">FOLLOWUP</th>
-                    <th width="130">TAGS</th>
+                    <th
+                      width="140"
+                      className="sortable-header"
+                      onClick={() => handleSort("enquiry_date")}
+                    >
+                      DATE{" "}
+                      {sortField === "enquiry_date" &&
+                        (sortOrder === "asc" ? "↑" : "↓")}
+                    </th>
+                    <th
+                      width="120"
+                      className="sortable-header"
+                      onClick={() => handleSort("followup_date")}
+                    >
+                      FOLLOWUP{" "}
+                      {sortField === "followup_date" &&
+                        (sortOrder === "asc" ? "↑" : "↓")}
+                    </th>
+                    <th width="120">TAGS</th>
                     <th width="130">COUNSELLOR</th>
-                    <th width="350">NOTES</th>
+                    <th width="400">NOTES</th>
                     <th width="100">ACTIONS</th>
                   </tr>
                 </thead>
@@ -398,7 +509,7 @@ const LeadsView = () => {
                       </td>
                     </tr>
                   ) : (
-                    leads.map((lead) => (
+                    getSortedLeads().map((lead) => (
                       <tr
                         key={lead.id}
                         className="clickable-row"
@@ -498,7 +609,16 @@ const LeadsView = () => {
                 <button
                   className="page-nav-btn"
                   disabled={page === 1}
+                  onClick={() => setPage(1)}
+                  title="First page"
+                >
+                  <ChevronsLeft size={16} />
+                </button>
+                <button
+                  className="page-nav-btn"
+                  disabled={page === 1}
                   onClick={() => setPage(page - 1)}
+                  title="Previous page"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -515,8 +635,17 @@ const LeadsView = () => {
                   className="page-nav-btn"
                   disabled={page === totalPages}
                   onClick={() => setPage(page + 1)}
+                  title="Next page"
                 >
                   <ChevronRight size={16} />
+                </button>
+                <button
+                  className="page-nav-btn"
+                  disabled={page === totalPages}
+                  onClick={() => setPage(totalPages)}
+                  title="Last page"
+                >
+                  <ChevronsRight size={16} />
                 </button>
               </div>
             </div>

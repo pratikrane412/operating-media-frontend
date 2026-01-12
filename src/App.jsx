@@ -36,7 +36,7 @@ function App() {
         <Route
           path="/leads-view"
           element={
-            <ProtectedRoute permission="view enquiry">
+            <ProtectedRoute>
               <LeadsView />
             </ProtectedRoute>
           }
@@ -100,7 +100,7 @@ function App() {
         <Route
           path="/manage-admission"
           element={
-            <ProtectedRoute permission="make admission">
+            <ProtectedRoute>
               <ManageAdmission />
             </ProtectedRoute>
           }

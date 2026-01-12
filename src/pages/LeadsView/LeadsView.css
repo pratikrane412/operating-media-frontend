@@ -4,22 +4,22 @@
   width: 100%;
 }
 .content-area {
-  padding: 20px 30px;
+  padding: 16px 24px;
   margin-top: 70px;
   background: #f8fafc;
 }
 
-/* --- FILTERS (ALIGNED) --- */
+/* --- FILTERS (ALL IN ONE LINE) --- */
 .filter-card {
   background: #ffffff;
   border: 1px solid #eef1f6;
   border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 20px;
+  padding: 12px 20px;
+  margin-bottom: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 .filter-header-row {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #f1f5f9;
   padding-bottom: 8px;
   display: flex;
@@ -39,64 +39,74 @@
   background: #003873;
   color: white;
   border: none;
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: 8px;
   font-weight: 700;
   font-size: 11px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   cursor: pointer;
   transition: 0.2s;
+  white-space: nowrap;
 }
 .btn-add-primary:hover {
   background: #00284d;
   box-shadow: 0 4px 12px rgba(0, 56, 115, 0.3);
 }
 
-
 .filter-grid {
-  display: grid;
-  grid-template-columns: 1fr 0.9fr 0.9fr 1.3fr 0.8fr;
-  gap: 12px;
+  display: flex;
+  gap: 10px;
   align-items: flex-end;
+  flex-wrap: nowrap;
 }
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
+  min-width: 130px;
+  flex: 1;
 }
 .filter-group label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: #64748b;
 }
 .filter-group select,
 .filter-group input {
-  height: 38px;
-  padding: 0 12px;
+  height: 34px;
+  padding: 0 10px;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 6px;
   outline: none;
-  font-size: 13px;
+  font-size: 12px;
   background: #fff;
+}
+.filter-group.range-group {
+  min-width: 260px;
+  flex: 1.5;
 }
 .date-input-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+}
+.date-sep {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
 }
 
 /* INLINE ACTIONS ALIGNED WITH BOXES */
 .filter-actions-inline {
   display: flex;
   gap: 8px;
-  height: 38px;
+  height: 34px;
 }
 .btn-reset,
 .btn-apply {
-  flex: 1;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 700;
   font-size: 11px;
   display: flex;
@@ -105,6 +115,8 @@
   gap: 6px;
   cursor: pointer;
   transition: 0.2s;
+  padding: 0 14px;
+  white-space: nowrap;
 }
 .btn-reset {
   background: white;
@@ -117,23 +129,23 @@
   color: white;
 }
 
-/* --- LEADS TOOLBAR (STYLED SEARCH) --- */
+/* --- LEADS TOOLBAR (COMPACT) --- */
 .leads-card {
   background: #ffffff;
   border: 1px solid #eef1f6;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 .leads-toolbar {
-  padding: 14px 20px;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
 }
 .entries-select {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #475569;
   display: flex;
@@ -143,9 +155,9 @@
 .entries-select select {
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 6px 10px;
+  padding: 5px 10px;
   outline: none;
-  font-size: 13px;
+  font-size: 12px;
   background: #fff;
   cursor: pointer;
 }
@@ -153,17 +165,17 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #475569;
 }
 .search-box input {
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 10px 14px;
+  border-radius: 6px;
+  padding: 7px 12px;
   outline: none;
-  width: 240px;
-  font-size: 13px;
+  width: 220px;
+  font-size: 12px;
   transition: 0.2s;
   background: #fff;
 }
@@ -172,29 +184,28 @@
   box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.05);
 }
 
-/* --- TABLE --- */
+/* --- TABLE (MAXIMIZED) --- */
 .table-wrapper {
-  overflow-x: auto;
-  max-height: 70vh;
+  overflow: visible;
 }
 .leads-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
-  min-width: 1500px;
+  min-width: 100%;
 }
 
 .leads-table thead th {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: #003873; /* Primary blue */
+  background: #003873;
   padding: 12px 8px;
   text-align: center;
   font-size: 11px;
-  font-weight: 900; /* EXTRA BOLD */
-  color: #ffffff; /* WHITE TEXT */
+  font-weight: 900;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   border-bottom: 2px solid #00284d;
@@ -204,9 +215,20 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* CUSTOMER NAMES CENTERED */
+/* SORTABLE HEADER STYLES */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.sortable-header:hover {
+  background: #00284d !important;
+}
+
+/* TABLE CELLS */
 .leads-table td {
-  padding: 12px 8px;
+  padding: 14px 8px;
   border-bottom: 1px solid #f8fafc;
   font-size: 13px;
   color: #1e293b;
@@ -230,31 +252,31 @@
 .course-pill-sm {
   background: #f1f5f9;
   color: #003873;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 6px;
   font-weight: 800;
-  font-size: 10px;
+  font-size: 11px;
 }
 .phone-text-sm {
   color: #475569;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* TAGS STACKED VERTICALLY */
 .pill-stack {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   align-items: center;
-  margin-top: 4px;
+  margin-top: 5px;
 }
 .tag-pill {
   background: #ebf0f5;
   color: #003873;
-  padding: 2px 10px;
+  padding: 3px 10px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   border: 1px solid #d1dbe5;
   width: fit-content;
@@ -264,7 +286,7 @@
 .no-tag-pill {
   background: #f8fafc;
   color: #cbd5e1;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 4px;
   font-size: 10px;
   font-weight: 700;
@@ -279,28 +301,35 @@
 }
 .date-text-val {
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
 }
 .source-pill-item {
   background: #fff1f2;
   color: #ef4444;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
 }
 .followup-cell-sm {
   font-weight: 600;
   color: #475569;
+  font-size: 13px;
+}
+
+.counsellor-text-sm {
+  font-weight: 600;
+  color: #475569;
+  font-size: 13px;
 }
 
 /* NOTES CENTERED AND SPACIOUS */
 .notes-cell-sm {
   color: #64748b;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
   text-align: center;
-  padding: 12px 15px !important;
+  padding: 14px 15px !important;
   white-space: normal;
   word-break: break-word;
   max-width: 400px;
@@ -435,15 +464,28 @@
   background-color: #f8fafc;
 }
 
-@media (max-width: 1366px) {
-  .content-area {
-    padding: 16px 18px;
+/* --- RESPONSIVE --- */
+@media (max-width: 1600px) {
+  .filter-grid {
+    flex-wrap: wrap;
   }
 
-  /* FILTER GRID COMPACT */
+  .filter-group {
+    min-width: 120px;
+  }
+
+  .filter-actions-inline {
+    width: auto;
+  }
+}
+
+@media (max-width: 1366px) {
+  .content-area {
+    padding: 14px 18px;
+  }
+
   .filter-grid {
-    grid-template-columns: 1fr 1fr 1.3fr 0.8fr;
-    gap: 12px;
+    flex-wrap: wrap;
   }
 
   .btn-add-primary {
@@ -451,43 +493,21 @@
     font-size: 10px;
   }
 
-  /* TABLE COMPACT */
-  .leads-table {
-    min-width: 1300px; /* was 1500px */
-  }
-
-  .leads-table th {
-    font-size: 9px;
-    padding: 10px 6px;
-  }
-
-  .leads-table td {
-    font-size: 12px;
-    padding: 10px 6px;
-  }
-
-  .notes-cell-sm {
-    max-width: 300px;
-    font-size: 11px;
-  }
-
   .search-box input {
-    width: 200px;
+    width: 180px;
   }
 }
 
 @media (max-width: 1200px) {
-  /* FILTERS STACK SMARTLY */
   .filter-grid {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 14px;
+    flex-wrap: wrap;
   }
 
   .filter-actions-inline {
-    grid-column: span 2;
+    width: 100%;
+    justify-content: flex-end;
   }
 
-  /* TOOLBAR STACK */
   .leads-toolbar {
     flex-direction: column;
     align-items: flex-start;
@@ -502,11 +522,8 @@
   .search-box input {
     width: 100%;
   }
-
-  .leads-table {
-    min-width: 1100px;
-  }
 }
+
 @media (max-width: 992px) {
   .content-area {
     padding: 12px;
@@ -517,24 +534,7 @@
     border-radius: 10px;
   }
 
-  .leads-table {
-    min-width: 1000px;
-  }
-
   .notes-cell-sm {
     max-width: 260px;
   }
-}
-.table-wrapper {
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-.table-wrapper::-webkit-scrollbar {
-  height: 8px;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 6px;
 }

@@ -46,7 +46,7 @@ const Login = () => {
         <div className="login-page-wrapper">
             <div className="login-card">
                 <div className="login-header">
-                    <h2>Welcome to <span>Admin</span></h2>
+                    <h2>Welcome to <span>Login</span></h2>
                     <p>Enter your credentials to access your account</p>
                 </div>
                 
@@ -103,10 +103,10 @@ const Login = () => {
 
                     <button type="submit" className="login-submit-btn">Sign In</button>
 
-                    {/* --- NEW OPTION --- */}
+                    {/* --- NEW OPTION ---
                     <div className="login-footer-link">
                         <span onClick={() => navigate('/login')}>Login with branch</span>
-                    </div>
+                    </div> */}
                 </form>
             </div>
         </div>

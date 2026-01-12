@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  X,
-  User,
-  Mail,
-  Phone,
-  Calendar,
-  Tag,
-  Send,
-  Check,
-  Link2,
-} from "lucide-react";
+import { X, Mail, Phone, Calendar, Send, Check } from "lucide-react";
 import "./LeadDrawer.css";
 import { hasPermission } from "../../utils/permissionCheck";
 
@@ -23,9 +13,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const [nextDate, setNextDate] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Tags Management States
+  // Tags & Sources States
   const [tempTags, setTempTags] = useState([]);
-  const [tempSources, setTempSources] = useState([]); // NEW: Temporary state for editing sources
+  const [tempSources, setTempSources] = useState([]);
 
   const allAvailableTags = [
     "Enrolled",
@@ -58,7 +48,6 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const formatList = (val) => {
     if (!val || val === "[]" || val === "No Tag" || val === "Reference")
       return [];
-    // Handles cleanup for both bracketed strings and plain comma-separated strings
     return val
       .replace(/[\[\]"']/g, "")
       .split(",")
@@ -73,7 +62,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
       .then((res) => {
         setDetails(res.data);
         setTempTags(formatList(res.data.tags));
-        setTempSources(formatList(res.data.source)); // Set initial sources
+        setTempSources(formatList(res.data.source));
         setLoading(false);
       })
       .catch((err) => {
@@ -88,72 +77,62 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     }
   }, [leadId, isOpen]);
 
-  // --- TAG LOGIC ---
-  const handleToggleTag = (tag) => {
-    setTempTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
+  // --- AUTO-UPDATE TAG LOGIC ---
+  const handleToggleTag = async (tag) => {
+    if (!hasPermission("edit enquiry")) return;
 
-  const handleSaveTags = async () => {
+    const newTags = tempTags.includes(tag)
+      ? tempTags.filter((t) => t !== tag)
+      : [...tempTags, tag];
+
+    setTempTags(newTags); // Update UI immediately
+
     try {
-      // Use PUT to the edit endpoint
-      const res = await axios.put(
+      await axios.put(
         `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
-        {
-          tags: tempTags, // The array of selected tags
-        }
+        { tags: newTags }
       );
-
-      if (res.status === 200) {
-        alert("Tags updated successfully");
-        if (onUpdate) onUpdate(); // This refreshes the table in the background
-        onClose(); // This closes the drawer automatically
-      }
+      if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
-      alert("Failed to update tags");
+      console.error("Failed to update tags");
+      fetchLeadDetails(); // Revert UI if server fails
     }
   };
 
-  // --- SOURCE LOGIC (NEW) ---
-  const handleToggleSource = (src) => {
-    setTempSources((prev) =>
-      prev.includes(src) ? prev.filter((s) => s !== src) : [...prev, src]
-    );
-  };
+  // --- AUTO-UPDATE SOURCE LOGIC ---
+  const handleToggleSource = async (src) => {
+    if (!hasPermission("edit enquiry")) return;
 
-  const handleSaveSources = async () => {
+    const newSources = tempSources.includes(src)
+      ? tempSources.filter((s) => s !== src)
+      : [...tempSources, src];
+
+    setTempSources(newSources); // Update UI immediately
+
     try {
-      // Use PUT to the edit endpoint
-      const res = await axios.put(
+      await axios.put(
         `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
-        {
-          source: tempSources, // The array of selected sources
-        }
+        { source: newSources }
       );
-
-      if (res.status === 200) {
-        alert("Sources updated successfully");
-        if (onUpdate) onUpdate(); // Refresh table
-        onClose(); // Close drawer
-      }
+      if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
-      alert("Failed to update sources");
+      console.error("Failed to update sources");
+      fetchLeadDetails(); // Revert UI if server fails
     }
   };
 
   const handleAddFollowup = async (e) => {
     e.preventDefault();
-    if (!newRemark || !nextDate) {
-      alert("Please fill both remark and date");
-      return;
-    }
+    if (!newRemark || !nextDate) return;
     setSubmitting(true);
     try {
-      await axios.post(`https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`, {
-        remark: newRemark,
-        next_date: nextDate,
-      });
+      await axios.post(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`,
+        {
+          remark: newRemark,
+          next_date: nextDate,
+        }
+      );
       fetchLeadDetails();
       setNewRemark("");
       setNextDate("");
@@ -193,7 +172,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
             <div className="drawer-loader">Loading details...</div>
           ) : (
             <>
-              {/* TAGS SECTION */}
+              {/* TAGS SECTION - Instant Updates */}
               <div className="drawer-section">
                 <h4 className="section-title">Tags & Status</h4>
                 <div className="tag-selection-area">
@@ -205,20 +184,20 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                           tempTags.includes(tag) ? "selected" : ""
                         }`}
                         onClick={() => handleToggleTag(tag)}
+                        style={{
+                          cursor: hasPermission("edit enquiry")
+                            ? "pointer"
+                            : "not-allowed",
+                        }}
                       >
                         {tag} {tempTags.includes(tag) && <Check size={10} />}
                       </div>
                     ))}
                   </div>
-                  {hasPermission("edit enquiry") && (
-                    <button className="btn-save-tags" onClick={handleSaveTags}>
-                      Save Tag Changes
-                    </button>
-                  )}
                 </div>
               </div>
 
-              {/* SOURCE SECTION - NOW EDITABLE */}
+              {/* SOURCE SECTION - Instant Updates */}
               <div className="drawer-section">
                 <h4 className="section-title">Lead Source</h4>
                 <div className="tag-selection-area">
@@ -230,19 +209,16 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                           tempSources.includes(src) ? "selected" : ""
                         }`}
                         onClick={() => handleToggleSource(src)}
+                        style={{
+                          cursor: hasPermission("edit enquiry")
+                            ? "pointer"
+                            : "not-allowed",
+                        }}
                       >
                         {src} {tempSources.includes(src) && <Check size={10} />}
                       </div>
                     ))}
                   </div>
-                  {hasPermission("edit enquiry") && (
-                    <button
-                      className="btn-save-tags"
-                      onClick={handleSaveSources}
-                    >
-                      Update Source
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -268,7 +244,6 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                       placeholder="Type new followup remark here..."
                       value={newRemark}
                       onChange={(e) => setNewRemark(e.target.value)}
-                      required
                     />
                     <div className="form-row-mini">
                       <div className="date-input-mini">
@@ -277,7 +252,6 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                           type="date"
                           value={nextDate}
                           onChange={(e) => setNextDate(e.target.value)}
-                          required
                         />
                       </div>
                       <div className="form-btns-mini">
@@ -304,9 +278,6 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                       </div>
                     </div>
                   ))}
-                  {details?.history?.length === 0 && (
-                    <p className="no-history">No history yet.</p>
-                  )}
                 </div>
               </div>
             </>

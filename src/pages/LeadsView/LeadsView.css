@@ -436,6 +436,20 @@
   color: #ef4444;
 }
 
+.showing-text {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.showing-text strong {
+  color: #1e293b;
+}
+
+.count-separator {
+  margin: 0 8px;
+  color: #cbd5e1;
+}
 /* --- FOOTER --- */
 .table-footer {
   padding: 12px 20px;

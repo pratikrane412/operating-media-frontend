@@ -663,7 +663,10 @@ const LeadsView = () => {
 
             <div className="table-footer">
               <span className="showing-text">
-                Showing page {page} of {totalPages}
+                Showing page <strong>{page}</strong> of{" "}
+                <strong>{totalPages}</strong>
+                <span className="count-separator"> | </span>
+                 Total Leads: <strong>{totalLeads}</strong> 
               </span>
               <div className="pagination">
                 <button

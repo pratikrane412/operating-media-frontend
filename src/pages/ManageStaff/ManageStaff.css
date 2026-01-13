@@ -58,22 +58,34 @@
 
 /* --- TABLE --- */
 .table-wrapper-scroll {
-  overflow-x: auto;
+  overflow: visible;
 }
 .duralux-staff-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
-.duralux-staff-table th {
-  background: #f8fafc;
-  padding: 16px 24px;
+
+/* BLUE HEADER LIKE LEADS VIEW */
+.duralux-staff-table thead {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.duralux-staff-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #003873 !important; /* Duralux Blue */
+  padding: 12px 24px;
   text-align: left;
   font-size: 11px;
-  font-weight: 800;
-  color: #94a3b8;
+  font-weight: 900;
+  color: #ffffff !important; /* White text */
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.6px;
+  border-bottom: 2px solid #00284d;
 }
+
 .duralux-staff-table td {
   padding: 18px 24px;
   border-bottom: 1px solid #f8fafc;
@@ -190,15 +202,6 @@
   transform: translateY(-2px);
 }
 
-.loader-text {
-  padding: 60px;
-  text-align: center;
-  color: #94a3b8;
-  font-weight: 600;
-}
-
-/* ... Keep all existing CSS ... */
-
 /* Purple Highlight for Permissions */
 .btn-round-action.perm-purple:hover {
   color: #7c3aed; /* Modern Purple */
@@ -207,35 +210,11 @@
   transform: translateY(-2px);
 }
 
-/* Ensure tooltips or specific spacing if needed */
-.action-row-group {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-@media (max-width: 768px) {
-    .batch-header, .course-header, .staff-header-flex {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .search-wrapper, .search-input-wrapper {
-        width: 100% !important;
-    }
-
-    .btn-add-new, .btn-primary-blue {
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* Important: Keeps the table from breaking the screen while allowing swipe */
-    .table-sticky-wrapper, .table-wrapper-scroll {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+.loader-text {
+  padding: 60px;
+  text-align: center;
+  color: #94a3b8;
+  font-weight: 600;
 }
 
 .read-only-tag {
@@ -247,4 +226,33 @@
   padding: 8px 15px;
   border-radius: 6px;
   background: #fef2f2;
+}
+
+@media (max-width: 768px) {
+  .batch-header,
+  .course-header,
+  .staff-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .search-wrapper,
+  .search-input-wrapper {
+    width: 100% !important;
+  }
+
+  .btn-add-new,
+  .btn-primary-blue {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Important: Keeps the table from breaking the screen while allowing swipe */
+  .table-sticky-wrapper,
+  .table-wrapper-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

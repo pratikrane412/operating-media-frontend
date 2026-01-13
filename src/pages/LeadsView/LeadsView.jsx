@@ -360,15 +360,14 @@ const LeadsView = () => {
     const [start, end] = update;
     setDateRange(update);
 
-    if (start) {
+    // Don't auto-apply, just update the state
+    if (start && end) {
       setFilters({
         ...filters,
         fromDate: start.toISOString().split("T")[0],
-        toDate: end
-          ? end.toISOString().split("T")[0]
-          : start.toISOString().split("T")[0],
+        toDate: end.toISOString().split("T")[0],
       });
-    } else {
+    } else if (!start && !end) {
       setFilters({
         ...filters,
         fromDate: "",

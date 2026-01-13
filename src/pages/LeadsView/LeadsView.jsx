@@ -31,6 +31,7 @@ const LeadsView = () => {
 
   // --- ALL STATES DEFINED AT THE TOP ---
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [totalLeads, setTotalLeads] = useState(0);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -295,6 +296,7 @@ const LeadsView = () => {
       );
       setLeads(res.data.leads);
       setTotalPages(res.data.total_pages);
+       setTotalLeads(res.data.total_count);
       setLoading(false);
     } catch (err) {
       console.error(err);

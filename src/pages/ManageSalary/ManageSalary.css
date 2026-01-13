@@ -62,19 +62,34 @@
 }
 
 /* --- TABLE --- */
+.table-container {
+  overflow: visible;
+}
+
 .duralux-salary-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
-.duralux-salary-table th {
-  background: #f8fafc;
-  padding: 16px 24px;
+
+/* BLUE HEADER LIKE LEADS VIEW */
+.duralux-salary-table thead {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.duralux-salary-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #003873 !important; /* Duralux Blue */
+  padding: 12px 24px;
   text-align: left;
   font-size: 11px;
-  font-weight: 800;
-  color: #94a3b8;
+  font-weight: 900;
+  color: #ffffff !important; /* White text */
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.6px;
+  border-bottom: 2px solid #00284d;
 }
 
 .duralux-salary-table td {
@@ -83,6 +98,10 @@
   font-size: 14px;
   color: #1e293b;
   vertical-align: middle;
+}
+
+.text-right {
+  text-align: right !important;
 }
 
 .staff-primary {
@@ -148,25 +167,33 @@
 }
 
 @media (max-width: 768px) {
-    .batch-header, .course-header, .staff-header-flex {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
+  .batch-header,
+  .course-header,
+  .staff-header-flex,
+  .salary-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
 
-    .search-wrapper, .search-input-wrapper {
-        width: 100% !important;
-    }
+  .search-wrapper,
+  .search-input-wrapper {
+    width: 100% !important;
+  }
 
-    .btn-add-new, .btn-primary-blue {
-        width: 100%;
-        justify-content: center;
-    }
+  .btn-add-new,
+  .btn-primary-blue,
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+  }
 
-    /* Important: Keeps the table from breaking the screen while allowing swipe */
-    .table-sticky-wrapper, .table-wrapper-scroll {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+  /* Important: Keeps the table from breaking the screen while allowing swipe */
+  .table-sticky-wrapper,
+  .table-wrapper-scroll,
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

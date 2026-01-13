@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
-import { Banknote, IndianRupee } from "lucide-react"; // Add these imports
-import { HandCoins, CalendarClock, AlertTriangle } from "lucide-react";
 import {
-  Calendar,
-  Clock,
+  IndianRupee,
   AlertCircle,
-  User,
-  Phone,
+  Clock,
+  Zap,
+  HandCoins,
+  CalendarClock,
   ChevronRight,
   ArrowRight,
 } from "lucide-react";
-import "./Dashboard.css"; // Reusing your base dashboard styles
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [data, setData] = useState({ followups: [], stats: {} });
+  const [data, setData] = useState({
+    followups: [],
+    hot_leads: [],
+    reminders: [],
+    stats: {},
+  });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -41,14 +44,14 @@ const Dashboard = () => {
   }, [user.branch_id]);
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "N/A";
-    const [y, m, d] = dateStr.split("-");
-    return `${d}/${m}/${y}`;
+    if (!dateStr || dateStr === "None") return "N/A";
+    const parts = dateStr.split("-");
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      {/* <Sidebar isCollapsed={isCollapsed} /> */}
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 
@@ -94,7 +97,6 @@ const Dashboard = () => {
                     <p>Scheduled for future</p>
                   </div>
                 </div>
-                {/* NEW: REVENUE STAT CARD */}
                 <div className="crm-stat-card green">
                   <div className="card-header">
                     <div className="icon-box">
@@ -109,10 +111,12 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* FOLLOWUP LIST */}
+              {/* FOLLOWUP LIST - FILTERED TO TODAY ONLY */}
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
-                  <span className="branch-title">Active Followup Queue</span>
+                  <span className="branch-title">
+                    Today's Active Followup Queue
+                  </span>
                 </div>
                 <div className="table-sticky-wrapper">
                   <table className="modern-data-table">
@@ -127,35 +131,119 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.followups
-                        .filter(
-                          (f) => f.status === "today" || f.status === "upcoming"
-                        ) // ADD THIS LINE
-                        .map((item) => (
-                          <tr key={item.id}>
+                      {data.followups.filter((f) => f.status === "today")
+                        .length === 0 ? (
+                        <tr>
+                          <td colSpan="6" className="loader">
+                            No followups scheduled for today.
+                          </td>
+                        </tr>
+                      ) : (
+                        data.followups
+                          .filter((f) => f.status === "today")
+                          .map((item) => (
+                            <tr key={item.id}>
+                              <td>
+                                <div className="user-profile-cell">
+                                  <div className="avatar-letter">
+                                    {item.customer_name.charAt(0)}
+                                  </div>
+                                  <span className="user-full-name">
+                                    {item.customer_name}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="phone-num-text">{item.mobile}</td>
+                              <td>
+                                <span className="join-date-text">
+                                  {formatDate(item.followup_date)}
+                                </span>
+                              </td>
+                              <td className="email-text-truncate">
+                                {item.remark}
+                              </td>
+                              <td>
+                                <span className={`status-pill today`}>
+                                  TODAY
+                                </span>
+                              </td>
+                              <td className="text-center">
+                                <button
+                                  className="btn-icon-round"
+                                  onClick={() => navigate("/leads-view")}
+                                >
+                                  <ArrowRight size={15} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* HOT LEADS TABLE - ADDED AS REQUESTED */}
+              <div className="data-display-card mt-30 hot-leads-border">
+                <div className="data-toolbar">
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <Zap size={18} color="#ef4444" />
+                    <span className="branch-title">
+                      Hot Leads Priority Queue
+                    </span>
+                  </div>
+                </div>
+                <div className="table-sticky-wrapper">
+                  <table className="modern-data-table">
+                    <thead>
+                      <tr>
+                        <th>CUSTOMER</th>
+                        <th>PHONE</th>
+                        <th>COURSE</th>
+                        <th>ENQUIRY DATE</th>
+                        <th className="text-center">ACTION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.hot_leads?.length === 0 ? (
+                        <tr>
+                          <td colSpan="5" className="loader">
+                            No hot leads tagged yet.
+                          </td>
+                        </tr>
+                      ) : (
+                        data.hot_leads.map((lead) => (
+                          <tr key={lead.id}>
                             <td>
                               <div className="user-profile-cell">
-                                <div className="avatar-letter">
-                                  {item.customer_name.charAt(0)}
+                                <div
+                                  className="avatar-letter"
+                                  style={{
+                                    background: "#fef2f2",
+                                    color: "#ef4444",
+                                  }}
+                                >
+                                  {lead.name.charAt(0)}
                                 </div>
                                 <span className="user-full-name">
-                                  {item.customer_name}
+                                  {lead.name}
                                 </span>
                               </div>
                             </td>
-                            <td className="phone-num-text">{item.mobile}</td>
+                            <td className="phone-num-text">{lead.mobile}</td>
                             <td>
-                              <span className="join-date-text">
-                                {formatDate(item.followup_date)}
+                              <span className="course-pill-lite">
+                                {lead.course}
                               </span>
                             </td>
-                            <td className="email-text-truncate">
-                              {item.remark}
-                            </td>
-                            <td>
-                              <span className={`status-pill ${item.status}`}>
-                                {item.status.toUpperCase()}
-                              </span>
+                            <td className="phone-num-text">
+                              {formatDate(lead.enquiry_date)}
                             </td>
                             <td className="text-center">
                               <button
@@ -166,11 +254,14 @@ const Dashboard = () => {
                               </button>
                             </td>
                           </tr>
-                        ))}
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
+
+              {/* FEES REMINDERS */}
               <div className="data-display-card mt-40 fee-reminder-card">
                 <div className="data-toolbar fee-toolbar">
                   <div className="toolbar-left">
@@ -199,7 +290,7 @@ const Dashboard = () => {
                           </td>
                         </tr>
                       ) : (
-                        data.reminders?.map((fee, index) => (
+                        data.reminders.map((fee, index) => (
                           <tr key={`${fee.id}-${index}`}>
                             <td>
                               <div className="user-profile-cell">
@@ -226,12 +317,10 @@ const Dashboard = () => {
                             <td className="fee-amount-bold">₹{fee.amount}</td>
                             <td>
                               <span className={`status-pill ${fee.priority}`}>
-                                {fee.priority === "overdue"
-                                  ? "OVERDUE"
-                                  : "DUE SOON"}
+                                {fee.priority.toUpperCase()}
                               </span>
                             </td>
-                            <td className="text-center">
+                            <td className="text-right">
                               <button
                                 className="btn-icon-round fee-btn"
                                 onClick={() => navigate("/manage-admission")}

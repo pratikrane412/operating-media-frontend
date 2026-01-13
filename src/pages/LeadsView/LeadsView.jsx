@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Calendar as CalendarIcon } from "lucide-react";
 import axios from "axios";
 import {
   Search,
@@ -439,22 +442,30 @@ const LeadsView = () => {
               </div>
               <div className="filter-group range-group">
                 <label>Date Range</label>
-                <div className="date-input-container">
-                  <input
-                    type="date"
-                    value={filters.fromDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, fromDate: e.target.value })
+                <div className="custom-datepicker-wrapper">
+                  <DatePicker
+                    selectsRange={true}
+                    startDate={
+                      filters.fromDate ? new Date(filters.fromDate) : null
                     }
+                    endDate={filters.toDate ? new Date(filters.toDate) : null}
+                    onChange={(update) => {
+                      const [start, end] = update;
+                      setFilters({
+                        ...filters,
+                        fromDate: start
+                          ? start.toISOString().split("T")[0]
+                          : "",
+                        toDate: end ? end.toISOString().split("T")[0] : "",
+                      });
+                    }}
+                    isClearable={true}
+                    placeholderText="Select Date Range"
+                    className="datepicker-input"
+                    monthsShown={2} // This creates the dual-month view in your image
+                    dateFormat="MMM d, yyyy"
                   />
-                  <span className="date-sep">to</span>
-                  <input
-                    type="date"
-                    value={filters.toDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, toDate: e.target.value })
-                    }
-                  />
+                  <CalendarIcon className="calendar-icon-inside" size={14} />
                 </div>
               </div>
               <div className="filter-actions-inline">

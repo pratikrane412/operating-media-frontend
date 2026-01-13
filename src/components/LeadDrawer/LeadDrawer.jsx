@@ -85,7 +85,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const fetchLeadDetails = () => {
     setLoading(true);
     axios
-      .get(`https://api.dmsoi.org/api/leads/${leadId}/`)
+      .get(`https://operating-media-backend.onrender.com/api/leads/${leadId}/`)
       .then((res) => {
         setDetails(res.data);
         setTempTags(formatList(res.data.tags));
@@ -115,7 +115,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     setTempTags(newTags); // Update UI immediately
 
     try {
-      await axios.put(`https://api.dmsoi.org/api/leads/${leadId}/edit/`, {
+      await axios.put(`https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`, {
         tags: newTags,
       });
       if (onUpdate) onUpdate(); // Refresh background table
@@ -136,7 +136,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     setTempSources(newSources); // Update UI immediately
 
     try {
-      await axios.put(`https://api.dmsoi.org/api/leads/${leadId}/edit/`, {
+      await axios.put(`https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`, {
         source: newSources,
       });
       if (onUpdate) onUpdate(); // Refresh background table
@@ -151,7 +151,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     if (!newRemark || !nextDate) return;
     setSubmitting(true);
     try {
-      await axios.post(`https://api.dmsoi.org/api/leads/${leadId}/followup/`, {
+      await axios.post(`https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`, {
         remark: newRemark,
         next_date: nextDate,
       });

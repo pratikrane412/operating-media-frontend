@@ -10,7 +10,6 @@
   border-color: #67e8f9 !important;
 }
 
-
 /* Yellow: Interested, Call Back */
 .tag-option.selected.tag-yellow {
   background: #fef9c3 !important;
@@ -352,7 +351,7 @@
 .timeline-meta {
   font-size: 12px;
   font-weight: 700;
-  color: #94a3b8;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;

@@ -74,6 +74,54 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     "LinkedIn",
   ];
 
+  const formatTimelineDate = (dateStr) => {
+    if (!dateStr || dateStr === "N/A" || dateStr === "—" || dateStr === "None")
+      return "N/A";
+
+    // Split by dash or slash
+    const parts = dateStr.includes("-")
+      ? dateStr.split("-")
+      : dateStr.split("/");
+
+    let d, m, y;
+
+    if (parts[0].length === 4) {
+      // If format is YYYY-MM-DD
+      y = parts[0];
+      m = parts[1];
+      d = parts[2];
+    } else {
+      // If format is DD/MM/YYYY
+      d = parts[0];
+      m = parts[1];
+      y = parts[2];
+    }
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    // parseInt(d, 10) converts "01" to "1"
+    const dayNum = parseInt(d, 10);
+    const monthName = months[parseInt(m, 10) - 1];
+
+    if (!monthName || isNaN(dayNum)) return dateStr;
+
+    // This keeps the year as full 4 digits (e.g., 2025, 2026)
+    return `${dayNum} ${monthName} ${y}`;
+  };
+
   const formatList = (val) => {
     if (!val || val === "[]" || val === "No Tag" || val === "Reference")
       return [];
@@ -117,9 +165,12 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     setTempTags(newTags); // Update UI immediately
 
     try {
-      await axios.put(`https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`, {
-        tags: newTags,
-      });
+      await axios.put(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
+        {
+          tags: newTags,
+        }
+      );
       if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
       console.error("Failed to update tags");
@@ -138,9 +189,12 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     setTempSources(newSources); // Update UI immediately
 
     try {
-      await axios.put(`https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`, {
-        source: newSources,
-      });
+      await axios.put(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
+        {
+          source: newSources,
+        }
+      );
       if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
       console.error("Failed to update sources");
@@ -153,10 +207,13 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     if (!newRemark || !nextDate) return;
     setSubmitting(true);
     try {
-      await axios.post(`https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`, {
-        remark: newRemark,
-        next_date: nextDate,
-      });
+      await axios.post(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`,
+        {
+          remark: newRemark,
+          next_date: nextDate,
+        }
+      );
       fetchLeadDetails();
       setNewRemark("");
       setNextDate("");
@@ -298,7 +355,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                       <div className="timeline-dot"></div>
                       <div className="timeline-content">
                         <div className="timeline-meta">
-                          <Calendar size={12} /> <span>{h.date}</span>
+                          <Calendar size={12} />
+                          {/* APPLY THE NEW FORMATTER HERE */}
+                          <span>{formatTimelineDate(h.date)}</span>
                         </div>
                         <p className="timeline-remark">{h.remark}</p>
                       </div>

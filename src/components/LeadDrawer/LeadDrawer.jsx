@@ -20,6 +20,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const getTagColorClass = (val) => {
     if (!val) return "";
     const t = val.toLowerCase();
+    if (t === "hot lead") return "tag-cyan";
     if (t === "enrolled") return "tag-green";
     if (["interested", "call back"].includes(t)) return "tag-yellow";
     if (
@@ -46,6 +47,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
 
   const allAvailableTags = [
     "Enrolled",
+    "Hot Lead",
     "Interested",
     "Will Visit",
     "Visited",

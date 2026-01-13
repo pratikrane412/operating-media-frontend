@@ -98,6 +98,7 @@ const LeadsView = () => {
     if (!val) return "";
     const t = val.toLowerCase();
     if (t === "enrolled") return "tag-green";
+    if (t === "hot lead") return "tag-cyan";
     if (["interested", "call back"].includes(t)) return "tag-yellow";
     if (
       [

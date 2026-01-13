@@ -283,6 +283,11 @@
 }
 
 /* COLORED TAG CLASSES */
+.tag-pill.tag-cyan {
+  background: #cffafe !important;
+  color: #155e75 !important;
+  border-color: #67e8f9 !important;
+}
 /* Green: Enrolled */
 .tag-pill.tag-green {
   background: #dcfce7 !important;
@@ -316,6 +321,12 @@
   background: #f3e8ff !important;
   color: #6b21a8 !important;
   border-color: #d8b4fe !important;
+}
+
+.tag-option.selected.tag-cyan {
+  background: #cffafe !important;
+  color: #155e75 !important;
+  border-color: #67e8f9 !important;
 }
 
 /* NO TAG PLACEHOLDER */

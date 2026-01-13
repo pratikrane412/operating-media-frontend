@@ -55,6 +55,8 @@ const LeadsView = () => {
     fromDate: "",
     toDate: "",
   });
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
   const [sortField, setSortField] = useState("enquiry_date");
   const [sortOrder, setSortOrder] = useState("desc");
 
@@ -79,16 +81,13 @@ const LeadsView = () => {
   const getLatestNotes = (notesString) => {
     if (!notesString || notesString === "—" || notesString === "") return "—";
 
-    // 1. Split by comma to get individual notes
     const noteItems = notesString
       .split(",")
       .map((item) => item.trim())
-      .filter(Boolean); // Removes empty strings
+      .filter(Boolean);
 
-    // 2. If there are 2 or fewer notes, return the whole thing
     if (noteItems.length <= 2) return notesString;
 
-    // 3. Take the last 2 items and join them back with a comma
     const latestTwo = noteItems.slice(-2);
     return latestTwo.join(", ");
   };
@@ -356,6 +355,49 @@ const LeadsView = () => {
     handleOpenDrawer(leadId);
   };
 
+  // Handle date range change
+  const handleDateChange = (update) => {
+    const [start, end] = update;
+    setDateRange(update);
+
+    if (start) {
+      setFilters({
+        ...filters,
+        fromDate: start.toISOString().split("T")[0],
+        toDate: end
+          ? end.toISOString().split("T")[0]
+          : start.toISOString().split("T")[0],
+      });
+    } else {
+      setFilters({
+        ...filters,
+        fromDate: "",
+        toDate: "",
+      });
+    }
+  };
+
+  // Reset filters function
+  const handleResetFilters = () => {
+    setFilters({
+      branch: "",
+      source: "",
+      counsellor: "",
+      tags: "",
+      fromDate: "",
+      toDate: "",
+    });
+    setDateRange([null, null]);
+    setSearch("");
+    setPage(1);
+  };
+
+  // Apply filters function
+  const handleApplyFilters = () => {
+    setPage(1);
+    fetchData();
+  };
+
   return (
     <div className="app-container">
       <div className="main-viewport">
@@ -443,57 +485,29 @@ const LeadsView = () => {
               <div className="filter-group range-group">
                 <label>Date Range</label>
                 <div className="custom-datepicker-wrapper">
+                  <CalendarIcon className="calendar-icon-inside" size={16} />
                   <DatePicker
                     selectsRange={true}
-                    startDate={
-                      filters.fromDate ? new Date(filters.fromDate) : null
-                    }
-                    endDate={filters.toDate ? new Date(filters.toDate) : null}
-                    onChange={(update) => {
-                      const [start, end] = update;
-                      setFilters({
-                        ...filters,
-                        fromDate: start
-                          ? start.toISOString().split("T")[0]
-                          : "",
-                        toDate: end ? end.toISOString().split("T")[0] : "",
-                      });
-                    }}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={handleDateChange}
                     isClearable={true}
                     placeholderText="Select Date Range"
                     className="datepicker-input"
-                    monthsShown={2} // This creates the dual-month view in your image
+                    monthsShown={2}
                     dateFormat="MMM d, yyyy"
                   />
-                  <CalendarIcon className="calendar-icon-inside" size={14} />
                 </div>
               </div>
               <div className="filter-actions-inline">
                 <button
                   className="btn-reset"
-                  onClick={() => {
-                    setFilters({
-                      branch: "",
-                      source: "",
-                      counsellor: "",
-                      tags: "",
-                      fromDate: "",
-                      toDate: "",
-                    });
-                    setSearch("");
-                    setPage(1);
-                    fetchData();
-                  }}
+                  onClick={handleResetFilters}
+                  title="Reset Filters"
                 >
                   <RotateCcw size={14} />
                 </button>
-                <button
-                  className="btn-apply"
-                  onClick={() => {
-                    setPage(1);
-                    fetchData();
-                  }}
-                >
+                <button className="btn-apply" onClick={handleApplyFilters}>
                   <Check size={14} /> APPLY
                 </button>
               </div>

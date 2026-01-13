@@ -22,14 +22,31 @@
   height: 100%;
 }
 
+/* UPDATED BRAND BOX FOR LOGO */
 .brand-box {
   display: flex;
   align-items: center;
-  gap: 12px;
   cursor: pointer;
   margin-right: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background-color 0.2s;
 }
 
+.brand-box:hover {
+  background-color: rgba(0, 56, 115, 0.05);
+}
+
+/* LOGO IMAGE STYLES */
+.brand-logo-img {
+  height: 40px; /* Adjust this based on your logo size */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* REMOVE OR COMMENT OUT OLD STYLES */
+/*
 .brand-logo {
   width: 32px;
   height: 32px;
@@ -48,6 +65,7 @@
   font-size: 18px;
   color: #0f172a;
 }
+*/
 
 .top-menu-links {
   display: flex;
@@ -179,4 +197,21 @@
 .profile-container {
   position: relative;
   margin-left: 10px;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 1200px) {
+  .brand-logo-img {
+    height: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .brand-logo-img {
+    height: 32px;
+  }
+
+  .header-nav {
+    padding: 0 20px;
+  }
 }

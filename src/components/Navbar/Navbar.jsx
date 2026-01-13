@@ -41,8 +41,11 @@ const Navbar = () => {
     <nav className="header-nav">
       <div className="nav-left-section">
         <div className="brand-box" onClick={() => navigate("/dashboard")}>
-          <div className="brand-logo">O</div>
-          <span className="brand-name">Operating Media</span>
+          <img
+            src="/OM (1).svg"
+            alt="Operating Media"
+            className="brand-logo-img"
+          />
         </div>
 
         <div className="top-menu-links" ref={navRef}>

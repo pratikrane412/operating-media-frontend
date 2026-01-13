@@ -15,7 +15,7 @@ import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ManageAdmission.css";
-import { hasPermission } from "../../utils/permissionCheck"; // Added import
+import { hasPermission } from "../../utils/permissionCheck";
 
 const ManageAdmission = () => {
   const navigate = useNavigate();
@@ -33,6 +33,12 @@ const ManageAdmission = () => {
   const menuRef = useRef(null);
 
   const handleViewClick = (id) => {
+    setSelectedAdmissionId(id);
+    setIsViewDrawerOpen(true);
+  };
+
+  // New function to handle row click
+  const handleRowClick = (id) => {
     setSelectedAdmissionId(id);
     setIsViewDrawerOpen(true);
   };
@@ -165,7 +171,11 @@ const ManageAdmission = () => {
                     </tr>
                   ) : (
                     admissions.map((item) => (
-                      <tr key={item.id}>
+                      <tr
+                        key={item.id}
+                        onClick={() => handleRowClick(item.id)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <td>
                           <div className="user-profile-cell">
                             {/* <div className="avatar-letter">
@@ -197,7 +207,7 @@ const ManageAdmission = () => {
                             {item.employed_status === "Yes" ? "Yes" : "No"}
                           </span>
                         </td>
-                        <td>
+                        <td onClick={(e) => e.stopPropagation()}>
                           <div className="action-btn-row">
                             {/* View button is visible to anyone who can see this page */}
                             <button

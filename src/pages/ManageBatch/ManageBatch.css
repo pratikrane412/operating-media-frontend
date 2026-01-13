@@ -103,6 +103,11 @@
   background: white;
 }
 
+/* --- TABLE CONTAINER --- */
+.table-container {
+  overflow: visible;
+}
+
 /* --- TABLE --- */
 .duralux-table {
   width: 100%;
@@ -124,16 +129,16 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.duralux-table th {
+.duralux-table thead th {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: #003873; /* Duralux Blue */
+  background: #003873 !important; /* Duralux Blue - Force override */
   padding: 12px 24px;
   text-align: left;
   font-size: 11px;
   font-weight: 900;
-  color: #ffffff; /* White text */
+  color: #ffffff !important; /* White text - Force override */
   text-transform: uppercase;
   letter-spacing: 0.6px;
   border-bottom: 2px solid #00284d;

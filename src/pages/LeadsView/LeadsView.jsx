@@ -29,7 +29,11 @@ const LeadsView = () => {
   const menuRef = useRef(null);
   const searchTimeoutRef = useRef(null);
 
-  // --- ALL STATES DEFINED AT THE TOP ---
+  // 1. DEFINE STATIC VARIABLES FIRST
+  const user = JSON.parse(localStorage.getItem("admin") || "{}");
+  const isBranchUser = !!user.branch_id;
+
+  // 2. NOW DEFINE ALL STATES
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [totalLeads, setTotalLeads] = useState(0);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
@@ -48,19 +52,19 @@ const LeadsView = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
+
+  // This will now work because 'user' was defined at the top
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
-    counsellor: "",
+    counsellor: user.role === "staff" ? user.name : "", 
     tags: "",
     fromDate: "",
     toDate: "",
   });
-  const [sortField, setSortField] = useState("enquiry_date");
-  const [sortOrder, setSortOrder] = useState("desc");
 
-  const user = JSON.parse(localStorage.getItem("admin") || "{}");
-  const isBranchUser = !!user.branch_id;
+  const [sortField, setSortField] = useState("followup_date");
+  const [sortOrder, setSortOrder] = useState("desc");
 
   // --- HELPERS ---
   const getCourseShortName = (name) => {
@@ -470,7 +474,7 @@ const LeadsView = () => {
                     setFilters({
                       branch: "",
                       source: "",
-                      counsellor: "",
+                      counsellor: user.role === "staff" ? user.name : "",
                       tags: "",
                       fromDate: "",
                       toDate: "",

@@ -73,6 +73,33 @@ const LeadsView = () => {
       .join("");
   };
 
+  const getTagColorClass = (val) => {
+    if (!val) return "";
+    const t = val.toLowerCase();
+    if (t === "enrolled") return "tag-green";
+    if (["interested", "call back"].includes(t)) return "tag-yellow";
+    if (
+      [
+        "invalid",
+        "looking for job",
+        "not interested",
+        "placement inquiry",
+      ].includes(t)
+    )
+      return "tag-red";
+    if (
+      [
+        "will visit",
+        "visited",
+        "counseling done",
+        "online counseling",
+      ].includes(t)
+    )
+      return "tag-orange";
+    if (t === "future admission") return "tag-purple";
+    return "";
+  };
+
   const formatDate = (dateStr) => {
     if (
       !dateStr ||
@@ -107,12 +134,17 @@ const LeadsView = () => {
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
+
     return (
       <div className="pill-stack">
         {items.map((item, index) => (
           <span
             key={index}
-            className={type === "source" ? "source-pill-item" : "tag-pill"}
+            className={
+              type === "source"
+                ? "source-pill-item"
+                : `tag-pill ${getTagColorClass(item)}`
+            }
           >
             {item}
           </span>
@@ -224,20 +256,23 @@ const LeadsView = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://operating-media-backend.onrender.com/api/leads-view/`, {
-        params: {
-          page,
-          size: pageSize,
-          search,
-          branch_id: isBranchUser ? user.branch_id : undefined,
-          branch: isBranchUser ? "" : filters.branch,
-          source: filters.source,
-          counsellor: filters.counsellor,
-          tags: filters.tags,
-          from: filters.fromDate,
-          to: filters.toDate,
-        },
-      });
+      const res = await axios.get(
+        `https://operating-media-backend.onrender.com/api/leads-view/`,
+        {
+          params: {
+            page,
+            size: pageSize,
+            search,
+            branch_id: isBranchUser ? user.branch_id : undefined,
+            branch: isBranchUser ? "" : filters.branch,
+            source: filters.source,
+            counsellor: filters.counsellor,
+            tags: filters.tags,
+            from: filters.fromDate,
+            to: filters.toDate,
+          },
+        }
+      );
       setLeads(res.data.leads);
       setTotalPages(res.data.total_pages);
       setLoading(false);
@@ -267,7 +302,9 @@ const LeadsView = () => {
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/leads/${id}/delete/`);
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/leads/${id}/delete/`
+        );
         fetchData();
       } catch (err) {
         alert("Failed to delete lead");

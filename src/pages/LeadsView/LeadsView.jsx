@@ -73,6 +73,23 @@ const LeadsView = () => {
       .join("");
   };
 
+  const getLatestNotes = (notesString) => {
+    if (!notesString || notesString === "—" || notesString === "") return "—";
+
+    // 1. Split by comma to get individual notes
+    const noteItems = notesString
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean); // Removes empty strings
+
+    // 2. If there are 2 or fewer notes, return the whole thing
+    if (noteItems.length <= 2) return notesString;
+
+    // 3. Take the last 2 items and join them back with a comma
+    const latestTwo = noteItems.slice(-2);
+    return latestTwo.join(", ");
+  };
+
   const getTagColorClass = (val) => {
     if (!val) return "";
     const t = val.toLowerCase();
@@ -581,7 +598,9 @@ const LeadsView = () => {
                             {lead.counsellor}
                           </span>
                         </td>
-                        <td className="notes-cell-sm">{lead.notes || "—"}</td>
+                        <td className="notes-cell-sm">
+                          {getLatestNotes(lead.notes)}
+                        </td>
                         <td>
                           <div className="action-btns-sm">
                             <button

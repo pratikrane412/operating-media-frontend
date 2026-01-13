@@ -85,7 +85,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const fetchLeadDetails = () => {
     setLoading(true);
     axios
-      .get(`https://operating-media-backend.onrender.com/api/leads/${leadId}/`)
+      .get(`https://api.dmsoi.org/api/leads/${leadId}/`)
       .then((res) => {
         setDetails(res.data);
         setTempTags(formatList(res.data.tags));
@@ -115,10 +115,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     setTempTags(newTags); // Update UI immediately
 
     try {
-      await axios.put(
-        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
-        { tags: newTags }
-      );
+      await axios.put(`https://api.dmsoi.org/api/leads/${leadId}/edit/`, {
+        tags: newTags,
+      });
       if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
       console.error("Failed to update tags");
@@ -137,10 +136,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     setTempSources(newSources); // Update UI immediately
 
     try {
-      await axios.put(
-        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
-        { source: newSources }
-      );
+      await axios.put(`https://api.dmsoi.org/api/leads/${leadId}/edit/`, {
+        source: newSources,
+      });
       if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
       console.error("Failed to update sources");
@@ -153,13 +151,10 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
     if (!newRemark || !nextDate) return;
     setSubmitting(true);
     try {
-      await axios.post(
-        `https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`,
-        {
-          remark: newRemark,
-          next_date: nextDate,
-        }
-      );
+      await axios.post(`https://api.dmsoi.org/api/leads/${leadId}/followup/`, {
+        remark: newRemark,
+        next_date: nextDate,
+      });
       fetchLeadDetails();
       setNewRemark("");
       setNextDate("");
@@ -204,17 +199,22 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                 <h4 className="section-title">Tags & Status</h4>
                 <div className="tag-selection-area">
                   <div className="selection-grid">
-                    {allAvailableSources.map((src) => (
+                    {allAvailableTags.map((tag) => (
                       <div
-                        key={src}
+                        key={tag}
                         className={`tag-option ${
-                          tempSources.includes(src)
-                            ? `selected ${getTagColorClass(src)}`
+                          tempTags.includes(tag)
+                            ? `selected ${getTagColorClass(tag)}`
                             : ""
-                        }`} // <--- Make sure this is 'src', not 'tag'
-                        onClick={() => handleToggleSource(src)}
+                        }`}
+                        onClick={() => handleToggleTag(tag)}
+                        style={{
+                          cursor: hasPermission("edit enquiry")
+                            ? "pointer"
+                            : "not-allowed",
+                        }}
                       >
-                        {src} {tempSources.includes(src) && <Check size={10} />}
+                        {tag} {tempTags.includes(tag) && <Check size={10} />}
                       </div>
                     ))}
                   </div>

@@ -60,13 +60,33 @@
 }
 
 .data-toolbar {
-  padding: 16px 24px;
+  padding: 18px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
 }
-
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+.search-box input {
+  padding: 8px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  width: 250px;
+  outline: none;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.search-box input:focus {
+  border-color: #003873;
+  box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.05);
+}
 .entries-select {
   font-size: 13px;
   color: #64748b;
@@ -79,6 +99,20 @@
   margin: 0 8px;
   outline: none;
   transition: 0.2s;
+}
+/* Pagination Footer matching LeadsView */
+.table-footer {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-top: 1px solid #f1f5f9;
+}
+
+.count-separator {
+  margin: 0 10px;
+  color: #cbd5e1;
 }
 
 .search-input-box {

@@ -5,12 +5,13 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Eye,
   MoreHorizontal,
   Edit3,
   Trash2,
 } from "lucide-react";
-// import Sidebar from "../../components/Sidebar/Sidebar";
 import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
 import Navbar from "../../components/Navbar/Navbar";
@@ -19,7 +20,12 @@ import { hasPermission } from "../../utils/permissionCheck";
 
 const ManageAdmission = () => {
   const navigate = useNavigate();
+  const menuRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
+
+  // --- STATES ---
   const [selectedAdmissionId, setSelectedAdmissionId] = useState(null);
+  const [totalAdmissions, setTotalAdmissions] = useState(0);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -30,37 +36,34 @@ const ManageAdmission = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
-  const menuRef = useRef(null);
 
   const handleViewClick = (id) => {
     setSelectedAdmissionId(id);
     setIsViewDrawerOpen(true);
   };
 
-  // New function to handle row click
-  const handleRowClick = (id) => {
+  const handleRowClick = (id, event) => {
+    if (
+      event.target.closest(".action-btns-sm") ||
+      event.target.closest(".action-dropdown")
+    )
+      return;
     setSelectedAdmissionId(id);
     setIsViewDrawerOpen(true);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setActiveMenuId(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const fetchAdmissions = async () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `https://operating-media-backend.onrender.com/api/admissions/manage/?page=${page}&size=${pageSize}&search=${search}`
+        `https://operating-media-backend.onrender.com/api/admissions/manage/`,
+        {
+          params: { page, size: pageSize, search },
+        },
       );
       setAdmissions(res.data.admissions);
       setTotalPages(res.data.total_pages);
+      setTotalAdmissions(res.data.total_count || 0);
     } catch (err) {
       console.error(err);
     } finally {
@@ -68,9 +71,32 @@ const ManageAdmission = () => {
     }
   };
 
+  // Click outside menu closer
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target))
+        setActiveMenuId(null);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fetch when page or page size changes
   useEffect(() => {
     fetchAdmissions();
   }, [page, pageSize]);
+
+  // Automatic Search Timeout (Matches Leads View)
+  useEffect(() => {
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    searchTimeoutRef.current = setTimeout(() => {
+      setPage(1);
+      fetchAdmissions();
+    }, 500);
+    return () => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    };
+  }, [search]);
 
   const handleEditClick = (id) => {
     setSelectedAdmissionId(id);
@@ -84,7 +110,7 @@ const ManageAdmission = () => {
     ) {
       try {
         await axios.delete(
-          `https://operating-media-backend.onrender.com/api/admissions/${id}/delete/`
+          `https://operating-media-backend.onrender.com/api/admissions/${id}/delete/`,
         );
         setActiveMenuId(null);
         fetchAdmissions();
@@ -96,16 +122,15 @@ const ManageAdmission = () => {
 
   const getPageNumbers = () => {
     const pages = [];
-    let start = Math.max(1, page - 2);
-    let end = Math.min(totalPages, start + 4);
-    if (end - start < 4) start = Math.max(1, end - 4);
-    for (let i = Math.max(1, start); i <= end; i++) pages.push(i);
+    let startPage = Math.max(1, page - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+    for (let i = Math.max(1, startPage); i <= endPage; i++) pages.push(i);
     return pages;
   };
 
   return (
-    <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
-      {/* <Sidebar isCollapsed={isCollapsed} /> */}
+    <div className="app-container">
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
@@ -120,8 +145,9 @@ const ManageAdmission = () => {
             </div>
           </header>
 
-          <div className="data-display-card">
-            <div className="data-toolbar">
+          <div className="leads-card">
+            {/* TOOLBAR MATCHING LEADS VIEW */}
+            <div className="leads-toolbar">
               <div className="entries-select">
                 Show{" "}
                 <select
@@ -131,65 +157,63 @@ const ManageAdmission = () => {
                     setPage(1);
                   }}
                 >
-                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
+                  <option value="100">100</option>
                 </select>{" "}
                 entries
               </div>
-              <div className="search-input-box">
-                <Search size={16} />
+              <div className="search-box">
+                <span>Search:</span>
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  onKeyUp={(e) => e.key === "Enter" && fetchAdmissions()}
                   placeholder="Search name or ID..."
                 />
               </div>
             </div>
 
-            <div className="table-sticky-wrapper">
-              <table className="modern-data-table">
+            <div className="table-wrapper">
+              <table className="leads-table">
                 <thead>
                   <tr>
-                    <th>CUSTOMER</th>
+                    <th>STUDENT</th>
+                    <th>SUBMISSION DATE</th>
                     <th>PHONE</th>
                     <th>EMAIL</th>
                     <th>COURSE</th>
                     <th>BRANCH</th>
                     <th>EMPLOYED</th>
-                    <th className="text-center">ACTIONS</th>
+                    <th width="100">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="7" className="table-loading-msg">
-                        Refreshing records...
+                      <td colSpan="8" className="table-loader">
+                        Syncing data...
                       </td>
                     </tr>
                   ) : (
                     admissions.map((item) => (
                       <tr
                         key={item.id}
-                        onClick={() => handleRowClick(item.id)}
-                        style={{ cursor: "pointer" }}
+                        className="clickable-row"
+                        onClick={(e) => handleRowClick(item.id, e)}
                       >
-                        <td>
-                          <div className="user-profile-cell">
-                            {/* <div className="avatar-letter">
-                              {item.name?.charAt(0) || "?"}
-                            </div> */}
-                            <span className="user-full-name">{item.name}</span>
-                          </div>
+                        <td className="customer-name-cell">
+                          <span>{item.name}</span>
                         </td>
-                        <td className="phone-num-text">{item.phone}</td>
+                        <td className="branch-label-text">
+                          {item.submission_time || "—"}
+                        </td>
+                        <td>
+                          <span className="phone-text-sm">{item.phone}</span>
+                        </td>
                         <td className="email-text-truncate">{item.email}</td>
                         <td>
-                          <span className="main-course-pill">
-                            {item.course}
-                          </span>
+                          <span className="course-pill-sm">{item.course}</span>
                         </td>
                         <td>
                           <span className="branch-label-text">
@@ -198,61 +222,56 @@ const ManageAdmission = () => {
                         </td>
                         <td>
                           <span
-                            className={`status-pill ${
-                              item.employed_status === "Yes"
-                                ? "active"
-                                : "disabled"
-                            }`}
+                            className={`status-pill ${item.employed_status === "Yes" ? "active" : "disabled"}`}
                           >
-                            {item.employed_status === "Yes" ? "Yes" : "No"}
+                            {item.employed_status}
                           </span>
                         </td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <div className="action-btn-row">
-                            {/* View button is visible to anyone who can see this page */}
+                        <td>
+                          <div className="action-btns-sm">
                             <button
-                              className="btn-icon-round"
-                              onClick={() => handleViewClick(item.id)}
+                              className="icon-btn-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleViewClick(item.id);
+                              }}
                             >
-                              <Eye size={15} />
+                              <Eye size={16} />
                             </button>
                             <div className="action-menu-container">
                               <button
-                                className={`btn-icon-round ${
-                                  activeMenuId === item.id ? "active" : ""
-                                }`}
-                                onClick={() =>
+                                className={`icon-btn-sm ${activeMenuId === item.id ? "active" : ""}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setActiveMenuId(
-                                    activeMenuId === item.id ? null : item.id
-                                  )
-                                }
+                                    activeMenuId === item.id ? null : item.id,
+                                  );
+                                }}
                               >
-                                <MoreHorizontal size={15} />
+                                <MoreHorizontal size={16} />
                               </button>
                               {activeMenuId === item.id && (
-                                <div
-                                  className="action-dropdown-list"
-                                  ref={menuRef}
-                                >
-                                  {/* PERMISSION CHECK: EDIT (make admission) */}
+                                <div className="action-dropdown" ref={menuRef}>
                                   {hasPermission("make admission") && (
                                     <button
                                       className="drop-item"
-                                      onClick={() => handleEditClick(item.id)}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditClick(item.id);
+                                      }}
                                     >
-                                      <Edit3 size={14} /> Edit Request
+                                      <Edit3 size={14} /> Edit
                                     </button>
                                   )}
-
-                                  {/* PERMISSION CHECK: DELETE (Assuming delete admission or same as make) */}
                                   {hasPermission("make admission") && (
                                     <button
                                       className="drop-item delete"
-                                      onClick={() =>
-                                        handleDeleteAdmission(item.id)
-                                      }
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteAdmission(item.id);
+                                      }}
                                     >
-                                      <Trash2 size={14} /> Delete Record
+                                      <Trash2 size={14} /> Delete
                                     </button>
                                   )}
                                 </div>
@@ -267,33 +286,51 @@ const ManageAdmission = () => {
               </table>
             </div>
 
-            <div className="pagination-footer">
-              <span className="footer-count">
-                Showing page {page} of {totalPages}
+            {/* FOOTER MATCHING LEADS VIEW */}
+            <div className="table-footer">
+              <span className="showing-text">
+                Showing page <strong>{page}</strong> of{" "}
+                <strong>{totalPages}</strong>
+                <span className="count-separator"> | </span>
+                Total Admissions: <strong>{totalAdmissions}</strong>
               </span>
-              <div className="pagination-nav">
+              <div className="pagination">
                 <button
-                  className="nav-arrow-btn"
+                  className="page-nav-btn"
+                  disabled={page === 1}
+                  onClick={() => setPage(1)}
+                >
+                  <ChevronsLeft size={16} />
+                </button>
+                <button
+                  className="page-nav-btn"
                   disabled={page === 1}
                   onClick={() => setPage(page - 1)}
                 >
                   <ChevronLeft size={16} />
                 </button>
-                {getPageNumbers().map((n) => (
+                {getPageNumbers().map((num) => (
                   <button
-                    key={n}
-                    className={`nav-num-btn ${page === n ? "active" : ""}`}
-                    onClick={() => setPage(n)}
+                    key={num}
+                    className={`page-num-btn ${page === num ? "active" : ""}`}
+                    onClick={() => setPage(num)}
                   >
-                    {n}
+                    {num}
                   </button>
                 ))}
                 <button
-                  className="nav-arrow-btn"
+                  className="page-nav-btn"
                   disabled={page === totalPages}
                   onClick={() => setPage(page + 1)}
                 >
                   <ChevronRight size={16} />
+                </button>
+                <button
+                  className="page-nav-btn"
+                  disabled={page === totalPages}
+                  onClick={() => setPage(totalPages)}
+                >
+                  <ChevronsRight size={16} />
                 </button>
               </div>
             </div>

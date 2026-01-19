@@ -28,10 +28,21 @@ const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
   useEffect(() => {
-    const branchParam = user.branch_id ? `?branch_id=${user.branch_id}` : "";
+    // 1. Build the base parameters
+    const params = new URLSearchParams();
+
+    if (user.branch_id) {
+      params.append("branch_id", user.branch_id);
+    }
+
+    // 2. Add the counsellor name if the user is a staff member
+    if (user.role === "staff" && user.name) {
+      params.append("counsellor", user.name);
+    }
+
     axios
       .get(
-        `https://operating-media-backend.onrender.com/api/followups-dashboard/${branchParam}`
+        `https://operating-media-backend.onrender.com/api/followups-dashboard/?${params.toString()}`,
       )
       .then((res) => {
         setData(res.data);
@@ -41,7 +52,7 @@ const Dashboard = () => {
         console.error(err);
         setLoading(false);
       });
-  }, [user.branch_id]);
+  }, [user.branch_id, user.name, user.role]); // Added name and role to dependencies
 
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "None") return "N/A";

@@ -27,7 +27,7 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
       setLoading(true);
       axios
         .get(
-          `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`
+          ` https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`
         )
         .then((res) => {
           setData(res.data);

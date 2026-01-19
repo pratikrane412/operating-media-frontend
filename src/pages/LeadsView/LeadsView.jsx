@@ -53,11 +53,10 @@ const LeadsView = () => {
   const [search, setSearch] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
 
-  // This will now work because 'user' was defined at the top
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
-    counsellor: user.role === "staff" ? user.name : "", 
+    counsellor: user.role === "staff" ? user.name : "",
     tags: "",
     fromDate: "",
     toDate: "",
@@ -83,19 +82,13 @@ const LeadsView = () => {
 
   const getLatestNotes = (notesString) => {
     if (!notesString || notesString === "—" || notesString === "") return "—";
-
-    // 1. Split by comma to get individual notes
     const noteItems = notesString
       .split(",")
       .map((item) => item.trim())
-      .filter(Boolean); // Removes empty strings
-
-    // 2. If there are 2 or fewer notes, return the whole thing
+      .filter(Boolean);
     if (noteItems.length <= 2) return notesString;
-
-    // 3. Take the last 2 items and join them back with a comma
     const latestTwo = noteItems.slice(-2);
-    return latestTwo.join(", ");
+    return `... ${latestTwo.join(", ")}`;
   };
 
   const getTagColorClass = (val) => {
@@ -126,6 +119,7 @@ const LeadsView = () => {
     return "";
   };
 
+  // UPDATED: Simplified for new backend format
   const formatDate = (dateStr) => {
     if (
       !dateStr ||
@@ -133,16 +127,7 @@ const LeadsView = () => {
       dateStr === "N/A" ||
       dateStr === "—"
     )
-      return dateStr;
-
-    const parts = dateStr.replace(/\//g, "-").split("-");
-
-    if (parts.length === 3) {
-      if (parts[0].length === 4) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return `${parts[0]}/${parts[1]}/${parts[2]}`;
-    }
+      return "—";
     return dateStr;
   };
 
@@ -181,25 +166,10 @@ const LeadsView = () => {
 
   // --- SORTING FUNCTIONS ---
   const parseDate = (dateStr) => {
-    if (
-      !dateStr ||
-      dateStr === "No Date" ||
-      dateStr === "N/A" ||
-      dateStr === "—"
-    ) {
+    if (!dateStr || dateStr === "—" || dateStr === "No Date")
       return new Date(0);
-    }
-
-    const parts = dateStr.replace(/\//g, "-").split("-");
-
-    if (parts.length === 3) {
-      if (parts[0].length === 4) {
-        return new Date(parts[0], parts[1] - 1, parts[2]);
-      }
-      return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
-
-    return new Date(dateStr);
+    const parts = dateStr.split("/");
+    return new Date(parts[2], parts[1] - 1, parts[0]);
   };
 
   const handleSort = (field) => {
@@ -213,10 +183,8 @@ const LeadsView = () => {
 
   const getSortedLeads = () => {
     if (!leads || leads.length === 0) return [];
-
     return [...leads].sort((a, b) => {
       let aValue, bValue;
-
       if (sortField === "enquiry_date" || sortField === "followup_date") {
         aValue = parseDate(a[sortField]);
         bValue = parseDate(b[sortField]);
@@ -227,7 +195,6 @@ const LeadsView = () => {
         aValue = a[sortField] || "";
         bValue = b[sortField] || "";
       }
-
       if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
       if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
       return 0;
@@ -237,9 +204,8 @@ const LeadsView = () => {
   // --- LOGIC ---
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target))
         setActiveMenuId(null);
-      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -249,29 +215,9 @@ const LeadsView = () => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
-        const rawSources = res.data.sources || [];
-        const cleanedSet = new Set([
-          "Direct Call",
-          "Website",
-          "Google",
-          "Reference",
-          "WhatsApp",
-          "Facebook",
-          "Instagram",
-        ]);
-
-        rawSources.forEach((src) => {
-          const items = src.replace(/[\[\]"']/g, "").split(",");
-          items.forEach((item) => {
-            const trimmed = item.trim();
-            if (trimmed && trimmed !== "" && trimmed !== "No Tag")
-              cleanedSet.add(trimmed);
-          });
-        });
-
         setOptions({
           branches: res.data.branches,
-          sources: Array.from(cleanedSet).sort(),
+          sources: res.data.sources,
           counsellors: res.data.counsellors,
           tags: res.data.tags,
         });
@@ -282,26 +228,23 @@ const LeadsView = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `https://operating-media-backend.onrender.com/api/leads-view/`,
-        {
-          params: {
-            page,
-            size: pageSize,
-            search,
-            branch_id: isBranchUser ? user.branch_id : undefined,
-            branch: isBranchUser ? "" : filters.branch,
-            source: filters.source,
-            counsellor: filters.counsellor,
-            tags: filters.tags,
-            from: filters.fromDate,
-            to: filters.toDate,
-          },
-        }
-      );
+      const res = await axios.get(`https://operating-media-backend.onrender.com/api/leads-view/`, {
+        params: {
+          page,
+          size: pageSize,
+          search,
+          branch_id: isBranchUser ? user.branch_id : undefined,
+          branch: isBranchUser ? "" : filters.branch,
+          source: filters.source,
+          counsellor: filters.counsellor,
+          tags: filters.tags,
+          from: filters.fromDate,
+          to: filters.toDate,
+        },
+      });
       setLeads(res.data.leads);
       setTotalPages(res.data.total_pages);
-       setTotalLeads(res.data.total_count);
+      setTotalLeads(res.data.total_count || 0);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -309,14 +252,20 @@ const LeadsView = () => {
     }
   };
 
+  // UPDATED: Added filter dependencies for automatic fetching
   useEffect(() => {
     fetchData();
-  }, [page, pageSize]);
+  }, [
+    page,
+    pageSize,
+    filters.branch,
+    filters.source,
+    filters.counsellor,
+    filters.tags,
+  ]);
 
   useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     searchTimeoutRef.current = setTimeout(() => {
       setPage(1);
       fetchData();
@@ -329,9 +278,7 @@ const LeadsView = () => {
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await axios.delete(
-          `https://operating-media-backend.onrender.com/api/leads/${id}/delete/`
-        );
+        await axios.delete(`https://operating-media-backend.onrender.com/api/leads/${id}/delete/`);
         fetchData();
       } catch (err) {
         alert("Failed to delete lead");
@@ -357,9 +304,8 @@ const LeadsView = () => {
     if (
       event.target.closest(".action-btns-sm") ||
       event.target.closest(".action-dropdown")
-    ) {
+    )
       return;
-    }
     handleOpenDrawer(leadId);
   };
 
@@ -481,7 +427,6 @@ const LeadsView = () => {
                     });
                     setSearch("");
                     setPage(1);
-                    fetchData();
                   }}
                 >
                   <RotateCcw size={14} />
@@ -522,7 +467,7 @@ const LeadsView = () => {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search student name..."
+                  placeholder="Search name or mobile..."
                 />
               </div>
             </div>
@@ -624,9 +569,7 @@ const LeadsView = () => {
                             </button>
                             <div className="action-menu-container">
                               <button
-                                className={`icon-btn-sm ${
-                                  activeMenuId === lead.id ? "active" : ""
-                                }`}
+                                className={`icon-btn-sm ${activeMenuId === lead.id ? "active" : ""}`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setActiveMenuId(
@@ -672,15 +615,14 @@ const LeadsView = () => {
               <span className="showing-text">
                 Showing page <strong>{page}</strong> of{" "}
                 <strong>{totalPages}</strong>
-                <span className="count-separator"> | </span>
-                 Total Leads: <strong>{totalLeads}</strong> 
+                <span className="count-separator"> | </span>Total Leads:{" "}
+                <strong>{totalLeads}</strong>
               </span>
               <div className="pagination">
                 <button
                   className="page-nav-btn"
                   disabled={page === 1}
                   onClick={() => setPage(1)}
-                  title="First page"
                 >
                   <ChevronsLeft size={16} />
                 </button>
@@ -688,7 +630,6 @@ const LeadsView = () => {
                   className="page-nav-btn"
                   disabled={page === 1}
                   onClick={() => setPage(page - 1)}
-                  title="Previous page"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -705,7 +646,6 @@ const LeadsView = () => {
                   className="page-nav-btn"
                   disabled={page === totalPages}
                   onClick={() => setPage(page + 1)}
-                  title="Next page"
                 >
                   <ChevronRight size={16} />
                 </button>
@@ -713,7 +653,6 @@ const LeadsView = () => {
                   className="page-nav-btn"
                   disabled={page === totalPages}
                   onClick={() => setPage(totalPages)}
-                  title="Last page"
                 >
                   <ChevronsRight size={16} />
                 </button>

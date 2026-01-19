@@ -83,11 +83,31 @@ const LeadsCreate = () => {
       .catch((err) => console.error("Database connection error", err));
   }, []);
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    let { name, value } = e.target;
+
+    // --- MOBILE NORMALIZATION LOGIC ---
+    if (name === "mobile") {
+      // 1. Remove all non-digits
+      value = value.replace(/\D/g, "");
+      // 2. If more than 10 digits, take the last 10
+      if (value.length > 10) {
+        value = value.slice(-10);
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Final validation before sending
+    if (formData.mobile.length !== 10) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await axios.post(
@@ -99,8 +119,9 @@ const LeadsCreate = () => {
         navigate("/leads-view");
       }
     } catch (err) {
-      console.error("Submission Error:", err);
-      alert("Failed to create lead. Check console for details.");
+      // --- CAPTURE SPECIFIC SERVER ERROR (Like Duplicate Mobile) ---
+      const serverError = err.response?.data?.error || "Failed to create lead.";
+      alert(serverError);
     } finally {
       setIsSubmitting(false);
     }

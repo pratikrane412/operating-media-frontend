@@ -42,7 +42,7 @@ const Navbar = () => {
       <div className="nav-left-section">
         <div className="brand-box" onClick={() => navigate("/dashboard")}>
           <img
-            src="/OM (1).svg"
+            src="/OPM.png"
             alt="Operating Media"
             className="brand-logo-img"
           />

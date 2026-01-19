@@ -49,7 +49,6 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
     counsellor_id: "",
   });
 
-  // Fetch Dropdown Options from Backend
   useEffect(() => {
     if (isOpen) {
       axios
@@ -59,17 +58,29 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
     }
   }, [isOpen]);
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    let { name, value } = e.target;
+
+    // --- MOBILE SNAP TO 10 DIGITS ---
+    if (name === "mobile") {
+      value = value.replace(/\D/g, ""); // Remove non-digits
+      if (value.length > 10) value = value.slice(-10); // Take last 10
+    }
+
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.mobile.length !== 10) {
+      alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await axios.post(
-        "https://operating-media-backend.onrender.com/api/leads/create/",
-        formData
-      );
+      await axios.post("https://operating-media-backend.onrender.com/api/leads/create/", formData);
       alert("Lead Created Successfully!");
       onUpdate();
       onClose();
@@ -90,13 +101,16 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
         counsellor_id: "",
       });
     } catch (err) {
-      alert("Error saving lead. Please check your inputs.");
+      const msg =
+        err.response?.data?.error ||
+        "This mobile number is already registered.";
+      alert(msg);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // --- MODERN SELECT COMPONENT (Handles Single & Multi) ---
+  // --- MODERN SELECT COMPONENT ---
   const ModernSelect = ({
     name,
     value,
@@ -163,11 +177,7 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
                 <div
                   key={i}
                   className={`dropdown-option ${
-                    isMulti
-                      ? value.includes(o)
-                        ? "selected"
-                        : ""
-                      : value === o
+                    (isMulti ? value.includes(o) : value === o)
                       ? "selected"
                       : ""
                   }`}
@@ -222,6 +232,7 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
               </div>
             </div>
 
+            {/* LAST NAME IS NO LONGER COMPULSORY (required removed) */}
             <div className="drawer-form-row">
               <label className="row-label">Last Name:</label>
               <div className="row-input-wrapper">
@@ -232,9 +243,8 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
                   type="text"
                   name="last_name"
                   value={formData.last_name}
-                  required
                   onChange={handleChange}
-                  placeholder="Enter last name"
+                  placeholder="Enter last name (optional)"
                 />
               </div>
             </div>
@@ -251,7 +261,8 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
                   value={formData.mobile}
                   required
                   onChange={handleChange}
-                  placeholder="Phone number"
+                  placeholder="10 digit number"
+                  maxLength="10"
                 />
               </div>
             </div>
@@ -293,7 +304,6 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
 
           <div className="drawer-section">
             <h4 className="section-subtitle">COURSE & FOLLOWUP</h4>
-
             <ModernSelect
               name="course"
               value={formData.course}
@@ -381,11 +391,16 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
 
           <div className="drawer-footer-sticky">
             {hasPermission("add enquiry") ? (
-              <button type="submit" className="btn-save-lead-blue" disabled={isSubmitting}>
-                <Send size={16} /> {isSubmitting ? "CREATING..." : "CREATE LEAD"}
+              <button
+                type="submit"
+                className="btn-save-lead-blue"
+                disabled={isSubmitting}
+              >
+                <Send size={16} />{" "}
+                {isSubmitting ? "CREATING..." : "CREATE LEAD"}
               </button>
             ) : (
-               <span className="text-muted">Viewing Mode Only</span>
+              <span className="text-muted">Viewing Mode Only</span>
             )}
           </div>
         </form>

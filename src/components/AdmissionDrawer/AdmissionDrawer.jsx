@@ -64,6 +64,8 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     emergency_phone: "",
     total_fees: 0,
     registration_amount: 0,
+    registration_date: "",
+    submission_time: "",
     no_of_installments: 0,
     inst_1_amount: 0,
     inst_1_date: "",
@@ -101,9 +103,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     if (isOpen && admissionId) {
       setLoading(true);
       axios
-        .get(
-          `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`
-        )
+        .get(`https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`)
         .then((res) => {
           setFormData(res.data);
           setLoading(false);
@@ -153,7 +153,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     try {
       await axios.put(
         `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`,
-        formData
+        formData,
       );
       onUpdate();
       onClose();
@@ -241,6 +241,14 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                   <option value="Single">Single</option>
                   <option value="Married">Married</option>
                 </select>
+              </FormRow>
+              <FormRow label="Submission Date" icon={Calendar}>
+                <input
+                  type="date"
+                  name="submission_time"
+                  value={formData.submission_time || ""}
+                  onChange={handleChange}
+                />
               </FormRow>
 
               <h4 className="drawer-section-label">
@@ -373,11 +381,20 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
               <h4 className="drawer-section-label">
                 <Banknote size={15} /> 5. Financial Information
               </h4>
+
               <FormRow label="Total Fees" icon={Banknote}>
                 <input
                   type="number"
                   name="total_fees"
                   value={formData.total_fees || ""}
+                  onChange={handleChange}
+                />
+              </FormRow>
+              <FormRow label="Reg. Date" icon={Calendar}>
+                <input
+                  type="date"
+                  name="registration_date"
+                  value={formData.registration_date || ""}
                   onChange={handleChange}
                 />
               </FormRow>
@@ -438,7 +455,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                       </div>
                     </div>
                   );
-                }
+                },
               )}
             </>
           )}

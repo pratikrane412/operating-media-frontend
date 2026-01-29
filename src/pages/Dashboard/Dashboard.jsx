@@ -23,6 +23,10 @@ const Dashboard = () => {
     stats: {},
   });
   const [loading, setLoading] = useState(true);
+
+  // 1. ADDED FILTER STATE
+  const [feeBranchFilter, setFeeBranchFilter] = useState("All");
+
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
@@ -54,15 +58,12 @@ const Dashboard = () => {
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
-  // --- BRANCH FILTERING LOGIC ---
-  const andheriFees =
-    data.reminders?.filter((f) =>
-      f.branch?.toLowerCase().includes("andheri"),
-    ) || [];
-  const borivaliFees =
-    data.reminders?.filter((f) =>
-      f.branch?.toLowerCase().includes("borivali"),
-    ) || [];
+  // 2. FILTER LOGIC FOR CONSOLIDATED CARD
+  const filteredFees =
+    data.reminders?.filter((f) => {
+      if (feeBranchFilter === "All") return true;
+      return f.branch?.toLowerCase().includes(feeBranchFilter.toLowerCase());
+    }) || [];
 
   return (
     <div className={`app-container ${isCollapsed ? "is-collapsed" : ""}`}>
@@ -85,7 +86,7 @@ const Dashboard = () => {
             <div className="loader">Analyzing Dashboard...</div>
           ) : (
             <>
-              {/* STATS */}
+              {/* TOP STATS */}
               <div className="dashboard-grid">
                 <div className="crm-stat-card red">
                   <div className="card-header">
@@ -275,169 +276,119 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* --- 1. ANDHERI BRANCH FEES REMINDER --- */}
-              {(!user.branch_id || user.branch_id === "1") && (
-                <div className="data-display-card mt-40 fee-reminder-card andheri-border">
-                  <div className="data-toolbar fee-toolbar">
-                    <div className="toolbar-left">
-                      <HandCoins size={18} className="title-icon-blue" />
-                      <span className="branch-title">
-                        Andheri: Upcoming & Overdue Fees
-                      </span>
-                    </div>
+              {/* 3. CONSOLIDATED FEES REMINDERS WITH FILTER */}
+              <div className="data-display-card mt-40 fee-reminder-card">
+                <div
+                  className="data-toolbar fee-toolbar"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    className="toolbar-left"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <HandCoins size={18} className="title-icon-blue" />
+                    <span className="branch-title">
+                      Upcoming & Overdue Fees
+                    </span>
                   </div>
-                  <div className="table-sticky-wrapper">
-                    <table
-                      className="modern-data-table"
-                      style={{ tableLayout: "fixed", width: "100%" }}
-                    >
-                      <thead>
-                        <tr>
-                          <th style={{ width: "25%" }}>STUDENT</th>
-                          <th style={{ width: "25%" }}>COURSE</th>
-                          <th style={{ width: "15%" }}>DUE DATE</th>
-                          <th style={{ width: "15%" }}>AMOUNT</th>
-                          <th style={{ width: "12%" }}>STATUS</th>
-                          <th style={{ width: "8%" }} className="text-center">
-                            ACTION
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {andheriFees.length === 0 ? (
-                          <tr>
-                            <td colSpan="6" className="loader">
-                              No pending fees for Andheri.
-                            </td>
-                          </tr>
-                        ) : (
-                          andheriFees.map((fee, index) => (
-                            <tr key={index}>
-                              {/* RESTORED FONT AND AVATAR STRUCTURE */}
-                              <td>
-                                <div className="user-profile-cell">
-                                  <div
-                                    className={`avatar-letter ${fee.priority === "overdue" ? "bg-red-shaded" : "fee-avatar"}`}
-                                  >
-                                    {fee.customer_name.charAt(0)}
-                                  </div>
-                                  <span className="user-full-name truncate-text">
-                                    {fee.customer_name}
-                                  </span>
-                                </div>
-                              </td>
-                              <td>
-                                <span className="course-pill-lite">
-                                  {fee.course}
-                                </span>
-                              </td>
-                              <td className="due-date-text">
-                                {formatDate(fee.due_date)}
-                              </td>
-                              <td className="fee-amount-bold">₹{fee.amount}</td>
-                              <td>
-                                <span className={`status-pill ${fee.priority}`}>
-                                  {fee.priority.toUpperCase()}
-                                </span>
-                              </td>
-                              <td className="text-center">
-                                <button
-                                  className="btn-icon-round fee-btn"
-                                  onClick={() => navigate("/manage-admission")}
-                                >
-                                  <ArrowRight size={15} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
 
-              {/* --- 2. BORIVALI BRANCH FEES REMINDER --- */}
-              {(!user.branch_id || user.branch_id === "2") && (
-                <div className="data-display-card mt-40 fee-reminder-card borivali-border">
-                  <div className="data-toolbar fee-toolbar">
-                    <div className="toolbar-left">
-                      <HandCoins size={18} className="title-icon-blue" />
-                      <span className="branch-title">
-                        Borivali: Upcoming & Overdue Fees
-                      </span>
-                    </div>
-                  </div>
-                  <div className="table-sticky-wrapper">
-                    <table
-                      className="modern-data-table"
-                      style={{ tableLayout: "fixed", width: "100%" }}
-                    >
-                      <thead>
+                  {/* BRANCH FILTER DROPDOWN */}
+                  <select
+                    className="branch-filter-select"
+                    value={feeBranchFilter}
+                    onChange={(e) => setFeeBranchFilter(e.target.value)}
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: "8px",
+                      border: "1px solid #e2e8f0",
+                      fontSize: "12px",
+                      fontWeight: "700",
+                      color: "#003873",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <option value="All">All Branches</option>
+                    <option value="Andheri">Andheri</option>
+                    <option value="Borivali">Borivali</option>
+                  </select>
+                </div>
+
+                <div className="table-sticky-wrapper">
+                  <table
+                    className="modern-data-table"
+                    style={{ tableLayout: "fixed", width: "100%" }}
+                  >
+                    <thead>
+                      <tr>
+                        <th style={{ width: "25%" }}>STUDENT</th>
+                        <th style={{ width: "25%" }}>COURSE</th>
+                        <th style={{ width: "15%" }}>DUE DATE</th>
+                        <th style={{ width: "15%" }}>AMOUNT</th>
+                        <th style={{ width: "12%" }}>STATUS</th>
+                        <th style={{ width: "8%" }} className="text-center">
+                          ACTION
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredFees.length === 0 ? (
                         <tr>
-                          <th style={{ width: "25%" }}>STUDENT</th>
-                          <th style={{ width: "25%" }}>COURSE</th>
-                          <th style={{ width: "15%" }}>DUE DATE</th>
-                          <th style={{ width: "15%" }}>AMOUNT</th>
-                          <th style={{ width: "12%" }}>STATUS</th>
-                          <th style={{ width: "8%" }} className="text-center">
-                            ACTION
-                          </th>
+                          <td colSpan="6" className="loader">
+                            No pending fees found for {feeBranchFilter}.
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {borivaliFees.length === 0 ? (
-                          <tr>
-                            <td colSpan="6" className="loader">
-                              No pending fees for Borivali.
+                      ) : (
+                        filteredFees.map((fee, index) => (
+                          <tr key={index}>
+                            <td>
+                              <div className="user-profile-cell">
+                                <div
+                                  className={`avatar-letter ${fee.priority === "overdue" ? "bg-red-shaded" : "fee-avatar"}`}
+                                >
+                                  {fee.customer_name.charAt(0)}
+                                </div>
+                                <span className="user-full-name truncate-text">
+                                  {fee.customer_name}
+                                </span>
+                              </div>
+                            </td>
+                            <td>
+                              <span className="course-pill-lite">
+                                {fee.course}
+                              </span>
+                            </td>
+                            <td className="due-date-text">
+                              {formatDate(fee.due_date)}
+                            </td>
+                            <td className="fee-amount-bold">₹{fee.amount}</td>
+                            <td>
+                              <span className={`status-pill ${fee.priority}`}>
+                                {fee.priority.toUpperCase()}
+                              </span>
+                            </td>
+                            <td className="text-center">
+                              <button
+                                className="btn-icon-round fee-btn"
+                                onClick={() => navigate("/manage-admission")}
+                              >
+                                <ArrowRight size={15} />
+                              </button>
                             </td>
                           </tr>
-                        ) : (
-                          borivaliFees.map((fee, index) => (
-                            <tr key={index}>
-                              {/* RESTORED FONT AND AVATAR STRUCTURE */}
-                              <td>
-                                <div className="user-profile-cell">
-                                  <div
-                                    className={`avatar-letter ${fee.priority === "overdue" ? "bg-red-shaded" : "fee-avatar"}`}
-                                  >
-                                    {fee.customer_name.charAt(0)}
-                                  </div>
-                                  <span className="user-full-name truncate-text">
-                                    {fee.customer_name}
-                                  </span>
-                                </div>
-                              </td>
-                              <td>
-                                <span className="course-pill-lite">
-                                  {fee.course}
-                                </span>
-                              </td>
-                              <td className="due-date-text">
-                                {formatDate(fee.due_date)}
-                              </td>
-                              <td className="fee-amount-bold">₹{fee.amount}</td>
-                              <td>
-                                <span className={`status-pill ${fee.priority}`}>
-                                  {fee.priority.toUpperCase()}
-                                </span>
-                              </td>
-                              <td className="text-center">
-                                <button
-                                  className="btn-icon-round fee-btn"
-                                  onClick={() => navigate("/manage-admission")}
-                                >
-                                  <ArrowRight size={15} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        )}  
-                      </tbody>
-                    </table>
-                  </div>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-              )}
+              </div>
             </>
           )}
         </main>

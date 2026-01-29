@@ -38,7 +38,6 @@ const ManageAdmission = () => {
   const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // --- UPDATED: Initialized with your specific courses ---
   const [options, setOptions] = useState({
     branches: [],
     courses: [
@@ -67,13 +66,22 @@ const ManageAdmission = () => {
 
   const [activeMenuId, setActiveMenuId] = useState(null);
 
-  // FETCH OPTIONS FOR DROPDOWNS
+  // ADDED: Pagination Helper Function
+  const getPageNumbers = () => {
+    const pages = [];
+    let startPage = Math.max(1, page - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+    for (let i = Math.max(1, startPage); i <= endPage; i++) pages.push(i);
+    return pages;
+  };
+
   useEffect(() => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
         setOptions((prev) => ({
-          ...prev, // Keep the hardcoded courses
+          ...prev,
           branches: res.data.branches || [],
         }));
       })
@@ -108,12 +116,10 @@ const ManageAdmission = () => {
     }
   };
 
-  // Re-fetch when page or dropdown filters change
   useEffect(() => {
     fetchAdmissions();
   }, [page, pageSize, filters.branch, filters.course]);
 
-  // Handle Search Timeout
   useEffect(() => {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     searchTimeoutRef.current = setTimeout(() => {
@@ -130,7 +136,6 @@ const ManageAdmission = () => {
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
-          {/* FILTER CARD */}
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
@@ -219,7 +224,6 @@ const ManageAdmission = () => {
             </div>
           </div>
 
-          {/* TABLE SECTION */}
           <div className="leads-card">
             <div className="leads-toolbar">
               <div className="entries-select">
@@ -310,8 +314,7 @@ const ManageAdmission = () => {
                           <div className="action-btns-sm">
                             <button
                               className="icon-btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
+                              onClick={() => {
                                 setSelectedAdmissionId(item.id);
                                 setIsViewDrawerOpen(true);
                               }}
@@ -376,6 +379,16 @@ const ManageAdmission = () => {
                 >
                   <ChevronLeft size={16} />
                 </button>
+                {/* PAGE NUMBERS LOOP */}
+                {getPageNumbers().map((num) => (
+                  <button
+                    key={num}
+                    className={`page-num-btn ${page === num ? "active" : ""}`}
+                    onClick={() => setPage(num)}
+                  >
+                    {num}
+                  </button>
+                ))}
                 <button
                   className="page-nav-btn"
                   disabled={page === totalPages}

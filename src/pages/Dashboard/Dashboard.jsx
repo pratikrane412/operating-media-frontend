@@ -52,10 +52,10 @@ const Dashboard = () => {
         console.error(err);
         setLoading(false);
       });
-  }, [user.branch_id, user.name, user.role]); // Added name and role to dependencies
+  }, [user.branch_id, user.name, user.role]);
 
   const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "None") return "N/A";
+    if (!dateStr || dateStr === "None" || dateStr === "N/A") return "N/A";
     const parts = dateStr.split("-");
     if (parts.length !== 3) return dateStr;
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -122,7 +122,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* FOLLOWUP LIST - FILTERED TO TODAY ONLY */}
+              {/* FOLLOWUP LIST */}
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
                   <span className="branch-title">
@@ -194,7 +194,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* HOT LEADS TABLE - ADDED AS REQUESTED */}
+              {/* HOT LEADS TABLE */}
               <div className="data-display-card mt-30 hot-leads-border">
                 <div className="data-toolbar">
                   <div
@@ -272,12 +272,14 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* FEES REMINDERS */}
+              {/* UPDATED: FEES REMINDERS (7 Day Window & Overdue Logic) */}
               <div className="data-display-card mt-40 fee-reminder-card">
                 <div className="data-toolbar fee-toolbar">
                   <div className="toolbar-left">
                     <HandCoins size={18} className="title-icon-blue" />
-                    <span className="branch-title">Fees Payment Reminders</span>
+                    <span className="branch-title">
+                      Upcoming & Overdue Fees
+                    </span>
                   </div>
                 </div>
                 <div className="table-sticky-wrapper">
@@ -297,7 +299,7 @@ const Dashboard = () => {
                       {data.reminders?.length === 0 ? (
                         <tr>
                           <td colSpan="7" className="loader">
-                            No pending fees for this period.
+                            No pending fees (Overdue or next 7 days).
                           </td>
                         </tr>
                       ) : (
@@ -305,7 +307,9 @@ const Dashboard = () => {
                           <tr key={`${fee.id}-${index}`}>
                             <td>
                               <div className="user-profile-cell">
-                                <div className="avatar-letter fee-avatar">
+                                <div
+                                  className={`avatar-letter ${fee.priority === "overdue" ? "bg-red-shaded" : "fee-avatar"}`}
+                                >
                                   {fee.customer_name.charAt(0)}
                                 </div>
                                 <span className="user-full-name">
@@ -328,7 +332,9 @@ const Dashboard = () => {
                             <td className="fee-amount-bold">₹{fee.amount}</td>
                             <td>
                               <span className={`status-pill ${fee.priority}`}>
-                                {fee.priority.toUpperCase()}
+                                {fee.priority === "overdue"
+                                  ? "OVERDUE"
+                                  : "DUE SOON"}
                               </span>
                             </td>
                             <td className="text-right">

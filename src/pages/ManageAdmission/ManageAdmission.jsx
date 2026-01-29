@@ -38,8 +38,20 @@ const ManageAdmission = () => {
   const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Initialize options
-  const [options, setOptions] = useState({ branches: [], courses: [] });
+  // --- UPDATED: Initialized with your specific courses ---
+  const [options, setOptions] = useState({
+    branches: [],
+    courses: [
+      "Masters in Digital Marketing",
+      "Advanced Diploma in Digital Marketing",
+      "Diploma in Digital Marketing",
+      "Pay Per Click Course",
+      "Social Media Optimization Course",
+      "Search Engine Optimization Course",
+      "Google Analytics Course (GA4)",
+      "WordPress Development Course",
+    ],
+  });
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -60,10 +72,10 @@ const ManageAdmission = () => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
-        setOptions({
+        setOptions((prev) => ({
+          ...prev, // Keep the hardcoded courses
           branches: res.data.branches || [],
-          courses: res.data.courses || [],
-        });
+        }));
       })
       .catch((err) => console.error("Options error:", err));
   }, []);
@@ -118,10 +130,6 @@ const ManageAdmission = () => {
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
-          {/* <header className="page-header-flex">
-            <h2 className="page-title-bold">Admission Directory</h2>
-          </header> */}
-
           {/* FILTER CARD */}
           <div className="filter-card">
             <div className="filter-header-row">
@@ -302,7 +310,8 @@ const ManageAdmission = () => {
                           <div className="action-btns-sm">
                             <button
                               className="icon-btn-sm"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setSelectedAdmissionId(item.id);
                                 setIsViewDrawerOpen(true);
                               }}

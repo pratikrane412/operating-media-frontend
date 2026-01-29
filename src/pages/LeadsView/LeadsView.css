@@ -370,16 +370,74 @@
   font-size: 13px;
 }
 
-/* NOTES CENTERED AND SPACIOUS */
+/* =============================================
+   IMPROVED NOTES COLUMN STYLING - HORIZONTAL FORMAT
+   ============================================= */
+
 .notes-cell-sm {
-  color: #64748b;
-  font-size: 13px;
-  line-height: 1.6;
-  text-align: center;
-  padding: 14px 15px !important;
-  white-space: normal;
+  text-align: left !important;
+  padding: 12px 15px !important;
+  vertical-align: top !important;
+  line-height: 1.5;
+  max-width: 450px;
+}
+
+/* Container for all notes */
+.notes-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Individual note entry - HORIZONTAL LAYOUT */
+.note-entry-horizontal {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  line-height: 1.5;
+}
+
+/* Bullet icon */
+.note-bullet-icon {
+  color: #003873;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* Date styling - horizontal */
+.note-date-horizontal {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 90px;
+}
+
+/* Note text - horizontal */
+.note-text-horizontal {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
   word-break: break-word;
-  max-width: 400px;
+  flex: 1;
+}
+
+/* Simple note without date */
+.note-entry-simple {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* No notes placeholder */
+.no-notes-text {
+  font-size: 12px;
+  color: #cbd5e1;
+  font-weight: 500;
 }
 
 /* --- ACTIONS --- */
@@ -596,6 +654,6 @@
   }
 
   .notes-cell-sm {
-    max-width: 260px;
+    max-width: 300px;
   }
 }

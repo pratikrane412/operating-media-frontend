@@ -80,17 +80,6 @@ const LeadsView = () => {
       .join("");
   };
 
-  const getLatestNotes = (notesString) => {
-    if (!notesString || notesString === "—" || notesString === "") return "—";
-    const noteItems = notesString
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-    if (noteItems.length <= 2) return notesString;
-    const latestTwo = noteItems.slice(-2);
-    return `... ${latestTwo.join(", ")}`;
-  };
-
   const getTagColorClass = (val) => {
     if (!val) return "";
     const t = val.toLowerCase();
@@ -119,16 +108,17 @@ const LeadsView = () => {
     return "";
   };
 
-  // UPDATED: Simplified for new backend format
   const formatDate = (dateStr) => {
-    if (
-      !dateStr ||
-      dateStr === "No Date" ||
-      dateStr === "N/A" ||
-      dateStr === "—"
-    )
-      return "—";
-    return dateStr;
+    if (!dateStr || dateStr === "—" || dateStr === "No Date") return "—";
+
+    const [day, month, year] = dateStr.split("/").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   };
 
   const renderPills = (dataString, type = "tag") => {
@@ -159,6 +149,92 @@ const LeadsView = () => {
           >
             {item}
           </span>
+        ))}
+      </div>
+    );
+  };
+
+  // IMPROVED NOTES RENDERING - HORIZONTAL LAYOUT
+  const renderNotes = (notesString) => {
+    if (!notesString || notesString === "—" || notesString.trim() === "") {
+      return <span className="no-notes-text">—</span>;
+    }
+
+    // Enhanced date regex to match dates in format: DD/MM/YYYY or D/M/YYYY
+    const dateRegex = /(\d{1,2}\/\d{1,2}\/\d{2,4})/g;
+
+    // Split by dates while keeping the dates
+    const parts = notesString.split(dateRegex).filter((text) => text.trim());
+
+    if (parts.length === 0) {
+      return <span className="no-notes-text">—</span>;
+    }
+
+    // Group notes by date
+    const noteEntries = [];
+    let currentDate = null;
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i].trim();
+
+      // Check if this part is a date
+      if (dateRegex.test(part)) {
+        dateRegex.lastIndex = 0; // Reset regex
+        currentDate = part;
+      } else if (currentDate && part) {
+        // Clean up the note text
+        let noteText = part
+          .replace(/^[-–—,\s]+/, "") // Remove leading dashes, commas, spaces
+          .replace(/[-–—,\s]+$/, "") // Remove trailing dashes, commas, spaces
+          .trim();
+
+        if (noteText) {
+          noteEntries.push({
+            date: currentDate,
+            text: noteText,
+          });
+        }
+      }
+    }
+
+    // If no proper date-note pairs found, show the original text
+    if (noteEntries.length === 0) {
+      return <div className="note-entry-simple">{notesString}</div>;
+    }
+
+    // Sort entries by date (most recent first)
+    noteEntries.sort((a, b) => {
+      const [d1, m1, y1] = a.date.split("/").map(Number);
+      const [d2, m2, y2] = b.date.split("/").map(Number);
+      const date1 = new Date(y1, m1 - 1, d1);
+      const date2 = new Date(y2, m2 - 1, d2);
+      return date2 - date1;
+    });
+
+    // Show only the last 3 entries
+    const recentEntries = noteEntries.slice(0, 3);
+
+    // Format date to "28 Jan 2026" style
+    const formatNoteDate = (dateStr) => {
+      const [day, month, year] = dateStr.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+      return date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    };
+
+    return (
+      <div className="notes-timeline">
+        {recentEntries.map((entry, index) => (
+          <div key={index} className="note-entry-horizontal">
+            <span className="note-bullet-icon">○</span>
+            <span className="note-date-horizontal">
+              {formatNoteDate(entry.date)}
+            </span>
+            <span className="note-text-horizontal">{entry.text}</span>
+          </div>
         ))}
       </div>
     );
@@ -252,7 +328,6 @@ const LeadsView = () => {
     }
   };
 
-  // UPDATED: Added filter dependencies for automatic fetching
   useEffect(() => {
     fetchData();
   }, [
@@ -427,6 +502,7 @@ const LeadsView = () => {
                     });
                     setSearch("");
                     setPage(1);
+                    fetchData();
                   }}
                 >
                   <RotateCcw size={14} />
@@ -554,7 +630,7 @@ const LeadsView = () => {
                           </span>
                         </td>
                         <td className="notes-cell-sm">
-                          {getLatestNotes(lead.notes)}
+                          {renderNotes(lead.notes)}
                         </td>
                         <td>
                           <div className="action-btns-sm">
@@ -573,7 +649,7 @@ const LeadsView = () => {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setActiveMenuId(
-                                    activeMenuId === lead.id ? null : lead.id
+                                    activeMenuId === lead.id ? null : lead.id,
                                   );
                                 }}
                               >

@@ -64,6 +64,14 @@ const ManageAdmission = () => {
     }
   };
 
+  const handleRowClick = (id, event) => {
+  // If clicking buttons or the dropdown menu, don't open the View drawer
+  if (event.target.closest(".action-btns-sm") || event.target.closest(".action-dropdown")) return;
+  
+  setSelectedAdmissionId(id);
+  setIsViewDrawerOpen(true);
+};
+
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
@@ -308,16 +316,18 @@ const ManageAdmission = () => {
                       onClick={() => handleSort("submission_time")}
                       style={{ cursor: "pointer" }}
                     >
-                      SUBMISSION DATE{" "}
+                      SUBMISSION DATE
                       {sortField === "submission_time" &&
-                        (sortOrder === "asc" ? "↑" : "↓")}
+                        (sortOrder === "asc" ? " ↑" : " ↓")}
                     </th>
-                    <th>COUNSELLOR</th> {/* ADDED TO TABLE */}
+                    <th>COUNSELLOR</th>
                     <th>PHONE</th>
                     <th>EMAIL</th>
                     <th>COURSE</th>
                     <th>BRANCH</th>
-                    <th width="100">ACTIONS</th>
+                    <th width="100" className="text-center">
+                      ACTIONS
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -332,12 +342,7 @@ const ManageAdmission = () => {
                       <tr
                         key={item.id}
                         className="clickable-row"
-                        onClick={(e) => {
-                          if (!e.target.closest("button")) {
-                            setSelectedAdmissionId(item.id);
-                            setIsViewDrawerOpen(true);
-                          }
-                        }}
+                        onClick={(e) => handleRowClick(item.id, e)}
                       >
                         <td className="customer-name-cell">
                           <span>{item.name}</span>
@@ -345,8 +350,7 @@ const ManageAdmission = () => {
                         <td className="branch-label-text">
                           {item.submission_time}
                         </td>
-                        <td className="phone-num-text">{item.counsellor}</td>{" "}
-                        {/* ADDED TO TABLE */}
+                        <td className="phone-num-text">{item.counsellor}</td>
                         <td>
                           <span className="phone-text-sm">{item.phone}</span>
                         </td>
@@ -359,7 +363,7 @@ const ManageAdmission = () => {
                             {item.branch}
                           </span>
                         </td>
-                        <td>
+                        <td onClick={(e) => e.stopPropagation()}>
                           <div className="action-btns-sm">
                             <button
                               className="icon-btn-sm"
@@ -373,12 +377,11 @@ const ManageAdmission = () => {
                             <div className="action-menu-container">
                               <button
                                 className={`icon-btn-sm ${activeMenuId === item.id ? "active" : ""}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
+                                onClick={() =>
                                   setActiveMenuId(
                                     activeMenuId === item.id ? null : item.id,
-                                  );
-                                }}
+                                  )
+                                }
                               >
                                 <MoreHorizontal size={16} />
                               </button>

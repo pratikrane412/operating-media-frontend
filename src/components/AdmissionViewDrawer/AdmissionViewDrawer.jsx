@@ -22,12 +22,15 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 1. ADD STATE FOR FULL PHOTO VIEW
+  const [showFullPhoto, setShowFullPhoto] = useState(false);
+
   useEffect(() => {
     if (isOpen && admissionId) {
       setLoading(true);
       axios
         .get(
-          ` https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`
+          ` https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`,
         )
         .then((res) => {
           setData(res.data);
@@ -67,7 +70,27 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
       <div className="view-drawer-container">
         <div className="view-drawer-header">
           <div className="view-profile-summary">
-            <div className="view-avatar">{data?.first_name?.charAt(0)}</div>
+            {/* 2. ADD ONCLICK TO POP OUT PHOTO */}
+            <div
+              className="view-avatar"
+              onClick={() => data?.photo && setShowFullPhoto(true)}
+              style={{ cursor: data?.photo ? "pointer" : "default" }}
+            >
+              {data?.photo && data.photo !== "" ? (
+                <img
+                  src={data.photo}
+                  alt="Student Profile"
+                  className="avatar-img"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.parentElement.innerText =
+                      data?.first_name?.charAt(0);
+                  }}
+                />
+              ) : (
+                data?.first_name?.charAt(0)
+              )}
+            </div>
             <div className="view-name-stack">
               <h3>
                 {data?.first_name} {data?.last_name}
@@ -217,6 +240,31 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
           )}
         </div>
       </div>
+
+      {/* 3. LIGHTBOX POPUP UI */}
+      {showFullPhoto && (
+        <div
+          className="photo-lightbox-overlay"
+          onClick={() => setShowFullPhoto(false)}
+        >
+          <div
+            className="lightbox-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="lightbox-close-btn"
+              onClick={() => setShowFullPhoto(false)}
+            >
+              <X size={24} />
+            </button>
+            <img
+              src={data?.photo}
+              alt="Full View"
+              className="full-photo-view"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };

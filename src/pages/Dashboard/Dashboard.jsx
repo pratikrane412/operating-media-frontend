@@ -20,11 +20,11 @@ const Dashboard = () => {
     followups: [],
     hot_leads: [],
     reminders: [],
+    counsellors: [], // Ensure this is initialized
     stats: {},
   });
   const [loading, setLoading] = useState(true);
 
-  // 1. ADDED FILTER STATES
   const [feeBranchFilter, setFeeBranchFilter] = useState("All");
   const [followupCounsellorFilter, setFollowupCounsellorFilter] =
     useState("All");
@@ -59,7 +59,7 @@ const Dashboard = () => {
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
-  // 2. FILTER LOGIC FOR FOLLOWUPS
+  // FILTER LOGIC FOR FOLLOWUPS
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
     const matchesCounsellor =
@@ -67,15 +67,6 @@ const Dashboard = () => {
       f.counsellor === followupCounsellorFilter;
     return isToday && matchesCounsellor;
   });
-
-  // Get unique counsellors from today's list for the dropdown
-  const uniqueCounsellors = [
-    ...new Set(
-      data.followups
-        .filter((f) => f.status === "today")
-        .map((f) => f.counsellor),
-    ),
-  ].filter(Boolean);
 
   // FILTER LOGIC FOR FEES
   const filteredFees =
@@ -145,7 +136,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* TODAY'S FOLLOWUP LIST WITH COUNSELLOR FILTER */}
+              {/* TODAY'S FOLLOWUP LIST */}
               <div className="data-display-card mt-30">
                 <div
                   className="data-toolbar"
@@ -159,7 +150,6 @@ const Dashboard = () => {
                     Today's Active Followup Queue
                   </span>
 
-                  {/* COUNSELLOR FILTER */}
                   <select
                     className="branch-filter-select"
                     value={followupCounsellorFilter}
@@ -177,7 +167,8 @@ const Dashboard = () => {
                     }}
                   >
                     <option value="All">All Counsellors</option>
-                    {uniqueCounsellors.map((name, i) => (
+                    {/* FIXED: Use data.counsellors from backend instead of local uniqueCounsellors */}
+                    {data.counsellors?.map((name, i) => (
                       <option key={i} value={name}>
                         {name}
                       </option>
@@ -190,7 +181,7 @@ const Dashboard = () => {
                       <tr>
                         <th>CUSTOMER</th>
                         <th>PHONE</th>
-                        <th>COUNSELLOR</th> {/* NEW COLUMN */}
+                        <th>COUNSELLOR</th>
                         <th>FOLLOWUP DATE</th>
                         <th>LAST REMARK</th>
                         <th className="text-center">ACTION</th>
@@ -222,8 +213,7 @@ const Dashboard = () => {
                               style={{ color: "#003873", fontWeight: "700" }}
                             >
                               {item.counsellor}
-                            </td>{" "}
-                            {/* NEW DATA */}
+                            </td>
                             <td>
                               <span className="join-date-text">
                                 {formatDate(item.followup_date)}
@@ -326,7 +316,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* CONSOLIDATED FEES REMINDERS */}
+              {/* FEES REMINDERS */}
               <div className="data-display-card mt-40 fee-reminder-card">
                 <div
                   className="data-toolbar fee-toolbar"

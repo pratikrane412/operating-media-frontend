@@ -22,9 +22,12 @@ import {
   Hash,
   Banknote,
   ListOrdered,
+  Lock,
+  Link2,
+  UserCheck,
 } from "lucide-react";
 import "./AdmissionDrawer.css";
-import { hasPermission } from "../../utils/permissionCheck"; // Added import
+import { hasPermission } from "../../utils/permissionCheck";
 
 const FormRow = ({ label, icon: Icon, children }) => (
   <div className="drawer-form-row">
@@ -67,6 +70,12 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     registration_date: "",
     submission_time: "",
     no_of_installments: 0,
+    // NEW LMS FIELDS
+    counsellor: "",
+    login_id: "",
+    password: "",
+    certificate_link: "",
+    available_counsellors: [],
     inst_1_amount: 0,
     inst_1_date: "",
     inst_1_status: "Unpaid",
@@ -103,7 +112,9 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     if (isOpen && admissionId) {
       setLoading(true);
       axios
-        .get(`https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`)
+        .get(
+          `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`,
+        )
         .then((res) => {
           setFormData(res.data);
           setLoading(false);
@@ -185,7 +196,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
             <div className="loader-container">Fetching data from server...</div>
           ) : (
             <>
-              {/* Sections 1 to 4 */}
               <h4 className="drawer-section-label">
                 <User size={15} /> 1. Personal Information
               </h4>
@@ -377,11 +387,9 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 />
               </FormRow>
 
-              {/* SECTION 5: FEE CONTROL */}
               <h4 className="drawer-section-label">
                 <Banknote size={15} /> 5. Financial Information
               </h4>
-
               <FormRow label="Total Fees" icon={Banknote}>
                 <input
                   type="number"
@@ -457,6 +465,52 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                   );
                 },
               )}
+
+              {/* SECTION 6: LMS DETAILS */}
+              <h4 className="drawer-section-label">
+                <Smartphone size={15} /> 6. LMS Details
+              </h4>
+              <FormRow label="Counsellor" icon={UserCheck}>
+                <select
+                  name="counsellor"
+                  value={formData.counsellor || ""}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Counsellor</option>
+                  {formData.available_counsellors?.map((name, i) => (
+                    <option key={i} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </FormRow>
+              <FormRow label="LMS Login ID" icon={Hash}>
+                <input
+                  type="text"
+                  name="login_id"
+                  value={formData.login_id || ""}
+                  onChange={handleChange}
+                  placeholder="Username"
+                />
+              </FormRow>
+              <FormRow label="LMS Password" icon={Lock}>
+                <input
+                  type="text"
+                  name="password"
+                  value={formData.password || ""}
+                  onChange={handleChange}
+                  placeholder="Password"
+                />
+              </FormRow>
+              <FormRow label="Cert. Link" icon={Link2}>
+                <input
+                  type="text"
+                  name="certificate_link"
+                  value={formData.certificate_link || ""}
+                  onChange={handleChange}
+                  placeholder="https://..."
+                />
+              </FormRow>
             </>
           )}
 
@@ -464,7 +518,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
-            {/* PERMISSION CHECK: UPDATE ADMISSION */}
             {hasPermission("make admission") ? (
               <button
                 type="submit"

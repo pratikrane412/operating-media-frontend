@@ -6,8 +6,8 @@
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-speed: 0.4s;
   --brand-blue: #003873;
-  --bg-body: #f8fafc;
-  --border-color: #eef1f6;
+  --bg-body: #f1f5f9;
+  --border-color: #cbd5e1;
 
   /* Responsive Helpers */
   --main-margin: 0px;
@@ -94,14 +94,18 @@
   background: white;
   padding: 24px 26px;
   border-radius: 16px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border: 1px solid #cbd5e1;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 }
 
 .crm-stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
@@ -174,14 +178,17 @@
 .data-display-card {
   background: white;
   border-radius: 16px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #cbd5e1;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
   overflow: hidden;
+  margin-bottom: 4px;
 }
 
 .data-toolbar {
   padding: 22px 26px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
   background: white;
 }
 
@@ -233,6 +240,7 @@
 .table-sticky-wrapper {
   overflow-x: auto;
   border-top: none;
+  background: white;
 }
 
 .modern-data-table {
@@ -304,7 +312,7 @@
 
 .modern-data-table td {
   padding: 18px 22px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
@@ -452,7 +460,7 @@
 }
 
 .hot-toolbar {
-  background: linear-gradient(to right, #eff6ff, white);
+  background: white;
 }
 
 .title-icon-red {
@@ -481,7 +489,7 @@
 }
 
 .fee-toolbar {
-  background: linear-gradient(to right, #eff6ff, white);
+  background: white;
 }
 
 .title-icon-blue {

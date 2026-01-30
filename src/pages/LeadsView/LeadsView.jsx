@@ -48,7 +48,7 @@ const LeadsView = () => {
     tags: [],
   });
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
@@ -531,9 +531,9 @@ const LeadsView = () => {
                     setPage(1);
                   }}
                 >
-                  <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
+                  <option value="200">200</option>
                 </select>{" "}
                 entries
               </div>

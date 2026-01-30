@@ -62,9 +62,14 @@ const Dashboard = () => {
   // FILTER LOGIC FOR FOLLOWUPS
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
+    
+    // Get the first name from the filter: "Mayuri Patel" -> "Mayuri"
+    const filterFirstName = followupCounsellorFilter.split(' ')[0];
+    
     const matchesCounsellor =
       followupCounsellorFilter === "All" ||
-      f.counsellor === followupCounsellorFilter;
+      f.counsellor.toLowerCase().includes(filterFirstName.toLowerCase());
+      
     return isToday && matchesCounsellor;
   });
 

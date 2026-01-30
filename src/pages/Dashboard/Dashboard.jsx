@@ -20,7 +20,7 @@ const Dashboard = () => {
     followups: [],
     hot_leads: [],
     reminders: [],
-    counsellors: [], // Ensure this is initialized
+    counsellors: [],
     stats: {},
   });
   const [loading, setLoading] = useState(true);
@@ -62,14 +62,13 @@ const Dashboard = () => {
   // FILTER LOGIC FOR FOLLOWUPS
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
-    
-    // Get the first name from the filter: "Mayuri Patel" -> "Mayuri"
-    const filterFirstName = followupCounsellorFilter.split(' ')[0];
-    
+
+    const filterFirstName = followupCounsellorFilter.split(" ")[0];
+
     const matchesCounsellor =
       followupCounsellorFilter === "All" ||
       f.counsellor.toLowerCase().includes(filterFirstName.toLowerCase());
-      
+
     return isToday && matchesCounsellor;
   });
 
@@ -143,53 +142,40 @@ const Dashboard = () => {
 
               {/* TODAY'S FOLLOWUP LIST */}
               <div className="data-display-card mt-30">
-                <div
-                  className="data-toolbar"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span className="branch-title">
-                    Today's Active Followup Queue
-                  </span>
+                <div className="data-toolbar">
+                  <div className="toolbar-content">
+                    <span className="branch-title">
+                      Today's Active Followup Queue
+                    </span>
 
-                  <select
-                    className="branch-filter-select"
-                    value={followupCounsellorFilter}
-                    onChange={(e) =>
-                      setFollowupCounsellorFilter(e.target.value)
-                    }
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "8px",
-                      border: "1px solid #e2e8f0",
-                      fontSize: "12px",
-                      fontWeight: "700",
-                      color: "#003873",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <option value="All">All Counsellors</option>
-                    {/* FIXED: Use data.counsellors from backend instead of local uniqueCounsellors */}
-                    {data.counsellors?.map((name, i) => (
-                      <option key={i} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
+                    <select
+                      className="branch-filter-select"
+                      value={followupCounsellorFilter}
+                      onChange={(e) =>
+                        setFollowupCounsellorFilter(e.target.value)
+                      }
+                    >
+                      <option value="All">All Counsellors</option>
+                      {data.counsellors?.map((name, i) => (
+                        <option key={i} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 <div className="table-sticky-wrapper">
                   <table className="modern-data-table">
                     <thead>
                       <tr>
-                        <th>CUSTOMER</th>
-                        <th>PHONE</th>
-                        <th>COUNSELLOR</th>
-                        <th>FOLLOWUP DATE</th>
-                        <th>LAST REMARK</th>
-                        <th className="text-center">ACTION</th>
+                        <th style={{ width: "20%" }}>CUSTOMER</th>
+                        <th style={{ width: "14%" }}>PHONE</th>
+                        <th style={{ width: "14%" }}>COUNSELLOR</th>
+                        <th style={{ width: "13%" }}>FOLLOWUP DATE</th>
+                        <th style={{ width: "31%" }}>LAST REMARK</th>
+                        <th style={{ width: "8%" }} className="text-center">
+                          ACTION
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,10 +199,7 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="phone-num-text">{item.mobile}</td>
-                            <td
-                              className="phone-num-text"
-                              style={{ color: "#003873", fontWeight: "700" }}
-                            >
+                            <td className="counsellor-name">
                               {item.counsellor}
                             </td>
                             <td>
@@ -245,15 +228,9 @@ const Dashboard = () => {
 
               {/* HOT LEADS */}
               <div className="data-display-card mt-30 hot-leads-border">
-                <div className="data-toolbar">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <Zap size={18} color="#ef4444" />
+                <div className="data-toolbar hot-toolbar">
+                  <div className="toolbar-left">
+                    <Zap size={18} className="title-icon-red" />
                     <span className="branch-title">
                       Hot Leads Priority Queue
                     </span>
@@ -263,11 +240,13 @@ const Dashboard = () => {
                   <table className="modern-data-table">
                     <thead>
                       <tr>
-                        <th>CUSTOMER</th>
-                        <th>PHONE</th>
-                        <th>COURSE</th>
-                        <th>ENQUIRY DATE</th>
-                        <th className="text-center">ACTION</th>
+                        <th style={{ width: "25%" }}>CUSTOMER</th>
+                        <th style={{ width: "18%" }}>PHONE</th>
+                        <th style={{ width: "35%" }}>COURSE</th>
+                        <th style={{ width: "14%" }}>ENQUIRY DATE</th>
+                        <th style={{ width: "8%" }} className="text-center">
+                          ACTION
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -282,13 +261,7 @@ const Dashboard = () => {
                           <tr key={lead.id}>
                             <td>
                               <div className="user-profile-cell">
-                                <div
-                                  className="avatar-letter"
-                                  style={{
-                                    background: "#fef2f2",
-                                    color: "#ef4444",
-                                  }}
-                                >
+                                <div className="avatar-letter hot-avatar">
                                   {lead.name.charAt(0)}
                                 </div>
                                 <span className="user-full-name">
@@ -302,12 +275,12 @@ const Dashboard = () => {
                                 {lead.course}
                               </span>
                             </td>
-                            <td className="phone-num-text">
+                            <td className="join-date-text">
                               {formatDate(lead.enquiry_date)}
                             </td>
                             <td className="text-center">
                               <button
-                                className="btn-icon-round"
+                                className="btn-icon-round hot-btn"
                                 onClick={() => navigate("/leads-view")}
                               >
                                 <ArrowRight size={15} />
@@ -323,59 +296,35 @@ const Dashboard = () => {
 
               {/* FEES REMINDERS */}
               <div className="data-display-card mt-40 fee-reminder-card">
-                <div
-                  className="data-toolbar fee-toolbar"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    className="toolbar-left"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <HandCoins size={18} className="title-icon-blue" />
-                    <span className="branch-title">
-                      Upcoming & Overdue Fees
-                    </span>
+                <div className="data-toolbar fee-toolbar">
+                  <div className="toolbar-content">
+                    <div className="toolbar-left">
+                      <HandCoins size={18} className="title-icon-blue" />
+                      <span className="branch-title">
+                        Upcoming & Overdue Fees
+                      </span>
+                    </div>
+                    <select
+                      className="branch-filter-select"
+                      value={feeBranchFilter}
+                      onChange={(e) => setFeeBranchFilter(e.target.value)}
+                    >
+                      <option value="All">All Branches</option>
+                      <option value="Andheri">Andheri</option>
+                      <option value="Borivali">Borivali</option>
+                    </select>
                   </div>
-                  <select
-                    className="branch-filter-select"
-                    value={feeBranchFilter}
-                    onChange={(e) => setFeeBranchFilter(e.target.value)}
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "8px",
-                      border: "1px solid #e2e8f0",
-                      fontSize: "12px",
-                      fontWeight: "700",
-                      color: "#003873",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <option value="All">All Branches</option>
-                    <option value="Andheri">Andheri</option>
-                    <option value="Borivali">Borivali</option>
-                  </select>
                 </div>
 
                 <div className="table-sticky-wrapper">
-                  <table
-                    className="modern-data-table"
-                    style={{ tableLayout: "fixed", width: "100%" }}
-                  >
+                  <table className="modern-data-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "25%" }}>STUDENT</th>
-                        <th style={{ width: "25%" }}>COURSE</th>
-                        <th style={{ width: "15%" }}>DUE DATE</th>
-                        <th style={{ width: "15%" }}>AMOUNT</th>
-                        <th style={{ width: "12%" }}>STATUS</th>
+                        <th style={{ width: "23%" }}>STUDENT</th>
+                        <th style={{ width: "30%" }}>COURSE</th>
+                        <th style={{ width: "13%" }}>DUE DATE</th>
+                        <th style={{ width: "12%" }}>AMOUNT</th>
+                        <th style={{ width: "14%" }}>STATUS</th>
                         <th style={{ width: "8%" }} className="text-center">
                           ACTION
                         </th>

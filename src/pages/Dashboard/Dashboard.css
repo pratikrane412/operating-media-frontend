@@ -46,7 +46,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .breadcrumb-nav {
@@ -55,7 +55,7 @@
   gap: 8px;
   font-size: 13px;
   color: #94a3b8;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 500;
 }
 
@@ -85,29 +85,30 @@
 /* --- STAT CARDS GRID --- */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .crm-stat-card {
   background: white;
-  padding: 24px;
+  padding: 24px 26px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
 }
 
 .crm-stat-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .icon-box {
@@ -117,28 +118,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .card-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .card-body h3 {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
   color: #1e293b;
   margin: 0;
+  line-height: 1;
 }
 
 .card-body p {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 12px;
+  line-height: 1.4;
 }
 
 /* --- STAT CARD COLOR VARIATIONS --- */
@@ -171,36 +175,80 @@
   background: white;
   border-radius: 16px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
 
 .data-toolbar {
-  padding: 20px 24px;
+  padding: 22px 26px;
   border-bottom: 1px solid #f1f5f9;
   background: white;
 }
 
+.toolbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .branch-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.branch-filter-select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #003873;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.branch-filter-select:hover {
+  border-color: #003873;
+  background: #f8fafc;
+}
+
+.branch-filter-select:focus {
+  border-color: #003873;
+  box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.1);
+}
+
 /* --- TABLE STYLING --- */
 .table-sticky-wrapper {
   overflow-x: auto;
+  border-top: none;
 }
 
 .modern-data-table {
   width: 100%;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   min-width: 900px;
   table-layout: fixed;
+  border: none;
 }
+
+.modern-data-table thead,
+.modern-data-table tbody {
+  border: none;
+}
+
 .truncate-text {
   white-space: nowrap;
   overflow: hidden;
@@ -210,14 +258,16 @@
 
 .modern-data-table thead th {
   background-color: #003873;
-  padding: 14px 20px;
+  padding: 16px 22px;
   text-align: left;
   font-size: 11px;
   font-weight: 800;
   color: white;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: none;
+  letter-spacing: 0.6px;
+  border: none !important;
+  border-bottom: none !important;
+  white-space: nowrap;
 }
 
 .modern-data-table thead th:first-child {
@@ -228,21 +278,40 @@
   border-top-right-radius: 0;
 }
 
+.modern-data-table thead {
+  border-bottom: none !important;
+  border: none !important;
+}
+
+.modern-data-table tbody {
+  border-top: none !important;
+  border: none !important;
+}
+
 .modern-data-table tbody tr {
   background: white;
   transition: background 0.2s ease;
+  border-top: none !important;
 }
 
 .modern-data-table tbody tr:hover {
   background: #f8fafc;
 }
 
+.modern-data-table tbody tr:first-child td {
+  border-top: none !important;
+}
+
 .modern-data-table td {
-  padding: 16px 20px;
+  padding: 18px 22px;
   border-bottom: 1px solid #f1f5f9;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
   font-size: 14px;
   color: #1e293b;
   vertical-align: middle;
+  line-height: 1.5;
 }
 
 .modern-data-table tbody tr:last-child td {
@@ -254,11 +323,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .avatar-letter {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #ebf0f5;
   color: var(--brand-blue);
@@ -266,40 +336,50 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .user-full-name {
   font-weight: 700;
   color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .phone-num-text {
   color: #64748b;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.counsellor-name {
+  color: #003873;
+  font-weight: 700;
 }
 
 .join-date-text {
   color: #475569;
   font-weight: 600;
   font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 .email-text-truncate {
   color: #64748b;
   font-weight: 500;
-  max-width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .andheri-border {
-  border-left: 4px solid #003873 !important; /* Blue for Andheri */
+  border-left: 4px solid #003873 !important;
 }
 
 .borivali-border {
-  border-left: 4px solid #0ea5e9 !important; /* Sky Blue for Borivali */
+  border-left: 4px solid #0ea5e9 !important;
 }
 
 .bg-red-shaded {
@@ -309,13 +389,14 @@
 
 /* --- STATUS PILLS --- */
 .status-pill {
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   display: inline-block;
   border: 1px solid transparent;
+  letter-spacing: 0.3px;
 }
 
 .status-pill.today {
@@ -344,8 +425,8 @@
 
 /* --- BUTTONS --- */
 .btn-icon-round {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid #e2e8f0;
   background: white;
@@ -355,31 +436,28 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .btn-icon-round:hover {
   color: var(--brand-blue);
   border-color: var(--brand-blue);
   background: #f8fafc;
+  transform: scale(1.05);
 }
 
 /* --- HOT LEADS SPECIFIC STYLING --- */
 .hot-leads-border {
-  border-left: 4px solid #003873 !important;
+  border-left: none !important;
 }
 
 .hot-toolbar {
   background: linear-gradient(to right, #eff6ff, white);
 }
 
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .title-icon-red {
   color: #003873;
+  flex-shrink: 0;
 }
 
 .hot-avatar {
@@ -408,6 +486,7 @@
 
 .title-icon-blue {
   color: #003873;
+  flex-shrink: 0;
 }
 
 .fee-avatar {
@@ -427,7 +506,7 @@
 
 /* --- COURSE PILLS --- */
 .course-pill-lite {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   max-width: 100%;
   overflow: hidden;
@@ -435,7 +514,7 @@
   white-space: nowrap;
   color: #64748b;
   background: #f1f5f9;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   display: inline-block;
@@ -455,12 +534,14 @@
   font-size: 13px;
   font-weight: 600;
   color: #1e293b;
+  font-variant-numeric: tabular-nums;
 }
 
 .fee-amount-bold {
   font-weight: 800;
   color: #003873;
   font-size: 15px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* --- LOADER --- */
@@ -486,6 +567,12 @@
 }
 
 /* --- RESPONSIVE --- */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --content-padding: 20px;
@@ -493,6 +580,7 @@
 
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .page-title-bold {
@@ -501,5 +589,45 @@
 
   .modern-data-table {
     min-width: 700px;
+  }
+
+  .data-toolbar {
+    padding: 18px 20px;
+  }
+
+  .toolbar-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .branch-filter-select {
+    width: 100%;
+  }
+
+  .crm-stat-card {
+    padding: 20px;
+  }
+
+  .card-body h3 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header-flex {
+    margin-bottom: 20px;
+  }
+
+  .breadcrumb-nav {
+    font-size: 12px;
+  }
+
+  .page-title-bold {
+    font-size: 20px;
+  }
+
+  .dashboard-grid {
+    gap: 12px;
   }
 }

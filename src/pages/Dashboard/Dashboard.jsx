@@ -24,11 +24,12 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  // 1. ADDED FILTER STATE
+  // 1. ADDED FILTER STATES
   const [feeBranchFilter, setFeeBranchFilter] = useState("All");
+  const [followupCounsellorFilter, setFollowupCounsellorFilter] =
+    useState("All");
 
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
   useEffect(() => {
@@ -58,7 +59,25 @@ const Dashboard = () => {
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
-  // 2. FILTER LOGIC FOR CONSOLIDATED CARD
+  // 2. FILTER LOGIC FOR FOLLOWUPS
+  const filteredFollowups = data.followups.filter((f) => {
+    const isToday = f.status === "today";
+    const matchesCounsellor =
+      followupCounsellorFilter === "All" ||
+      f.counsellor === followupCounsellorFilter;
+    return isToday && matchesCounsellor;
+  });
+
+  // Get unique counsellors from today's list for the dropdown
+  const uniqueCounsellors = [
+    ...new Set(
+      data.followups
+        .filter((f) => f.status === "today")
+        .map((f) => f.counsellor),
+    ),
+  ].filter(Boolean);
+
+  // FILTER LOGIC FOR FEES
   const filteredFees =
     data.reminders?.filter((f) => {
       if (feeBranchFilter === "All") return true;
@@ -126,12 +145,44 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* FOLLOWUP LIST */}
+              {/* TODAY'S FOLLOWUP LIST WITH COUNSELLOR FILTER */}
               <div className="data-display-card mt-30">
-                <div className="data-toolbar">
+                <div
+                  className="data-toolbar"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <span className="branch-title">
                     Today's Active Followup Queue
                   </span>
+
+                  {/* COUNSELLOR FILTER */}
+                  <select
+                    className="branch-filter-select"
+                    value={followupCounsellorFilter}
+                    onChange={(e) =>
+                      setFollowupCounsellorFilter(e.target.value)
+                    }
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: "8px",
+                      border: "1px solid #e2e8f0",
+                      fontSize: "12px",
+                      fontWeight: "700",
+                      color: "#003873",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <option value="All">All Counsellors</option>
+                    {uniqueCounsellors.map((name, i) => (
+                      <option key={i} value={name}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="table-sticky-wrapper">
                   <table className="modern-data-table">
@@ -139,59 +190,58 @@ const Dashboard = () => {
                       <tr>
                         <th>CUSTOMER</th>
                         <th>PHONE</th>
+                        <th>COUNSELLOR</th> {/* NEW COLUMN */}
                         <th>FOLLOWUP DATE</th>
                         <th>LAST REMARK</th>
-                        <th>PRIORITY</th>
                         <th className="text-center">ACTION</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {data.followups.filter((f) => f.status === "today")
-                        .length === 0 ? (
+                      {filteredFollowups.length === 0 ? (
                         <tr>
                           <td colSpan="6" className="loader">
                             No followups scheduled for today.
                           </td>
                         </tr>
                       ) : (
-                        data.followups
-                          .filter((f) => f.status === "today")
-                          .map((item) => (
-                            <tr key={item.id}>
-                              <td>
-                                <div className="user-profile-cell">
-                                  <div className="avatar-letter">
-                                    {item.customer_name.charAt(0)}
-                                  </div>
-                                  <span className="user-full-name">
-                                    {item.customer_name}
-                                  </span>
+                        filteredFollowups.map((item) => (
+                          <tr key={item.id}>
+                            <td>
+                              <div className="user-profile-cell">
+                                <div className="avatar-letter">
+                                  {item.customer_name.charAt(0)}
                                 </div>
-                              </td>
-                              <td className="phone-num-text">{item.mobile}</td>
-                              <td>
-                                <span className="join-date-text">
-                                  {formatDate(item.followup_date)}
+                                <span className="user-full-name">
+                                  {item.customer_name}
                                 </span>
-                              </td>
-                              <td className="email-text-truncate">
-                                {item.remark}
-                              </td>
-                              <td>
-                                <span className={`status-pill today`}>
-                                  TODAY
-                                </span>
-                              </td>
-                              <td className="text-center">
-                                <button
-                                  className="btn-icon-round"
-                                  onClick={() => navigate("/leads-view")}
-                                >
-                                  <ArrowRight size={15} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))
+                              </div>
+                            </td>
+                            <td className="phone-num-text">{item.mobile}</td>
+                            <td
+                              className="phone-num-text"
+                              style={{ color: "#003873", fontWeight: "700" }}
+                            >
+                              {item.counsellor}
+                            </td>{" "}
+                            {/* NEW DATA */}
+                            <td>
+                              <span className="join-date-text">
+                                {formatDate(item.followup_date)}
+                              </span>
+                            </td>
+                            <td className="email-text-truncate">
+                              {item.remark}
+                            </td>
+                            <td className="text-center">
+                              <button
+                                className="btn-icon-round"
+                                onClick={() => navigate("/leads-view")}
+                              >
+                                <ArrowRight size={15} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
                       )}
                     </tbody>
                   </table>
@@ -276,7 +326,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* 3. CONSOLIDATED FEES REMINDERS WITH FILTER */}
+              {/* CONSOLIDATED FEES REMINDERS */}
               <div className="data-display-card mt-40 fee-reminder-card">
                 <div
                   className="data-toolbar fee-toolbar"
@@ -299,8 +349,6 @@ const Dashboard = () => {
                       Upcoming & Overdue Fees
                     </span>
                   </div>
-
-                  {/* BRANCH FILTER DROPDOWN */}
                   <select
                     className="branch-filter-select"
                     value={feeBranchFilter}

@@ -40,6 +40,7 @@ const ManageAdmission = () => {
 
   const [options, setOptions] = useState({
     branches: [],
+    counsellors: [], // NEW
     courses: [
       "Masters in Digital Marketing",
       "Advanced Diploma in Digital Marketing",
@@ -60,13 +61,13 @@ const ManageAdmission = () => {
   const [filters, setFilters] = useState({
     branch: "",
     course: "",
+    counsellor: user.role === "staff" ? user.name : "", // Default to logged in staff
     fromDate: "",
     toDate: "",
   });
 
   const [activeMenuId, setActiveMenuId] = useState(null);
 
-  // ADDED: Pagination Helper Function
   const getPageNumbers = () => {
     const pages = [];
     let startPage = Math.max(1, page - 2);
@@ -76,6 +77,7 @@ const ManageAdmission = () => {
     return pages;
   };
 
+  // FETCH OPTIONS FOR DROPDOWNS
   useEffect(() => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
@@ -83,6 +85,7 @@ const ManageAdmission = () => {
         setOptions((prev) => ({
           ...prev,
           branches: res.data.branches || [],
+          counsellors: res.data.counsellors || [], // Now fetching from backend
         }));
       })
       .catch((err) => console.error("Options error:", err));
@@ -101,6 +104,7 @@ const ManageAdmission = () => {
             branch_id: user.branch_id,
             branch: filters.branch,
             course: filters.course,
+            counsellor: filters.counsellor, // NEW PARAM
             from: filters.fromDate,
             to: filters.toDate,
           },
@@ -118,7 +122,7 @@ const ManageAdmission = () => {
 
   useEffect(() => {
     fetchAdmissions();
-  }, [page, pageSize, filters.branch, filters.course]);
+  }, [page, pageSize, filters.branch, filters.course, filters.counsellor]);
 
   useEffect(() => {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
@@ -136,6 +140,7 @@ const ManageAdmission = () => {
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
+          {/* SEARCH FILTERS */}
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
@@ -177,6 +182,25 @@ const ManageAdmission = () => {
                   ))}
                 </select>
               </div>
+
+              {/* NEW: COUNSELLOR FILTER */}
+              <div className="filter-group">
+                <label>Counsellor</label>
+                <select
+                  value={filters.counsellor}
+                  onChange={(e) =>
+                    setFilters({ ...filters, counsellor: e.target.value })
+                  }
+                >
+                  <option value="">All Counsellors</option>
+                  {options.counsellors.map((name, i) => (
+                    <option key={i} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="filter-group range-group">
                 <label>Submission Date Range</label>
                 <div className="date-input-container">
@@ -204,6 +228,7 @@ const ManageAdmission = () => {
                     setFilters({
                       branch: "",
                       course: "",
+                      counsellor: user.role === "staff" ? user.name : "",
                       fromDate: "",
                       toDate: "",
                     })
@@ -258,11 +283,11 @@ const ManageAdmission = () => {
                   <tr>
                     <th>STUDENT</th>
                     <th>SUBMISSION DATE</th>
+                    <th>COUNSELLOR</th> {/* ADDED TO TABLE */}
                     <th>PHONE</th>
                     <th>EMAIL</th>
                     <th>COURSE</th>
                     <th>BRANCH</th>
-                    <th>EMPLOYED</th>
                     <th width="100">ACTIONS</th>
                   </tr>
                 </thead>
@@ -291,6 +316,8 @@ const ManageAdmission = () => {
                         <td className="branch-label-text">
                           {item.submission_time}
                         </td>
+                        <td className="phone-num-text">{item.counsellor}</td>{" "}
+                        {/* ADDED TO TABLE */}
                         <td>
                           <span className="phone-text-sm">{item.phone}</span>
                         </td>
@@ -301,13 +328,6 @@ const ManageAdmission = () => {
                         <td>
                           <span className="branch-label-text">
                             {item.branch}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className={`status-pill ${item.employed_status === "Yes" ? "active" : ""}`}
-                          >
-                            {item.employed_status}
                           </span>
                         </td>
                         <td>
@@ -379,7 +399,6 @@ const ManageAdmission = () => {
                 >
                   <ChevronLeft size={16} />
                 </button>
-                {/* PAGE NUMBERS LOOP */}
                 {getPageNumbers().map((num) => (
                   <button
                     key={num}

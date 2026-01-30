@@ -37,6 +37,8 @@ const ManageAdmission = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortField, setSortField] = useState("submission_time");
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const [options, setOptions] = useState({
     branches: [],
@@ -52,6 +54,15 @@ const ManageAdmission = () => {
       "WordPress Development Course",
     ],
   });
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("desc");
+    }
+  };
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -107,6 +118,8 @@ const ManageAdmission = () => {
             counsellor: filters.counsellor, // NEW PARAM
             from: filters.fromDate,
             to: filters.toDate,
+            sort_field: sortField,
+            sort_order: sortOrder,
           },
         },
       );
@@ -122,7 +135,15 @@ const ManageAdmission = () => {
 
   useEffect(() => {
     fetchAdmissions();
-  }, [page, pageSize, filters.branch, filters.course, filters.counsellor]);
+  }, [
+    page,
+    pageSize,
+    filters.branch,
+    filters.course,
+    filters.counsellor,
+    sortField,
+    sortOrder,
+  ]);
 
   useEffect(() => {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
@@ -282,7 +303,15 @@ const ManageAdmission = () => {
                 <thead>
                   <tr>
                     <th>STUDENT</th>
-                    <th>SUBMISSION DATE</th>
+                    <th
+                      className="sortable-header"
+                      onClick={() => handleSort("submission_time")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      SUBMISSION DATE{" "}
+                      {sortField === "submission_time" &&
+                        (sortOrder === "asc" ? "↑" : "↓")}
+                    </th>
                     <th>COUNSELLOR</th> {/* ADDED TO TABLE */}
                     <th>PHONE</th>
                     <th>EMAIL</th>

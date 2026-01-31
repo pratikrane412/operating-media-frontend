@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // ADDED useLocation
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -26,6 +26,7 @@ import "./LeadsView.css";
 
 const LeadsView = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // INITIALIZED location
   const menuRef = useRef(null);
   const searchTimeoutRef = useRef(null);
 
@@ -65,6 +66,16 @@ const LeadsView = () => {
   // Global Sort states
   const [sortField, setSortField] = useState("followup_date");
   const [sortOrder, setSortOrder] = useState("desc");
+
+  // --- AUTO-OPEN DRAWER FROM DASHBOARD ---
+  useEffect(() => {
+    if (location.state?.openLeadId) {
+      setSelectedLeadId(location.state.openLeadId);
+      setIsDrawerOpen(true);
+      // Clear state so it doesn't reopen on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // --- HELPERS ---
   const getCourseShortName = (name) => {
@@ -111,7 +122,7 @@ const LeadsView = () => {
 
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "—" || dateStr === "No Date") return "—";
-    return dateStr; // Backend now handles formatting
+    return dateStr;
   };
 
   const renderPills = (dataString, type = "tag") => {
@@ -197,7 +208,6 @@ const LeadsView = () => {
     );
   };
 
-  // --- SORTING HANDLER ---
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -208,7 +218,6 @@ const LeadsView = () => {
     setPage(1);
   };
 
-  // --- LOGIC ---
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target))
@@ -249,8 +258,8 @@ const LeadsView = () => {
             tags: filters.tags,
             from: filters.fromDate,
             to: filters.toDate,
-            sort_field: sortField, // Correctly passing to backend
-            sort_order: sortOrder, // Correctly passing to backend
+            sort_field: sortField,
+            sort_order: sortOrder,
           },
         },
       );
@@ -264,7 +273,6 @@ const LeadsView = () => {
     }
   };
 
-  // Automated fetch on filter or sort change
   useEffect(() => {
     fetchData();
   }, [
@@ -494,7 +502,7 @@ const LeadsView = () => {
                   <tr>
                     <th width="80">COURSE</th>
                     <th
-                      width="160" // RESTORED
+                      width="160"
                       className="sortable-header"
                       onClick={() => handleSort("first_name")}
                       style={{ cursor: "pointer" }}
@@ -505,7 +513,7 @@ const LeadsView = () => {
                     </th>
                     <th width="130">PHONE</th>
                     <th
-                      width="140" // RESTORED
+                      width="140"
                       className="sortable-header"
                       onClick={() => handleSort("enquiry_date")}
                       style={{ cursor: "pointer" }}
@@ -515,7 +523,7 @@ const LeadsView = () => {
                         (sortOrder === "asc" ? "↑" : "↓")}
                     </th>
                     <th
-                      width="120" // RESTORED
+                      width="120"
                       className="sortable-header"
                       onClick={() => handleSort("followup_date")}
                       style={{ cursor: "pointer" }}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   Search,
@@ -23,6 +23,7 @@ import { hasPermission } from "../../utils/permissionCheck";
 
 const ManageAdmission = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const menuRef = useRef(null);
   const searchTimeoutRef = useRef(null);
 
@@ -65,12 +66,16 @@ const ManageAdmission = () => {
   };
 
   const handleRowClick = (id, event) => {
-  // If clicking buttons or the dropdown menu, don't open the View drawer
-  if (event.target.closest(".action-btns-sm") || event.target.closest(".action-dropdown")) return;
-  
-  setSelectedAdmissionId(id);
-  setIsViewDrawerOpen(true);
-};
+    // If clicking buttons or the dropdown menu, don't open the View drawer
+    if (
+      event.target.closest(".action-btns-sm") ||
+      event.target.closest(".action-dropdown")
+    )
+      return;
+
+    setSelectedAdmissionId(id);
+    setIsViewDrawerOpen(true);
+  };
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -152,6 +157,16 @@ const ManageAdmission = () => {
     sortField,
     sortOrder,
   ]);
+
+  useEffect(() => {
+    if (location.state?.openAdmissionId) {
+      setSelectedAdmissionId(location.state.openAdmissionId);
+      setIsViewDrawerOpen(true);
+
+      // Optional: Clear the state so it doesn't re-open on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);

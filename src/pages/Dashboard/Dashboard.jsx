@@ -59,20 +59,15 @@ const Dashboard = () => {
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
-  // FILTER LOGIC FOR FOLLOWUPS
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
-
     const filterFirstName = followupCounsellorFilter.split(" ")[0];
-
     const matchesCounsellor =
       followupCounsellorFilter === "All" ||
       f.counsellor.toLowerCase().includes(filterFirstName.toLowerCase());
-
     return isToday && matchesCounsellor;
   });
 
-  // FILTER LOGIC FOR FEES
   const filteredFees =
     data.reminders?.filter((f) => {
       if (feeBranchFilter === "All") return true;
@@ -147,7 +142,6 @@ const Dashboard = () => {
                     <span className="branch-title">
                       Today's Active Followup Queue
                     </span>
-
                     <select
                       className="branch-filter-select"
                       value={followupCounsellorFilter}
@@ -211,9 +205,14 @@ const Dashboard = () => {
                               {item.remark}
                             </td>
                             <td className="text-center">
+                              {/* UPDATED: Navigates with state */}
                               <button
                                 className="btn-icon-round"
-                                onClick={() => navigate("/leads-view")}
+                                onClick={() =>
+                                  navigate("/leads-view", {
+                                    state: { openLeadId: item.id },
+                                  })
+                                }
                               >
                                 <ArrowRight size={15} />
                               </button>
@@ -262,13 +261,7 @@ const Dashboard = () => {
                           <tr key={lead.id}>
                             <td>
                               <div className="user-profile-cell">
-                                <div
-                                  className="avatar-letter"
-                                  style={{
-                                    background: "#fef2f2",
-                                    color: "#ef4444",
-                                  }}
-                                >
+                                <div className="avatar-letter hot-avatar">
                                   {lead.name.charAt(0)}
                                 </div>
                                 <span className="user-full-name">
@@ -295,9 +288,14 @@ const Dashboard = () => {
                               {lead.last_remark}
                             </td>
                             <td className="text-center">
+                              {/* UPDATED: Navigates with state */}
                               <button
-                                className="btn-icon-round"
-                                onClick={() => navigate("/leads-view")}
+                                className="btn-icon-round hot-btn"
+                                onClick={() =>
+                                  navigate("/leads-view", {
+                                    state: { openLeadId: lead.id },
+                                  })
+                                }
                               >
                                 <ArrowRight size={15} />
                               </button>
@@ -331,9 +329,11 @@ const Dashboard = () => {
                     </select>
                   </div>
                 </div>
-
                 <div className="table-sticky-wrapper">
-                  <table className="modern-data-table">
+                  <table
+                    className="modern-data-table"
+                    style={{ tableLayout: "fixed", width: "100%" }}
+                  >
                     <thead>
                       <tr>
                         <th style={{ width: "23%" }}>STUDENT</th>
@@ -347,52 +347,48 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredFees.length === 0 ? (
-                        <tr>
-                          <td colSpan="6" className="loader">
-                            No pending fees found for {feeBranchFilter}.
+                      {filteredFees.map((fee, index) => (
+                        <tr key={index}>
+                          <td>
+                            <div className="user-profile-cell">
+                              <div
+                                className={`avatar-letter ${fee.priority === "overdue" ? "bg-red-shaded" : "fee-avatar"}`}
+                              >
+                                {fee.customer_name.charAt(0)}
+                              </div>
+                              <span className="user-full-name truncate-text">
+                                {fee.customer_name}
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            <span className="course-pill-lite">
+                              {fee.course}
+                            </span>
+                          </td>
+                          <td className="due-date-text">
+                            {formatDate(fee.due_date)}
+                          </td>
+                          <td className="fee-amount-bold">₹{fee.amount}</td>
+                          <td>
+                            <span className={`status-pill ${fee.priority}`}>
+                              {fee.priority.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="text-center">
+                            <button
+                              className="btn-icon-round fee-btn"
+                              onClick={() =>
+                                navigate("/manage-admission", {
+                                  state: { openAdmissionId: fee.id },
+                                })
+                              }
+                            >
+                              <ArrowRight size={15} />
+                            </button>
                           </td>
                         </tr>
-                      ) : (
-                        filteredFees.map((fee, index) => (
-                          <tr key={index}>
-                            <td>
-                              <div className="user-profile-cell">
-                                <div
-                                  className={`avatar-letter ${fee.priority === "overdue" ? "bg-red-shaded" : "fee-avatar"}`}
-                                >
-                                  {fee.customer_name.charAt(0)}
-                                </div>
-                                <span className="user-full-name truncate-text">
-                                  {fee.customer_name}
-                                </span>
-                              </div>
-                            </td>
-                            <td>
-                              <span className="course-pill-lite">
-                                {fee.course}
-                              </span>
-                            </td>
-                            <td className="due-date-text">
-                              {formatDate(fee.due_date)}
-                            </td>
-                            <td className="fee-amount-bold">₹{fee.amount}</td>
-                            <td>
-                              <span className={`status-pill ${fee.priority}`}>
-                                {fee.priority.toUpperCase()}
-                              </span>
-                            </td>
-                            <td className="text-center">
-                              <button
-                                className="btn-icon-round fee-btn"
-                                onClick={() => navigate("/manage-admission")}
-                              >
-                                <ArrowRight size={15} />
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>

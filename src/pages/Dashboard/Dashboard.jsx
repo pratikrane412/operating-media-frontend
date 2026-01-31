@@ -240,10 +240,11 @@ const Dashboard = () => {
                   <table className="modern-data-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "25%" }}>CUSTOMER</th>
-                        <th style={{ width: "18%" }}>PHONE</th>
-                        <th style={{ width: "35%" }}>COURSE</th>
-                        <th style={{ width: "14%" }}>ENQUIRY DATE</th>
+                        <th style={{ width: "20%" }}>CUSTOMER</th>
+                        <th style={{ width: "14%" }}>PHONE</th>
+                        <th style={{ width: "14%" }}>COUNSELLOR</th>
+                        <th style={{ width: "16%" }}>COURSE</th>
+                        <th style={{ width: "28%" }}>LAST REMARK</th>
                         <th style={{ width: "8%" }} className="text-center">
                           ACTION
                         </th>
@@ -252,7 +253,7 @@ const Dashboard = () => {
                     <tbody>
                       {data.hot_leads?.length === 0 ? (
                         <tr>
-                          <td colSpan="5" className="loader">
+                          <td colSpan="6" className="loader">
                             No hot leads tagged yet.
                           </td>
                         </tr>
@@ -261,7 +262,13 @@ const Dashboard = () => {
                           <tr key={lead.id}>
                             <td>
                               <div className="user-profile-cell">
-                                <div className="avatar-letter hot-avatar">
+                                <div
+                                  className="avatar-letter"
+                                  style={{
+                                    background: "#fef2f2",
+                                    color: "#ef4444",
+                                  }}
+                                >
                                   {lead.name.charAt(0)}
                                 </div>
                                 <span className="user-full-name">
@@ -270,17 +277,26 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="phone-num-text">{lead.mobile}</td>
+                            <td
+                              className="phone-num-text"
+                              style={{ color: "#003873", fontWeight: "700" }}
+                            >
+                              {lead.counsellor}
+                            </td>
                             <td>
                               <span className="course-pill-lite">
                                 {lead.course}
                               </span>
                             </td>
-                            <td className="join-date-text">
-                              {formatDate(lead.enquiry_date)}
+                            <td
+                              className="email-text-truncate"
+                              title={lead.last_remark}
+                            >
+                              {lead.last_remark}
                             </td>
                             <td className="text-center">
                               <button
-                                className="btn-icon-round hot-btn"
+                                className="btn-icon-round"
                                 onClick={() => navigate("/leads-view")}
                               >
                                 <ArrowRight size={15} />

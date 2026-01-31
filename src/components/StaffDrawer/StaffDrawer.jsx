@@ -46,7 +46,7 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
     if (isOpen && staffId) {
       axios
         .get(
-          `https://operating-media-backend.onrender.com/api/staff/${staffId}/`
+          `https://operating-media-backend.onrender.com/api/staff/${staffId}/`,
         )
         .then((res) => setFormData({ ...res.data, password: "" })); // Keep password empty on edit
     } else if (isOpen) {
@@ -74,12 +74,12 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
       if (staffId) {
         await axios.put(
           `https://operating-media-backend.onrender.com/api/staff/${staffId}/`,
-          formData
+          formData,
         );
       } else {
         await axios.post(
           "https://operating-media-backend.onrender.com/api/staff/manage/",
-          formData
+          formData,
         );
       }
       onUpdate();
@@ -141,19 +141,23 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
               />
             </FormRow>
 
-            {/* NEW PASSWORD FIELD - Only required for new staff */}
-            {!staffId && (
-              <FormRow label="Login Password" icon={Lock}>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  required={!staffId}
-                  onChange={handleChange}
-                  placeholder="Set Password"
-                />
-              </FormRow>
-            )}
+            {/* UPDATED PASSWORD FIELD - Always visible now */}
+            <FormRow
+              label={staffId ? "Change Password" : "Login Password"}
+              icon={Lock}
+            >
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                // Required only for NEW staff, optional for EDIT
+                required={!staffId}
+                onChange={handleChange}
+                placeholder={
+                  staffId ? "Leave blank to keep current" : "Set Password"
+                }
+              />
+            </FormRow>
 
             <FormRow label="Joining Date" icon={Calendar}>
               <input
@@ -204,8 +208,8 @@ const StaffDrawer = ({ isOpen, onClose, onUpdate, staffId }) => {
                 {isSubmitting
                   ? "Saving..."
                   : staffId
-                  ? "Update Changes"
-                  : "Create Account"}
+                    ? "Update Changes"
+                    : "Create Account"}
               </button>
             ) : (
               <span className="read-only-tag">READ ONLY MODE</span>

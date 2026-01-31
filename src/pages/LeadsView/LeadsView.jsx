@@ -62,6 +62,7 @@ const LeadsView = () => {
     toDate: "",
   });
 
+  // Global Sort states
   const [sortField, setSortField] = useState("followup_date");
   const [sortOrder, setSortOrder] = useState("desc");
 
@@ -110,15 +111,7 @@ const LeadsView = () => {
 
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "—" || dateStr === "No Date") return "—";
-
-    const [day, month, year] = dateStr.split("/").map(Number);
-    const date = new Date(year, month - 1, day);
-
-    return date.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return dateStr; // Backend now handles formatting
   };
 
   const renderPills = (dataString, type = "tag") => {
@@ -154,55 +147,35 @@ const LeadsView = () => {
     );
   };
 
-  // IMPROVED NOTES RENDERING - HORIZONTAL LAYOUT
   const renderNotes = (notesString) => {
     if (!notesString || notesString === "—" || notesString.trim() === "") {
       return <span className="no-notes-text">—</span>;
     }
-
-    // Enhanced date regex to match dates in format: DD/MM/YYYY or D/M/YYYY
     const dateRegex = /(\d{1,2}\/\d{1,2}\/\d{2,4})/g;
-
-    // Split by dates while keeping the dates
     const parts = notesString.split(dateRegex).filter((text) => text.trim());
-
     if (parts.length === 0) {
       return <span className="no-notes-text">—</span>;
     }
-
-    // Group notes by date
     const noteEntries = [];
     let currentDate = null;
-
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i].trim();
-
-      // Check if this part is a date
       if (dateRegex.test(part)) {
-        dateRegex.lastIndex = 0; // Reset regex
+        dateRegex.lastIndex = 0;
         currentDate = part;
       } else if (currentDate && part) {
-        // Clean up the note text
         let noteText = part
-          .replace(/^[-–—,\s]+/, "") // Remove leading dashes, commas, spaces
-          .replace(/[-–—,\s]+$/, "") // Remove trailing dashes, commas, spaces
+          .replace(/^[-–—,\s]+/, "")
+          .replace(/[-–—,\s]+$/, "")
           .trim();
-
         if (noteText) {
-          noteEntries.push({
-            date: currentDate,
-            text: noteText,
-          });
+          noteEntries.push({ date: currentDate, text: noteText });
         }
       }
     }
-
-    // If no proper date-note pairs found, show the original text
     if (noteEntries.length === 0) {
       return <div className="note-entry-simple">{notesString}</div>;
     }
-
-    // Sort entries by date (most recent first)
     noteEntries.sort((a, b) => {
       const [d1, m1, y1] = a.date.split("/").map(Number);
       const [d2, m2, y2] = b.date.split("/").map(Number);
@@ -210,29 +183,13 @@ const LeadsView = () => {
       const date2 = new Date(y2, m2 - 1, d2);
       return date2 - date1;
     });
-
-    // Show only the last 3 entries
     const recentEntries = noteEntries.slice(0, 3);
-
-    // Format date to "28 Jan 2026" style
-    const formatNoteDate = (dateStr) => {
-      const [day, month, year] = dateStr.split("/").map(Number);
-      const date = new Date(year, month - 1, day);
-      return date.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      });
-    };
-
     return (
       <div className="notes-timeline">
         {recentEntries.map((entry, index) => (
           <div key={index} className="note-entry-horizontal">
             <span className="note-bullet-icon">○</span>
-            <span className="note-date-horizontal">
-              {formatNoteDate(entry.date)}
-            </span>
+            <span className="note-date-horizontal">{entry.date}</span>
             <span className="note-text-horizontal">{entry.text}</span>
           </div>
         ))}
@@ -240,14 +197,7 @@ const LeadsView = () => {
     );
   };
 
-  // --- SORTING FUNCTIONS ---
-  const parseDate = (dateStr) => {
-    if (!dateStr || dateStr === "—" || dateStr === "No Date")
-      return new Date(0);
-    const parts = dateStr.split("/");
-    return new Date(parts[2], parts[1] - 1, parts[0]);
-  };
-
+  // --- SORTING HANDLER ---
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -255,26 +205,7 @@ const LeadsView = () => {
       setSortField(field);
       setSortOrder("desc");
     }
-  };
-
-  const getSortedLeads = () => {
-    if (!leads || leads.length === 0) return [];
-    return [...leads].sort((a, b) => {
-      let aValue, bValue;
-      if (sortField === "enquiry_date" || sortField === "followup_date") {
-        aValue = parseDate(a[sortField]);
-        bValue = parseDate(b[sortField]);
-      } else if (sortField === "name") {
-        aValue = a.name.toLowerCase();
-        bValue = b.name.toLowerCase();
-      } else {
-        aValue = a[sortField] || "";
-        bValue = b[sortField] || "";
-      }
-      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
+    setPage(1);
   };
 
   // --- LOGIC ---
@@ -304,20 +235,25 @@ const LeadsView = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://operating-media-backend.onrender.com/api/leads-view/`, {
-        params: {
-          page,
-          size: pageSize,
-          search,
-          branch_id: isBranchUser ? user.branch_id : undefined,
-          branch: isBranchUser ? "" : filters.branch,
-          source: filters.source,
-          counsellor: filters.counsellor,
-          tags: filters.tags,
-          from: filters.fromDate,
-          to: filters.toDate,
+      const res = await axios.get(
+        `https://operating-media-backend.onrender.com/api/leads-view/`,
+        {
+          params: {
+            page,
+            size: pageSize,
+            search,
+            branch_id: isBranchUser ? user.branch_id : undefined,
+            branch: isBranchUser ? "" : filters.branch,
+            source: filters.source,
+            counsellor: filters.counsellor,
+            tags: filters.tags,
+            from: filters.fromDate,
+            to: filters.toDate,
+            sort_field: sortField, // Correctly passing to backend
+            sort_order: sortOrder, // Correctly passing to backend
+          },
         },
-      });
+      );
       setLeads(res.data.leads);
       setTotalPages(res.data.total_pages);
       setTotalLeads(res.data.total_count || 0);
@@ -328,6 +264,7 @@ const LeadsView = () => {
     }
   };
 
+  // Automated fetch on filter or sort change
   useEffect(() => {
     fetchData();
   }, [
@@ -337,6 +274,8 @@ const LeadsView = () => {
     filters.source,
     filters.counsellor,
     filters.tags,
+    sortField,
+    sortOrder,
   ]);
 
   useEffect(() => {
@@ -353,7 +292,9 @@ const LeadsView = () => {
   const handleDeleteLead = async (id) => {
     if (window.confirm("Are you sure?")) {
       try {
-        await axios.delete(`https://operating-media-backend.onrender.com/api/leads/${id}/delete/`);
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/leads/${id}/delete/`,
+        );
         fetchData();
       } catch (err) {
         alert("Failed to delete lead");
@@ -502,7 +443,6 @@ const LeadsView = () => {
                     });
                     setSearch("");
                     setPage(1);
-                    fetchData();
                   }}
                 >
                   <RotateCcw size={14} />
@@ -554,28 +494,31 @@ const LeadsView = () => {
                   <tr>
                     <th width="80">COURSE</th>
                     <th
-                      width="160"
+                      width="160" // RESTORED
                       className="sortable-header"
-                      onClick={() => handleSort("name")}
+                      onClick={() => handleSort("first_name")}
+                      style={{ cursor: "pointer" }}
                     >
                       CUSTOMER{" "}
-                      {sortField === "name" &&
+                      {sortField === "first_name" &&
                         (sortOrder === "asc" ? "↑" : "↓")}
                     </th>
                     <th width="130">PHONE</th>
                     <th
-                      width="140"
+                      width="140" // RESTORED
                       className="sortable-header"
                       onClick={() => handleSort("enquiry_date")}
+                      style={{ cursor: "pointer" }}
                     >
                       DATE{" "}
                       {sortField === "enquiry_date" &&
                         (sortOrder === "asc" ? "↑" : "↓")}
                     </th>
                     <th
-                      width="120"
+                      width="120" // RESTORED
                       className="sortable-header"
                       onClick={() => handleSort("followup_date")}
+                      style={{ cursor: "pointer" }}
                     >
                       FOLLOWUP{" "}
                       {sortField === "followup_date" &&
@@ -595,7 +538,7 @@ const LeadsView = () => {
                       </td>
                     </tr>
                   ) : (
-                    getSortedLeads().map((lead) => (
+                    leads.map((lead) => (
                       <tr
                         key={lead.id}
                         className="clickable-row"

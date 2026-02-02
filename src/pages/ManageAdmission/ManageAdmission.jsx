@@ -146,6 +146,9 @@ const ManageAdmission = () => {
     filters.branch,
     filters.course,
     filters.counsellor,
+    filters.fromDate, // ADDED
+    filters.toDate, // ADDED
+    search, // ADDED
     sortField,
     sortOrder,
   ]);
@@ -273,8 +276,19 @@ const ManageAdmission = () => {
               <div className="filter-actions-inline">
                 <button
                   className="btn-reset"
+                  title="Reset all filters"
                   onClick={() => {
+                    // 1. Reset the calendar UI
                     setDateRange([null, null]);
+
+                    // 2. Reset the search box text
+                    setSearch("");
+
+                    // 3. Reset the page to 1
+                    setPage(1);
+
+                    // 4. Reset all dropdown and date filters
+                    // Because these are now in the useEffect above, the table refreshes INSTANTLY
                     setFilters({
                       branch: "",
                       course: "",

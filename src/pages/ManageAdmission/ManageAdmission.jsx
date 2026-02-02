@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Search,
   ChevronLeft,
@@ -10,10 +12,11 @@ import {
   Eye,
   MoreHorizontal,
   Edit3,
-  Trash2,
   Filter,
   RotateCcw,
   Check,
+  Calendar as CalendarIcon,
+  X,
 } from "lucide-react";
 import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
@@ -43,7 +46,7 @@ const ManageAdmission = () => {
 
   const [options, setOptions] = useState({
     branches: [],
-    counsellors: [], // NEW
+    counsellors: [],
     courses: [
       "Masters in Digital Marketing",
       "Advanced Diploma in Digital Marketing",
@@ -56,27 +59,6 @@ const ManageAdmission = () => {
     ],
   });
 
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortOrder("desc");
-    }
-  };
-
-  const handleRowClick = (id, event) => {
-    // If clicking buttons or the dropdown menu, don't open the View drawer
-    if (
-      event.target.closest(".action-btns-sm") ||
-      event.target.closest(".action-dropdown")
-    )
-      return;
-
-    setSelectedAdmissionId(id);
-    setIsViewDrawerOpen(true);
-  };
-
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
@@ -85,12 +67,14 @@ const ManageAdmission = () => {
   const [filters, setFilters] = useState({
     branch: "",
     course: "",
-    counsellor: user.role === "staff" ? user.name : "", // Default to logged in staff
+    counsellor: user.role === "staff" ? user.name : "",
     fromDate: "",
     toDate: "",
   });
 
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
 
   const getPageNumbers = () => {
     const pages = [];
@@ -101,7 +85,15 @@ const ManageAdmission = () => {
     return pages;
   };
 
-  // FETCH OPTIONS FOR DROPDOWNS
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("desc");
+    }
+  };
+
   useEffect(() => {
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
@@ -109,7 +101,7 @@ const ManageAdmission = () => {
         setOptions((prev) => ({
           ...prev,
           branches: res.data.branches || [],
-          counsellors: res.data.counsellors || [], // Now fetching from backend
+          counsellors: res.data.counsellors || [],
         }));
       })
       .catch((err) => console.error("Options error:", err));
@@ -128,7 +120,7 @@ const ManageAdmission = () => {
             branch_id: user.branch_id,
             branch: filters.branch,
             course: filters.course,
-            counsellor: filters.counsellor, // NEW PARAM
+            counsellor: filters.counsellor,
             from: filters.fromDate,
             to: filters.toDate,
             sort_field: sortField,
@@ -158,33 +150,40 @@ const ManageAdmission = () => {
     sortOrder,
   ]);
 
-  useEffect(() => {
-    if (location.state?.openAdmissionId) {
-      setSelectedAdmissionId(location.state.openAdmissionId);
-      setIsViewDrawerOpen(true);
+  const handleRowClick = (id, event) => {
+    if (
+      event.target.closest(".action-btns-sm") ||
+      event.target.closest(".action-dropdown")
+    )
+      return;
+    setSelectedAdmissionId(id);
+    setIsViewDrawerOpen(true);
+  };
 
-      // Optional: Clear the state so it doesn't re-open on refresh
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
+  const handleDateChange = (update) => {
+    setDateRange(update);
+    const [start, end] = update;
+    setFilters({
+      ...filters,
+      fromDate: start ? start.toISOString().split("T")[0] : "",
+      toDate: end ? end.toISOString().split("T")[0] : "",
+    });
+  };
 
-  useEffect(() => {
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-    searchTimeoutRef.current = setTimeout(() => {
-      setPage(1);
-      fetchAdmissions();
-    }, 500);
-    return () => {
-      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-    };
-  }, [search]);
+  const clearDateRange = () => {
+    setDateRange([null, null]);
+    setFilters({
+      ...filters,
+      fromDate: "",
+      toDate: "",
+    });
+  };
 
   return (
     <div className="app-container">
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-area">
-          {/* SEARCH FILTERS */}
           <div className="filter-card">
             <div className="filter-header-row">
               <div className="filter-title">
@@ -194,7 +193,7 @@ const ManageAdmission = () => {
             <div className="filter-grid">
               {!isBranchUser && (
                 <div className="filter-group">
-                  <label>Branch</label>
+                  <label>BRANCH</label>
                   <select
                     value={filters.branch}
                     onChange={(e) =>
@@ -211,7 +210,7 @@ const ManageAdmission = () => {
                 </div>
               )}
               <div className="filter-group">
-                <label>Course</label>
+                <label>COURSE</label>
                 <select
                   value={filters.course}
                   onChange={(e) =>
@@ -226,10 +225,8 @@ const ManageAdmission = () => {
                   ))}
                 </select>
               </div>
-
-              {/* NEW: COUNSELLOR FILTER */}
               <div className="filter-group">
-                <label>Counsellor</label>
+                <label>COUNSELLOR</label>
                 <select
                   value={filters.counsellor}
                   onChange={(e) =>
@@ -245,38 +242,47 @@ const ManageAdmission = () => {
                 </select>
               </div>
 
+              {/* DATE PICKER - MATCHING OTHER FILTERS */}
               <div className="filter-group range-group">
-                <label>Submission Date Range</label>
-                <div className="date-input-container">
-                  <input
-                    type="date"
-                    value={filters.fromDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, fromDate: e.target.value })
-                    }
+                <label>SUBMISSION DATE RANGE</label>
+                <div className="date-picker-wrapper">
+                  <CalendarIcon size={14} className="calendar-icon" />
+                  <DatePicker
+                    selectsRange={true}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={handleDateChange}
+                    placeholderText="Select range (Start - End)"
+                    dateFormat="MMM d, yyyy"
+                    monthsShown={2}
+                    className="date-input-field"
+                    wrapperClassName="date-input-wrapper"
                   />
-                  <span className="date-sep">to</span>
-                  <input
-                    type="date"
-                    value={filters.toDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, toDate: e.target.value })
-                    }
-                  />
+                  {(startDate || endDate) && (
+                    <button
+                      className="clear-date-btn"
+                      onClick={clearDateRange}
+                      type="button"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
+
               <div className="filter-actions-inline">
                 <button
                   className="btn-reset"
-                  onClick={() =>
+                  onClick={() => {
+                    setDateRange([null, null]);
                     setFilters({
                       branch: "",
                       course: "",
                       counsellor: user.role === "staff" ? user.name : "",
                       fromDate: "",
                       toDate: "",
-                    })
-                  }
+                    });
+                  }}
                 >
                   <RotateCcw size={14} />
                 </button>
@@ -392,11 +398,12 @@ const ManageAdmission = () => {
                             <div className="action-menu-container">
                               <button
                                 className={`icon-btn-sm ${activeMenuId === item.id ? "active" : ""}`}
-                                onClick={() =>
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setActiveMenuId(
                                     activeMenuId === item.id ? null : item.id,
-                                  )
-                                }
+                                  );
+                                }}
                               >
                                 <MoreHorizontal size={16} />
                               </button>

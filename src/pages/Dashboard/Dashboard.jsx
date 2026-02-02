@@ -33,15 +33,9 @@ const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (user.branch_id) params.append("branch_id", user.branch_id);
-    if (user.role === "staff" && user.name)
-      params.append("counsellor", user.name);
-
+    // We no longer send any parameters. We want the FULL data for everyone.
     axios
-      .get(
-        `https://operating-media-backend.onrender.com/api/followups-dashboard/?${params.toString()}`,
-      )
+      .get(`https://operating-media-backend.onrender.com/api/followups-dashboard/`)
       .then((res) => {
         setData(res.data);
         setLoading(false);
@@ -50,7 +44,7 @@ const Dashboard = () => {
         console.error(err);
         setLoading(false);
       });
-  }, [user.branch_id, user.name, user.role]);
+  }, []);
 
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "None" || dateStr === "N/A") return "N/A";

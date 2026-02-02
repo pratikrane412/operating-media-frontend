@@ -17,6 +17,7 @@ import {
   Check,
   Calendar as CalendarIcon,
   X,
+  Trash2, // Ensure Trash2 is imported
 } from "lucide-react";
 import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
@@ -146,12 +147,28 @@ const ManageAdmission = () => {
     filters.branch,
     filters.course,
     filters.counsellor,
-    filters.fromDate, // ADDED
-    filters.toDate, // ADDED
-    search, // ADDED
+    filters.fromDate,
+    filters.toDate,
+    search,
     sortField,
     sortOrder,
   ]);
+
+  const handleDeleteAdmission = async (id) => {
+    if (
+      window.confirm("Are you sure you want to delete this admission record?")
+    ) {
+      try {
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/admissions/${id}/delete/`,
+        );
+        setActiveMenuId(null);
+        fetchAdmissions();
+      } catch (err) {
+        alert("Failed to delete admission record.");
+      }
+    }
+  };
 
   const handleRowClick = (id, event) => {
     if (
@@ -175,11 +192,7 @@ const ManageAdmission = () => {
 
   const clearDateRange = () => {
     setDateRange([null, null]);
-    setFilters({
-      ...filters,
-      fromDate: "",
-      toDate: "",
-    });
+    setFilters({ ...filters, fromDate: "", toDate: "" });
   };
 
   return (
@@ -245,7 +258,6 @@ const ManageAdmission = () => {
                 </select>
               </div>
 
-              {/* DATE PICKER - MATCHING OTHER FILTERS */}
               <div className="filter-group range-group">
                 <label>SUBMISSION DATE RANGE</label>
                 <div className="date-picker-wrapper">
@@ -276,19 +288,8 @@ const ManageAdmission = () => {
               <div className="filter-actions-inline">
                 <button
                   className="btn-reset"
-                  title="Reset all filters"
                   onClick={() => {
-                    // 1. Reset the calendar UI
                     setDateRange([null, null]);
-
-                    // 2. Reset the search box text
-                    setSearch("");
-
-                    // 3. Reset the page to 1
-                    setPage(1);
-
-                    // 4. Reset all dropdown and date filters
-                    // Because these are now in the useEffect above, the table refreshes INSTANTLY
                     setFilters({
                       branch: "",
                       course: "",
@@ -296,6 +297,8 @@ const ManageAdmission = () => {
                       fromDate: "",
                       toDate: "",
                     });
+                    setSearch("");
+                    setPage(1);
                   }}
                 >
                   <RotateCcw size={14} />
@@ -351,7 +354,7 @@ const ManageAdmission = () => {
                       onClick={() => handleSort("submission_time")}
                       style={{ cursor: "pointer" }}
                     >
-                      SUBMISSION DATE
+                      SUBMISSION DATE{" "}
                       {sortField === "submission_time" &&
                         (sortOrder === "asc" ? " ↑" : " ↓")}
                     </th>
@@ -412,12 +415,11 @@ const ManageAdmission = () => {
                             <div className="action-menu-container">
                               <button
                                 className={`icon-btn-sm ${activeMenuId === item.id ? "active" : ""}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
+                                onClick={() =>
                                   setActiveMenuId(
                                     activeMenuId === item.id ? null : item.id,
-                                  );
-                                }}
+                                  )
+                                }
                               >
                                 <MoreHorizontal size={16} />
                               </button>
@@ -432,6 +434,16 @@ const ManageAdmission = () => {
                                     }}
                                   >
                                     <Edit3 size={14} /> Edit
+                                  </button>
+
+                                  <button
+                                    className="drop-item delete"
+                                    onClick={() =>
+                                      handleDeleteAdmission(item.id)
+                                    }
+                                    style={{ color: "#ef4444" }}
+                                  >
+                                    <Trash2 size={14} /> Delete
                                   </button>
                                 </div>
                               )}

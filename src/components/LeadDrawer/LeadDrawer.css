@@ -1,52 +1,89 @@
-.tag-option.selected.tag-green {
-  background: #dcfce7 !important;
-  color: #166534 !important;
-  border-color: #86efac !important;
+/* --- Base Tag Colors (Always Visible) --- */
+
+/* Cyan: Hot Lead */
+.tag-option.tag-cyan {
+  background: #ecfeff; /* Very light cyan */
+  color: #0891b2;
+  border-color: #a5f3fc;
+}
+.tag-option.tag-cyan.selected {
+  background: #cffafe !important;
+  border-color: #06b6d4 !important;
+  font-weight: 800;
 }
 
-.tag-option.selected.tag-cyan {
-  background: #cffafe !important;
-  color: #155e75 !important;
-  border-color: #67e8f9 !important;
+/* Green: Enrolled */
+.tag-option.tag-green {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+.tag-option.tag-green.selected {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  font-weight: 800;
 }
 
 /* Yellow: Interested, Call Back */
-.tag-option.selected.tag-yellow {
+.tag-option.tag-yellow {
+  background: #fefce8;
+  color: #ca8a04;
+  border-color: #fef08a;
+}
+.tag-option.tag-yellow.selected {
   background: #fef9c3 !important;
-  color: #854d0e !important;
-  border-color: #fde047 !important;
+  border-color: #eab308 !important;
+  font-weight: 800;
 }
 
-/* Red: Invalid, Job related, Not interested */
-.tag-option.selected.tag-red {
+/* Red: Invalid, Not Interested, etc. */
+.tag-option.tag-red {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+.tag-option.tag-red.selected {
   background: #fee2e2 !important;
-  color: #991b1b !important;
-  border-color: #fca5a5 !important;
+  border-color: #ef4444 !important;
+  font-weight: 800;
 }
 
 /* Orange: Visits & Counseling */
-.tag-option.selected.tag-orange {
+.tag-option.tag-orange {
+  background: #fff7ed;
+  color: #ea580c;
+  border-color: #fed7aa;
+}
+.tag-option.tag-orange.selected {
   background: #ffedd5 !important;
-  color: #9a3412 !important;
-  border-color: #fdba74 !important;
+  border-color: #f97316 !important;
+  font-weight: 800;
 }
 
 /* Purple: Future Admission */
-.tag-option.selected.tag-purple {
+.tag-option.tag-purple {
+  background: #faf5ff;
+  color: #9333ea;
+  border-color: #e9d5ff;
+}
+.tag-option.tag-purple.selected {
   background: #f3e8ff !important;
-  color: #6b21a8 !important;
-  border-color: #d8b4fe !important;
+  border-color: #a855f7 !important;
+  font-weight: 800;
 }
 
-/* Ensure the Check icon matches the text color */
-.tag-option.selected svg {
-  color: currentColor;
+/* Visual differentiation for unselected tags */
+.tag-option:not(.selected) {
+  opacity: 0.7; /* Make unselected tags slightly more transparent */
+  border-style: dashed; /* Optional: adds a visual hint that it's unselected */
 }
 
-/* Generic Transition for smooth color change */
-.tag-option {
-  transition: all 0.2s ease;
+.tag-option.selected {
+  opacity: 1;
+  border-style: solid;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
+
 /* Container Layout */
 .drawer-overlay {
   position: fixed;

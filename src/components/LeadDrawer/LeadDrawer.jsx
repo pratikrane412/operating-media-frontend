@@ -20,9 +20,17 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const getTagColorClass = (val) => {
     if (!val) return "";
     const t = val.toLowerCase();
+
+    // 1. Cyan: Hot Lead
     if (t === "hot lead") return "tag-cyan";
+
+    // 2. Green: Enrolled
     if (t === "enrolled") return "tag-green";
+
+    // 3. Yellow: Interested, Call back
     if (["interested", "call back"].includes(t)) return "tag-yellow";
+
+    // 4. Red: Invalid, Looking for job, Not interested, Placement inquiry
     if (
       [
         "invalid",
@@ -32,6 +40,8 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
       ].includes(t)
     )
       return "tag-red";
+
+    // 5. Orange: Will Visit, Visited, Counseling Done, Online Counseling
     if (
       [
         "will visit",
@@ -41,7 +51,10 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
       ].includes(t)
     )
       return "tag-orange";
+
+    // 6. Purple: Future Admission
     if (t === "future admission") return "tag-purple";
+
     return "";
   };
 
@@ -169,7 +182,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
         `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
         {
           tags: newTags,
-        }
+        },
       );
       if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
@@ -193,7 +206,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
         `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
         {
           source: newSources,
-        }
+        },
       );
       if (onUpdate) onUpdate(); // Refresh background table
     } catch (err) {
@@ -212,7 +225,7 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
         {
           remark: newRemark,
           next_date: nextDate,
-        }
+        },
       );
       fetchLeadDetails();
       setNewRemark("");
@@ -261,10 +274,9 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                     {allAvailableTags.map((tag) => (
                       <div
                         key={tag}
-                        className={`tag-option ${
-                          tempTags.includes(tag)
-                            ? `selected ${getTagColorClass(tag)}`
-                            : ""
+                        // We moved getTagColorClass outside the ternary so it's ALWAYS active
+                        className={`tag-option ${getTagColorClass(tag)} ${
+                          tempTags.includes(tag) ? "selected" : ""
                         }`}
                         onClick={() => handleToggleTag(tag)}
                         style={{

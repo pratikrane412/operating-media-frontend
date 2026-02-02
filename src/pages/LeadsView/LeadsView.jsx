@@ -357,24 +357,22 @@ const LeadsView = () => {
               </button>
             </div>
             <div className="filter-grid">
-              {!isBranchUser && (
-                <div className="filter-group">
-                  <label>Branch</label>
-                  <select
-                    value={filters.branch}
-                    onChange={(e) =>
-                      setFilters({ ...filters, branch: e.target.value })
-                    }
-                  >
-                    <option value="">All</option>
-                    {options.branches.map((b, i) => (
-                      <option key={i} value={b}>
-                        {b}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              <div className="filter-group">
+                <label>Branch</label>
+                <select
+                  value={filters.branch}
+                  onChange={(e) =>
+                    setFilters({ ...filters, branch: e.target.value })
+                  }
+                >
+                  <option value="">All</option>
+                  {options.branches.map((b, i) => (
+                    <option key={i} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="filter-group">
                 <label>Source</label>
                 <select

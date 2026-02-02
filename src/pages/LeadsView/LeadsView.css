@@ -370,6 +370,76 @@
   font-size: 13px;
 }
 
+/* FORCE HORIZONTAL DUAL-MONTH LAYOUT */
+.react-datepicker {
+  display: flex !important; /* CRITICAL: This makes the months sit side-by-side */
+  flex-direction: row;
+  background-color: #fff;
+  border-radius: 12px !important;
+  border: 1px solid #eef1f6 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  font-family: inherit !important;
+  overflow: hidden;
+}
+
+/* Ensure individual month containers don't wrap */
+.react-datepicker__month-container {
+  float: none !important;
+  display: inline-block;
+}
+
+/* Container for the input field to match Manage Admission */
+.date-picker-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 34px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-width: 260px; /* Gives enough space for the text */
+}
+
+.date-picker-wrapper:focus-within {
+  border-color: #003873;
+  box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.05);
+}
+
+.calendar-icon {
+  color: #94a3b8;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.date-input-field {
+  border: none !important;
+  outline: none !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  width: 100% !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+}
+
+/* Day selection colors */
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range {
+  background-color: #003873 !important;
+  color: white !important;
+  border-radius: 4px !important;
+}
+
+.react-datepicker__day--in-range:not(.react-datepicker__day--selected) {
+  background-color: #ebf5ff !important;
+  color: #003873 !important;
+}
+
 /* =============================================
    IMPROVED NOTES COLUMN STYLING - HORIZONTAL FORMAT
    ============================================= */

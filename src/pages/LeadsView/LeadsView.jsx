@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // ADDED useLocation
+import { useNavigate, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -18,6 +18,7 @@ import {
   Check,
   Trash2,
   Edit3,
+  X, // Added X
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import LeadCreateDrawer from "../../components/LeadDrawer/LeadCreateDrawer";
@@ -26,15 +27,13 @@ import "./LeadsView.css";
 
 const LeadsView = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // INITIALIZED location
+  const location = useLocation();
   const menuRef = useRef(null);
   const searchTimeoutRef = useRef(null);
 
-  // 1. DEFINE STATIC VARIABLES FIRST
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
   const isBranchUser = !!user.branch_id;
 
-  // 2. NOW DEFINE ALL STATES
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [totalLeads, setTotalLeads] = useState(0);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
@@ -63,21 +62,47 @@ const LeadsView = () => {
     toDate: "",
   });
 
-  // Global Sort states
   const [sortField, setSortField] = useState("followup_date");
   const [sortOrder, setSortOrder] = useState("desc");
 
-  // --- AUTO-OPEN DRAWER FROM DASHBOARD ---
+  // NEW: Date Range States
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
+
   useEffect(() => {
     if (location.state?.openLeadId) {
       setSelectedLeadId(location.state.openLeadId);
       setIsDrawerOpen(true);
-      // Clear state so it doesn't reopen on refresh
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
-  // --- HELPERS ---
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("desc");
+    }
+    setPage(1);
+  };
+
+  const handleDateChange = (update) => {
+    setDateRange(update);
+    const [start, end] = update;
+    setFilters({
+      ...filters,
+      fromDate: start ? start.toISOString().split("T")[0] : "",
+      toDate: end ? end.toISOString().split("T")[0] : "",
+    });
+  };
+
+  const clearDateRange = () => {
+    setDateRange([null, null]);
+    setFilters({ ...filters, fromDate: "", toDate: "" });
+  };
+
+  // ... (getCourseShortName, getTagColorClass, formatDate, renderPills, renderNotes helpers remain the same)
   const getCourseShortName = (name) => {
     if (!name || name === "NA") return "NA";
     const n = name.toLowerCase();
@@ -133,13 +158,11 @@ const LeadsView = () => {
       dataString === "No Tag"
     )
       return <span className="no-tag-pill">No Tag</span>;
-
     const items = dataString
       .replace(/[\[\]"']/g, "")
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
-
     return (
       <div className="pill-stack">
         {items.map((item, index) => (
@@ -159,14 +182,11 @@ const LeadsView = () => {
   };
 
   const renderNotes = (notesString) => {
-    if (!notesString || notesString === "—" || notesString.trim() === "") {
+    if (!notesString || notesString === "—" || notesString.trim() === "")
       return <span className="no-notes-text">—</span>;
-    }
     const dateRegex = /(\d{1,2}\/\d{1,2}\/\d{2,4})/g;
     const parts = notesString.split(dateRegex).filter((text) => text.trim());
-    if (parts.length === 0) {
-      return <span className="no-notes-text">—</span>;
-    }
+    if (parts.length === 0) return <span className="no-notes-text">—</span>;
     const noteEntries = [];
     let currentDate = null;
     for (let i = 0; i < parts.length; i++) {
@@ -179,14 +199,11 @@ const LeadsView = () => {
           .replace(/^[-–—,\s]+/, "")
           .replace(/[-–—,\s]+$/, "")
           .trim();
-        if (noteText) {
-          noteEntries.push({ date: currentDate, text: noteText });
-        }
+        if (noteText) noteEntries.push({ date: currentDate, text: noteText });
       }
     }
-    if (noteEntries.length === 0) {
+    if (noteEntries.length === 0)
       return <div className="note-entry-simple">{notesString}</div>;
-    }
     noteEntries.sort((a, b) => {
       const [d1, m1, y1] = a.date.split("/").map(Number);
       const [d2, m2, y2] = b.date.split("/").map(Number);
@@ -206,16 +223,6 @@ const LeadsView = () => {
         ))}
       </div>
     );
-  };
-
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortOrder("desc");
-    }
-    setPage(1);
   };
 
   useEffect(() => {
@@ -417,40 +424,58 @@ const LeadsView = () => {
                   ))}
                 </select>
               </div>
+
+              {/* UPDATED: Google Ads Style DatePicker */}
               <div className="filter-group range-group">
                 <label>Date Range</label>
-                <div className="date-input-container">
-                  <input
-                    type="date"
-                    value={filters.fromDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, fromDate: e.target.value })
-                    }
+                <div className="date-picker-wrapper">
+                  <CalendarIcon size={14} className="calendar-icon" />
+                  <DatePicker
+                    selectsRange={true}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={handleDateChange}
+                    placeholderText="Select range (Start - End)"
+                    dateFormat="MMM d, yyyy"
+                    monthsShown={2} // <--- Keep this
+                    className="date-input-field"
+                    wrapperClassName="date-input-wrapper"
                   />
-                  <span className="date-sep">to</span>
-                  <input
-                    type="date"
-                    value={filters.toDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, toDate: e.target.value })
-                    }
-                  />
+                  {(startDate || endDate) && (
+                    <button
+                      className="clear-date-btn"
+                      onClick={clearDateRange}
+                      type="button"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
+
               <div className="filter-actions-inline">
                 <button
                   className="btn-reset"
+                  title="Reset all filters"
                   onClick={() => {
+                    // 1. Reset the calendar UI
+                    setDateRange([null, null]);
+
+                    // 2. Reset the search box text
+                    setSearch("");
+
+                    // 3. Reset the page to 1
+                    setPage(1);
+
+                    // 4. Reset all dropdown and date filters
+                    // Because these are now in the useEffect above, the table refreshes INSTANTLY
                     setFilters({
                       branch: "",
-                      source: "",
+                      course: "",
                       counsellor: user.role === "staff" ? user.name : "",
-                      tags: "",
                       fromDate: "",
                       toDate: "",
                     });
-                    setSearch("");
-                    setPage(1);
                   }}
                 >
                   <RotateCcw size={14} />

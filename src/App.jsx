@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute"; // Import the Guard
-
+import ProtectedRoute from "./components/ProtectedRoute"; 
+import AdmissionForm from "./pages/AdmissionForm/AdmissionForm";
 import Login from "./pages/Login/Login";
 import BranchLogin from "./pages/Login/BranchLogin";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -105,6 +105,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/admission" element={<AdmissionForm />} />
       </Routes>
     </Router>
   );

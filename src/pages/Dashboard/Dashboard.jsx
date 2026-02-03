@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Navbar from "../../components/Navbar/Navbar";
 import {
   IndianRupee,
@@ -11,48 +13,86 @@ import {
   CalendarClock,
   ChevronRight,
   ArrowRight,
+  RotateCcw,
+  Calendar as CalendarIcon,
+  X,
 } from "lucide-react";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
     followups: [],
     hot_leads: [],
     reminders: [],
+    revenue_details: [],
     counsellors: [],
     stats: {},
   });
-  const [loading, setLoading] = useState(true);
 
+  // --- FILTER STATES ---
   const [feeBranchFilter, setFeeBranchFilter] = useState("All");
   const [followupCounsellorFilter, setFollowupCounsellorFilter] =
     useState("All");
 
+  // States for Total Fee Generated Section
+  const [revBranch, setRevBranch] = useState("All");
+  const [revCounsellor, setRevCounsellor] = useState("All");
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      // Pass filters to backend
+      params.append("branch", revBranch);
+      params.append("counsellor", revCounsellor);
+      if (startDate)
+        params.append("start_date", startDate.toISOString().split("T")[0]);
+      if (endDate)
+        params.append("end_date", endDate.toISOString().split("T")[0]);
+
+      const res = await axios.get(
+        `https://operating-media-backend.onrender.com/api/followups-dashboard/?${params.toString()}`,
+      );
+      setData(res.data);
+    } catch (err) {
+      console.error("Dashboard Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Re-fetch data whenever the primary filters change
   useEffect(() => {
-    // We no longer send any parameters. We want the FULL data for everyone.
-    axios
-      .get(`https://operating-media-backend.onrender.com/api/followups-dashboard/`)
-      .then((res) => {
-        setData(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    fetchDashboardData();
+  }, [revBranch, revCounsellor, startDate, endDate]);
 
   const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "None" || dateStr === "N/A") return "N/A";
+    if (!dateStr || dateStr === "None" || dateStr === "N/A" || dateStr === "—")
+      return "—";
     const parts = dateStr.split("-");
     if (parts.length !== 3) return dateStr;
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
+  const revenueTotals = data.revenue_details?.reduce(
+    (acc, item) => {
+      return {
+        totalFees: acc.totalFees + (parseFloat(item.total_fees) || 0),
+        totalReceived: acc.totalReceived + (parseFloat(item.received) || 0),
+        totalPending: acc.totalPending + (parseFloat(item.pending) || 0),
+      };
+    },
+    { totalFees: 0, totalReceived: 0, totalPending: 0 },
+  );
+
+  // --- FILTER LOGIC (FRONTEND ONLY) ---
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
     const filterFirstName = followupCounsellorFilter.split(" ")[0];
@@ -85,7 +125,7 @@ const Dashboard = () => {
             </div>
           </header>
 
-          {loading ? (
+          {loading && !data.stats.revenue ? (
             <div className="loader">Analyzing Dashboard...</div>
           ) : (
             <>
@@ -129,7 +169,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* TODAY'S FOLLOWUP LIST */}
+              {/* TODAY'S ACTIVE FOLLOWUP QUEUE */}
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
                   <div className="toolbar-content">
@@ -199,7 +239,6 @@ const Dashboard = () => {
                               {item.remark}
                             </td>
                             <td className="text-center">
-                              {/* UPDATED: Navigates with state */}
                               <button
                                 className="btn-icon-round"
                                 onClick={() =>
@@ -219,11 +258,11 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* HOT LEADS */}
+              {/* HOT LEADS PRIORITY QUEUE */}
               <div className="data-display-card mt-30 hot-leads-border">
-                <div className="data-toolbar hot-toolbar">
+                <div className="data-toolbar">
                   <div className="toolbar-left">
-                    <Zap size={18} className="title-icon-red" />
+                    <Zap size={18} color="#ef4444" />
                     <span className="branch-title">
                       Hot Leads Priority Queue
                     </span>
@@ -233,11 +272,11 @@ const Dashboard = () => {
                   <table className="modern-data-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "20%" }}>CUSTOMER</th>
-                        <th style={{ width: "14%" }}>PHONE</th>
-                        <th style={{ width: "14%" }}>COUNSELLOR</th>
-                        <th style={{ width: "16%" }}>COURSE</th>
-                        <th style={{ width: "28%" }}>LAST REMARK</th>
+                        <th style={{ width: "18%" }}>CUSTOMER</th>
+                        <th style={{ width: "12%" }}>PHONE</th>
+                        <th style={{ width: "12%" }}>COUNSELLOR</th>
+                        <th style={{ width: "20%" }}>COURSE</th>
+                        <th style={{ width: "30%" }}>LAST REMARK</th>
                         <th style={{ width: "8%" }} className="text-center">
                           ACTION
                         </th>
@@ -282,7 +321,6 @@ const Dashboard = () => {
                               {lead.last_remark}
                             </td>
                             <td className="text-center">
-                              {/* UPDATED: Navigates with state */}
                               <button
                                 className="btn-icon-round hot-btn"
                                 onClick={() =>
@@ -302,7 +340,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* FEES REMINDERS */}
+              {/* UPCOMING & OVERDUE FEES */}
               <div className="data-display-card mt-40 fee-reminder-card">
                 <div className="data-toolbar fee-toolbar">
                   <div className="toolbar-content">
@@ -384,6 +422,189 @@ const Dashboard = () => {
                         </tr>
                       ))}
                     </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* NEW SECTION: TOTAL FEE GENERATED DETAILS */}
+              <div className="data-display-card mt-40">
+                <div className="data-toolbar" style={{ background: "#fcfdfe" }}>
+                  <div className="toolbar-content">
+                    <div className="toolbar-left">
+                      <IndianRupee size={18} className="title-icon-blue" />
+                      <span className="branch-title">
+                        Total Fee Generated Details
+                      </span>
+                    </div>
+
+                    {/* CONSOLIDATED FILTERS FOR REVENUE SECTION */}
+                    <div
+                      className="rev-filter-group"
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <select
+                        className="branch-filter-select"
+                        value={revBranch}
+                        onChange={(e) => setRevBranch(e.target.value)}
+                      >
+                        <option value="All">All Branches</option>
+                        <option value="Andheri">Andheri</option>
+                        <option value="Borivali">Borivali</option>
+                      </select>
+
+                      <select
+                        className="branch-filter-select"
+                        value={revCounsellor}
+                        onChange={(e) => setRevCounsellor(e.target.value)}
+                      >
+                        <option value="All">All Counsellors</option>
+                        {data.counsellors?.map((name, i) => (
+                          <option key={i} value={name}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+
+                      <div
+                        className="date-picker-wrapper"
+                        style={{ height: "36px", minWidth: "220px" }}
+                      >
+                        <CalendarIcon size={14} className="calendar-icon" />
+                        <DatePicker
+                          selectsRange={true}
+                          startDate={startDate}
+                          endDate={endDate}
+                          onChange={(update) => setDateRange(update)}
+                          placeholderText="Date Range Selection"
+                          dateFormat="MMM d, yyyy"
+                          className="date-input-field"
+                        />
+                        {(startDate || endDate) && (
+                          <button
+                            className="clear-date-btn"
+                            onClick={() => setDateRange([null, null])}
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+
+                      <button
+                        className="btn-icon-round"
+                        title="Reset Filters"
+                        onClick={() => {
+                          setRevBranch("All");
+                          setRevCounsellor("All");
+                          setDateRange([null, null]);
+                        }}
+                      >
+                        <RotateCcw size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="table-sticky-wrapper">
+                  <table
+                    className="modern-data-table"
+                    style={{ tableLayout: "fixed", width: "100%" }}
+                  >
+                    <thead>
+                      <tr>
+                        <th style={{ width: "22%" }}>STUDENT NAME</th>
+                        <th style={{ width: "12%" }}>DATE</th>
+                        <th style={{ width: "20%" }}>COURSE</th>
+                        <th style={{ width: "14%" }}>COUNSELLOR</th>
+                        <th style={{ width: "11%" }}>TOTAL FEE</th>
+                        <th style={{ width: "10%" }}>RECEIVED</th>
+                        <th style={{ width: "11%" }}>PENDING</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.revenue_details?.length === 0 ? (
+                        <tr>
+                          <td colSpan="7" className="loader">
+                            No collection records found.
+                          </td>
+                        </tr>
+                      ) : (
+                        data.revenue_details?.map((item, index) => (
+                          <tr key={index}>
+                            <td>
+                              <div className="user-profile-cell">
+                                <div className="avatar-letter">
+                                  {item.name ? item.name.charAt(0) : "?"}
+                                </div>
+                                <span className="user-full-name truncate-text">
+                                  {item.name}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="join-date-text">
+                              {formatDate(item.date)}
+                            </td>
+                            <td>
+                              <span className="course-pill-lite">
+                                {item.course}
+                              </span>
+                            </td>
+                            <td className="counsellor-name">
+                              {item.counsellor}
+                            </td>
+                            <td className="fee-amount-bold">
+                              ₹{item.total_fees?.toLocaleString("en-IN")}
+                            </td>
+                            <td
+                              className="fee-amount-bold"
+                              style={{ color: "#16a34a" }}
+                            >
+                              ₹{item.received?.toLocaleString("en-IN")}
+                            </td>
+                            <td
+                              className="fee-amount-bold"
+                              style={{ color: "#dc2626" }}
+                            >
+                              ₹{item.pending?.toLocaleString("en-IN")}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+
+                    {/* NEW: DYNAMIC TOTALS ROW */}
+                    {data.revenue_details?.length > 0 && (
+                      <tfoot className="table-summary-footer">
+                        <tr>
+                          {/* Label spanning first 4 columns */}
+                          <td colSpan="4" className="summary-label">
+                            Total for selected filters:
+                          </td>
+
+                          {/* Total Fees */}
+                          <td className="summary-value summary-total">
+                            ₹{revenueTotals.totalFees.toLocaleString("en-IN")}
+                          </td>
+
+                          {/* Total Received */}
+                          <td className="summary-value summary-received">
+                            ₹
+                            {revenueTotals.totalReceived.toLocaleString(
+                              "en-IN",
+                            )}
+                          </td>
+
+                          {/* Total Pending */}
+                          <td className="summary-value summary-pending">
+                            ₹
+                            {revenueTotals.totalPending.toLocaleString("en-IN")}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    )}
                   </table>
                 </div>
               </div>

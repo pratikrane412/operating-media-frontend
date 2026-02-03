@@ -374,6 +374,73 @@
   font-variant-numeric: tabular-nums;
 }
 
+.modern-data-table .user-profile-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden; /* Prevents text from bleeding out */
+}
+
+.modern-data-table .user-full-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+.fee-amount-bold {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+
+.table-summary-footer td {
+  padding: 18px 22px !important;
+  background-color: #ffffff;
+  border-top: 2px solid var(--brand-blue) !important; /* Bold line to separate totals */
+  vertical-align: middle;
+}
+
+/* Label Styling */
+.summary-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+/* Base style for total numbers */
+.summary-value {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+
+/* Specific shading for total columns */
+.summary-total {
+  background-color: #f8fafc !important;
+  color: #1e293b;
+}
+
+.summary-received {
+  background-color: #f0fdf4 !important; /* Very soft green */
+  color: #16a34a !important;
+  border-left: 1px solid #dcfce7 !important;
+}
+
+.summary-pending {
+  background-color: #fef2f2 !important; /* Very soft red */
+  color: #dc2626 !important;
+  border-left: 1px solid #fee2e2 !important;
+}
+
+/* Hover effect for the whole footer */
+.table-summary-footer:hover td {
+  filter: brightness(0.98);
+}
+
 .email-text-truncate {
   color: #64748b;
   font-weight: 500;

@@ -52,6 +52,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
+      // Pass filters to backend
       params.append("branch", revBranch);
       params.append("counsellor", revCounsellor);
 
@@ -95,6 +96,7 @@ const Dashboard = () => {
     { totalFees: 0, totalReceived: 0, totalPending: 0 },
   );
 
+  // --- FILTER LOGIC (FRONTEND ONLY) ---
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
     const filterFirstName = followupCounsellorFilter.split(" ")[0];
@@ -159,7 +161,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* 3. PURPLE (Changed from grey to purple) */}
+                {/* 3. PURPLE */}
                 <div className="crm-stat-card purple">
                   <div className="card-header">
                     <div className="icon-box">
@@ -188,11 +190,13 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* FOLLOWUP QUEUE */}
+              {/* TODAY'S ACTIVE FOLLOWUP QUEUE */}
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
                   <div className="toolbar-content">
-                    <span className="branch-title">Today's Followups</span>
+                    <span className="branch-title">
+                      Today's Active Followup Queue
+                    </span>
                     <select
                       className="branch-filter-select"
                       value={followupCounsellorFilter}
@@ -227,7 +231,7 @@ const Dashboard = () => {
                       {filteredFollowups.length === 0 ? (
                         <tr>
                           <td colSpan="6" className="loader">
-                            No tasks for today.
+                            No followups scheduled for today.
                           </td>
                         </tr>
                       ) : (
@@ -279,7 +283,7 @@ const Dashboard = () => {
               <div className="data-display-card mt-30 hot-leads-border">
                 <div className="data-toolbar">
                   <div className="toolbar-left">
-                    <Zap size={18} color="#ef4444" />
+                    <Zap size={18} className="title-icon-red" />
                     <span className="branch-title">Priority Hot Leads</span>
                   </div>
                 </div>
@@ -489,7 +493,8 @@ const Dashboard = () => {
                           onChange={(update) => setDateRange(update)}
                           placeholderText="Filter by Date"
                           dateFormat="MMM d, yyyy"
-                          monthsShown={2}
+                          // UPDATED: Show only 1 month
+                          monthsShown={1}
                           showMonthDropdown
                           showYearDropdown
                           dropdownMode="select"

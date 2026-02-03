@@ -427,14 +427,13 @@ const Dashboard = () => {
               </div>
 
               {/* NEW SECTION: TOTAL FEE GENERATED DETAILS */}
+              {/* NEW SECTION: TOTAL FEE GENERATED DETAILS */}
               <div className="data-display-card mt-40">
                 <div className="data-toolbar" style={{ background: "#fcfdfe" }}>
                   <div className="toolbar-content">
                     <div className="toolbar-left">
                       <IndianRupee size={18} className="title-icon-blue" />
-                      <span className="branch-title">
-                        Total Fee Generated Details
-                      </span>
+                      <span className="branch-title">Revenue Details</span>
                     </div>
 
                     {/* CONSOLIDATED FILTERS FOR REVENUE SECTION */}
@@ -508,104 +507,146 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="table-sticky-wrapper">
-                  <table
-                    className="modern-data-table"
-                    style={{ tableLayout: "fixed", width: "100%" }}
-                  >
-                    <thead>
-                      <tr>
-                        <th style={{ width: "22%" }}>STUDENT NAME</th>
-                        <th style={{ width: "12%" }}>DATE</th>
-                        <th style={{ width: "20%" }}>COURSE</th>
-                        <th style={{ width: "14%" }}>COUNSELLOR</th>
-                        <th style={{ width: "11%" }}>TOTAL FEE</th>
-                        <th style={{ width: "10%" }}>RECEIVED</th>
-                        <th style={{ width: "11%" }}>PENDING</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.revenue_details?.length === 0 ? (
+                {/* WRAPPED CONTAINER FOR FIXED FOOTER */}
+                <div className="revenue-table-container">
+                  <div className="revenue-table-scroll-wrapper">
+                    <table
+                      className="modern-data-table"
+                      style={{ tableLayout: "fixed", width: "100%" }}
+                    >
+                      <thead>
                         <tr>
-                          <td colSpan="7" className="loader">
-                            No collection records found.
-                          </td>
+                          <th style={{ width: "12%" }}>DATE</th>
+                          <th style={{ width: "22%" }}>STUDENT NAME</th>
+                          <th style={{ width: "20%" }}>COURSE</th>
+                          <th style={{ width: "14%" }}>COUNSELLOR</th>
+                          <th style={{ width: "11%" }}>TOTAL FEE</th>
+                          <th style={{ width: "10%" }}>RECEIVED</th>
+                          <th style={{ width: "11%" }}>PENDING</th>
                         </tr>
-                      ) : (
-                        data.revenue_details?.map((item, index) => (
-                          <tr key={index}>
-                            <td>
-                              <div className="user-profile-cell">
-                                <div className="avatar-letter">
-                                  {item.name ? item.name.charAt(0) : "?"}
-                                </div>
-                                <span className="user-full-name truncate-text">
-                                  {item.name}
-                                </span>
-                              </div>
-                            </td>
-                            <td className="join-date-text">
-                              {formatDate(item.date)}
-                            </td>
-                            <td>
-                              <span className="course-pill-lite">
-                                {item.course}
-                              </span>
-                            </td>
-                            <td className="counsellor-name">
-                              {item.counsellor}
-                            </td>
-                            <td className="fee-amount-bold">
-                              ₹{item.total_fees?.toLocaleString("en-IN")}
-                            </td>
-                            <td
-                              className="fee-amount-bold"
-                              style={{ color: "#16a34a" }}
-                            >
-                              ₹{item.received?.toLocaleString("en-IN")}
-                            </td>
-                            <td
-                              className="fee-amount-bold"
-                              style={{ color: "#dc2626" }}
-                            >
-                              ₹{item.pending?.toLocaleString("en-IN")}
+                      </thead>
+                      <tbody>
+                        {data.revenue_details?.length === 0 ? (
+                          <tr>
+                            <td colSpan="7" className="loader">
+                              No collection records found.
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
+                        ) : (
+                          data.revenue_details?.map((item, index) => (
+                            <tr key={index}>
+                              <td className="join-date-text">
+                                {formatDate(item.date)}
+                              </td>
+                              <td>
+                                <div className="user-profile-cell">
+                                  <div className="avatar-letter">
+                                    {item.name ? item.name.charAt(0) : "?"}
+                                  </div>
+                                  <span className="user-full-name truncate-text">
+                                    {item.name}
+                                  </span>
+                                </div>
+                              </td>
 
-                    {/* NEW: DYNAMIC TOTALS ROW */}
-                    {data.revenue_details?.length > 0 && (
-                      <tfoot className="table-summary-footer">
-                        <tr>
-                          {/* Label spanning first 4 columns */}
-                          <td colSpan="4" className="summary-label">
-                            Total for selected filters:
-                          </td>
+                              <td>
+                                <span className="course-pill-lite">
+                                  {item.course}
+                                </span>
+                              </td>
+                              <td className="counsellor-name">
+                                {item.counsellor}
+                              </td>
+                              <td className="fee-amount-bold">
+                                ₹{item.total_fees?.toLocaleString("en-IN")}
+                              </td>
+                              <td
+                                className="fee-amount-bold"
+                                style={{ color: "#16a34a" }}
+                              >
+                                ₹{item.received?.toLocaleString("en-IN")}
+                              </td>
+                              <td
+                                className="fee-amount-bold"
+                                style={{ color: "#dc2626" }}
+                              >
+                                ₹{item.pending?.toLocaleString("en-IN")}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
 
-                          {/* Total Fees */}
-                          <td className="summary-value summary-total">
-                            ₹{revenueTotals.totalFees.toLocaleString("en-IN")}
-                          </td>
+                  {/* FIXED FOOTER OUTSIDE SCROLL AREA */}
+                  {data.revenue_details?.length > 0 && (
+                    <div className="revenue-fixed-footer">
+                      <table style={{ tableLayout: "fixed", width: "100%" }}>
+                        <tbody>
+                          <tr>
+                            {/* Label spanning first 4 columns: DATE + STUDENT NAME + COURSE + COUNSELLOR */}
+                            <td
+                              colSpan="4"
+                              className="summary-label"
+                              style={{ width: "68%" }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    color: "#003873",
+                                    fontWeight: "800",
+                                  }}
+                                >
+                                  TOTAL STUDENTS:{" "}
+                                  <span style={{ fontSize: "15px" }}>
+                                    {data.revenue_details.length}
+                                  </span>
+                                </span>
+                                <span>TOTAL:</span>
+                              </div>
+                            </td>
 
-                          {/* Total Received */}
-                          <td className="summary-value summary-received">
-                            ₹
-                            {revenueTotals.totalReceived.toLocaleString(
-                              "en-IN",
-                            )}
-                          </td>
+                            {/* TOTAL FEE COLUMN (11%) */}
+                            <td
+                              className="summary-value summary-total"
+                              style={{ width: "11%" }}
+                            >
+                              ₹{revenueTotals.totalFees.toLocaleString("en-IN")}
+                            </td>
 
-                          {/* Total Pending */}
-                          <td className="summary-value summary-pending">
-                            ₹
-                            {revenueTotals.totalPending.toLocaleString("en-IN")}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    )}
-                  </table>
+                            {/* RECEIVED COLUMN (10%) */}
+                            <td
+                              className="summary-value summary-received"
+                              style={{ width: "10%" }}
+                            >
+                              ₹
+                              {revenueTotals.totalReceived.toLocaleString(
+                                "en-IN",
+                              )}
+                            </td>
+
+                            {/* PENDING COLUMN (11%) */}
+                            <td
+                              className="summary-value summary-pending"
+                              style={{ width: "11%" }}
+                            >
+                              ₹
+                              {revenueTotals.totalPending.toLocaleString(
+                                "en-IN",
+                              )}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             </>

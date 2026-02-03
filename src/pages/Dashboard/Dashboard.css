@@ -158,20 +158,52 @@
   background: #fff7ed;
   color: #f97316;
 }
-.red .icon-box {
-  background: #fef2f2;
-  color: #ef4444;
+/* 1. Followups - Red */
+.crm-stat-card.red {
+  background-color: #fff1f2 !important;
+  border-color: #fecaca !important;
 }
-.green .icon-box {
-  background: #dcfce7;
-  color: #166534;
+.red .icon-box { background: white; color: #e11d48; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.1); }
+.red .card-body h3 { color: #be123c; }
+.red .card-label { color: #e11d48; }
+
+/* 2. Leads - Blue */
+.crm-stat-card.blue {
+  background-color: #eff6ff !important;
+  border-color: #dbeafe !important;
 }
-.green .card-body h3 {
-  color: #15803d;
+.blue .icon-box { background: white; color: #2563eb; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1); }
+.blue .card-body h3 { color: #1d4ed8; }
+.blue .card-label { color: #2563eb; }
+
+/* 3. Admissions - Purple */
+.crm-stat-card.purple {
+  background-color: #f5f3ff !important;
+  border-color: #ddd6fe !important;
 }
-.grey .icon-box {
-  background: #f8fafc;
-  color: #64748b;
+.purple .icon-box { background: white; color: #7c3aed; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.1); }
+.purple .card-body h3 { color: #6d28d9; }
+.purple .card-label { color: #7c3aed; }
+
+/* 4. Collections - Green */
+.crm-stat-card.green {
+  background-color: #f0fdf4 !important;
+  border-color: #dcfce7 !important;
+}
+.green .icon-box { background: white; color: #16a34a; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.1); }
+.green .card-body h3 { color: #15803d; }
+.green .card-label { color: #16a34a; }
+
+/* General Text Polish */
+.card-label {
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.card-body p {
+  color: #475569;
+  font-weight: 500;
+  margin-top: 8px;
 }
 
 /* --- DATA DISPLAY CARDS --- */

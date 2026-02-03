@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Navbar from "../../components/Navbar/Navbar";
@@ -16,6 +16,8 @@ import {
   RotateCcw,
   Calendar as CalendarIcon,
   X,
+  Users,
+  GraduationCap,
 } from "lucide-react";
 import "./Dashboard.css";
 
@@ -43,19 +45,21 @@ const Dashboard = () => {
   const [startDate, endDate] = dateRange;
 
   const navigate = useNavigate();
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      // Pass filters to backend
       params.append("branch", revBranch);
       params.append("counsellor", revCounsellor);
-      if (startDate)
+
+      // Strict Check: Only send range if both dates are picked
+      if (startDate && endDate) {
         params.append("start_date", startDate.toISOString().split("T")[0]);
-      if (endDate)
         params.append("end_date", endDate.toISOString().split("T")[0]);
+      }
 
       const res = await axios.get(
         `https://operating-media-backend.onrender.com/api/followups-dashboard/?${params.toString()}`,
@@ -68,7 +72,6 @@ const Dashboard = () => {
     }
   };
 
-  // Re-fetch data whenever the primary filters change
   useEffect(() => {
     fetchDashboardData();
   }, [revBranch, revCounsellor, startDate, endDate]);
@@ -92,7 +95,6 @@ const Dashboard = () => {
     { totalFees: 0, totalReceived: 0, totalPending: 0 },
   );
 
-  // --- FILTER LOGIC (FRONTEND ONLY) ---
   const filteredFollowups = data.followups.filter((f) => {
     const isToday = f.status === "today";
     const filterFirstName = followupCounsellorFilter.split(" ")[0];
@@ -121,7 +123,6 @@ const Dashboard = () => {
                 <ChevronRight size={12} />
                 <span className="current-page">Dashboard Analysis</span>
               </div>
-              <h2 className="page-title-bold">Dashboard Queue</h2>
             </div>
           </header>
 
@@ -129,8 +130,8 @@ const Dashboard = () => {
             <div className="loader">Analyzing Dashboard...</div>
           ) : (
             <>
-              {/* TOP STATS */}
               <div className="dashboard-grid">
+                {/* 1. RED */}
                 <div className="crm-stat-card red">
                   <div className="card-header">
                     <div className="icon-box">
@@ -143,39 +144,55 @@ const Dashboard = () => {
                     <p>Needs immediate action</p>
                   </div>
                 </div>
+
+                {/* 2. BLUE */}
                 <div className="crm-stat-card blue">
                   <div className="card-header">
                     <div className="icon-box">
-                      <Clock size={20} />
+                      <Users size={20} />
                     </div>
-                    <span className="card-label">Upcoming</span>
+                    <span className="card-label">Total Leads</span>
                   </div>
                   <div className="card-body">
-                    <h3>{data.stats.upcoming || 0}</h3>
-                    <p>Scheduled for future</p>
+                    <h3>{data.stats.total_leads || 0}</h3>
+                    <p>Registered enquiries</p>
                   </div>
                 </div>
+
+                {/* 3. PURPLE (Changed from grey to purple) */}
+                <div className="crm-stat-card purple">
+                  <div className="card-header">
+                    <div className="icon-box">
+                      <GraduationCap size={20} />
+                    </div>
+                    <span className="card-label">Total Admissions</span>
+                  </div>
+                  <div className="card-body">
+                    <h3>{data.stats.total_admissions || 0}</h3>
+                    <p>Enrolled students</p>
+                  </div>
+                </div>
+
+                {/* 4. GREEN */}
                 <div className="crm-stat-card green">
                   <div className="card-header">
                     <div className="icon-box">
                       <IndianRupee size={20} />
                     </div>
-                    <span className="card-label">Revenue Generated</span>
+                    <span className="card-label">Gross Collection</span>
                   </div>
                   <div className="card-body">
                     <h3>₹{data.stats.revenue?.toLocaleString("en-IN") || 0}</h3>
-                    <p>Total Paid Collections</p>
+                    <p>Total Paid Revenue</p>
                   </div>
                 </div>
               </div>
 
-              {/* TODAY'S ACTIVE FOLLOWUP QUEUE */}
+              {/* FOLLOWUP QUEUE */}
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
                   <div className="toolbar-content">
-                    <span className="branch-title">
-                      Today's Active Followup Queue
-                    </span>
+                    <span className="branch-title">Today's Followups</span>
                     <select
                       className="branch-filter-select"
                       value={followupCounsellorFilter}
@@ -199,7 +216,7 @@ const Dashboard = () => {
                         <th style={{ width: "20%" }}>CUSTOMER</th>
                         <th style={{ width: "14%" }}>PHONE</th>
                         <th style={{ width: "14%" }}>COUNSELLOR</th>
-                        <th style={{ width: "13%" }}>FOLLOWUP DATE</th>
+                        <th style={{ width: "13%" }}>DATE</th>
                         <th style={{ width: "31%" }}>LAST REMARK</th>
                         <th style={{ width: "8%" }} className="text-center">
                           ACTION
@@ -210,7 +227,7 @@ const Dashboard = () => {
                       {filteredFollowups.length === 0 ? (
                         <tr>
                           <td colSpan="6" className="loader">
-                            No followups scheduled for today.
+                            No tasks for today.
                           </td>
                         </tr>
                       ) : (
@@ -258,25 +275,23 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* HOT LEADS PRIORITY QUEUE */}
+              {/* HOT LEADS */}
               <div className="data-display-card mt-30 hot-leads-border">
                 <div className="data-toolbar">
                   <div className="toolbar-left">
                     <Zap size={18} color="#ef4444" />
-                    <span className="branch-title">
-                      Hot Leads Priority Queue
-                    </span>
+                    <span className="branch-title">Priority Hot Leads</span>
                   </div>
                 </div>
                 <div className="table-sticky-wrapper">
                   <table className="modern-data-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "18%" }}>CUSTOMER</th>
-                        <th style={{ width: "12%" }}>PHONE</th>
-                        <th style={{ width: "12%" }}>COUNSELLOR</th>
-                        <th style={{ width: "20%" }}>COURSE</th>
-                        <th style={{ width: "30%" }}>LAST REMARK</th>
+                        <th style={{ width: "20%" }}>CUSTOMER</th>
+                        <th style={{ width: "14%" }}>PHONE</th>
+                        <th style={{ width: "14%" }}>COUNSELLOR</th>
+                        <th style={{ width: "16%" }}>COURSE</th>
+                        <th style={{ width: "28%" }}>LAST REMARK</th>
                         <th style={{ width: "8%" }} className="text-center">
                           ACTION
                         </th>
@@ -286,7 +301,7 @@ const Dashboard = () => {
                       {data.hot_leads?.length === 0 ? (
                         <tr>
                           <td colSpan="6" className="loader">
-                            No hot leads tagged yet.
+                            No hot leads tagged.
                           </td>
                         </tr>
                       ) : (
@@ -340,15 +355,13 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* UPCOMING & OVERDUE FEES */}
+              {/* FEES REMINDERS */}
               <div className="data-display-card mt-40 fee-reminder-card">
-                <div className="data-toolbar fee-toolbar">
+                <div className="data-toolbar">
                   <div className="toolbar-content">
                     <div className="toolbar-left">
                       <HandCoins size={18} className="title-icon-blue" />
-                      <span className="branch-title">
-                        Upcoming & Overdue Fees
-                      </span>
+                      <span className="branch-title">Pending Payments</span>
                     </div>
                     <select
                       className="branch-filter-select"
@@ -426,8 +439,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* NEW SECTION: TOTAL FEE GENERATED DETAILS */}
-              {/* NEW SECTION: TOTAL FEE GENERATED DETAILS */}
+              {/* REVENUE DETAILS SECTION */}
               <div className="data-display-card mt-40">
                 <div className="data-toolbar" style={{ background: "#fcfdfe" }}>
                   <div className="toolbar-content">
@@ -435,8 +447,6 @@ const Dashboard = () => {
                       <IndianRupee size={18} className="title-icon-blue" />
                       <span className="branch-title">Revenue Details</span>
                     </div>
-
-                    {/* CONSOLIDATED FILTERS FOR REVENUE SECTION */}
                     <div
                       className="rev-filter-group"
                       style={{
@@ -454,7 +464,6 @@ const Dashboard = () => {
                         <option value="Andheri">Andheri</option>
                         <option value="Borivali">Borivali</option>
                       </select>
-
                       <select
                         className="branch-filter-select"
                         value={revCounsellor}
@@ -478,8 +487,12 @@ const Dashboard = () => {
                           startDate={startDate}
                           endDate={endDate}
                           onChange={(update) => setDateRange(update)}
-                          placeholderText="Date Range Selection"
+                          placeholderText="Filter by Date"
                           dateFormat="MMM d, yyyy"
+                          monthsShown={2}
+                          showMonthDropdown
+                          showYearDropdown
+                          dropdownMode="select"
                           className="date-input-field"
                         />
                         {(startDate || endDate) && (
@@ -491,10 +504,9 @@ const Dashboard = () => {
                           </button>
                         )}
                       </div>
-
                       <button
                         className="btn-icon-round"
-                        title="Reset Filters"
+                        title="Reset"
                         onClick={() => {
                           setRevBranch("All");
                           setRevCounsellor("All");
@@ -507,7 +519,6 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* WRAPPED CONTAINER FOR FIXED FOOTER */}
                 <div className="revenue-table-container">
                   <div className="revenue-table-scroll-wrapper">
                     <table
@@ -516,8 +527,8 @@ const Dashboard = () => {
                     >
                       <thead>
                         <tr>
-                          <th style={{ width: "12%" }}>DATE</th>
                           <th style={{ width: "22%" }}>STUDENT NAME</th>
+                          <th style={{ width: "12%" }}>DATE</th>
                           <th style={{ width: "20%" }}>COURSE</th>
                           <th style={{ width: "14%" }}>COUNSELLOR</th>
                           <th style={{ width: "11%" }}>TOTAL FEE</th>
@@ -533,11 +544,8 @@ const Dashboard = () => {
                             </td>
                           </tr>
                         ) : (
-                          data.revenue_details?.map((item, index) => (
+                          data.revenue_details.map((item, index) => (
                             <tr key={index}>
-                              <td className="join-date-text">
-                                {formatDate(item.date)}
-                              </td>
                               <td>
                                 <div className="user-profile-cell">
                                   <div className="avatar-letter">
@@ -548,7 +556,9 @@ const Dashboard = () => {
                                   </span>
                                 </div>
                               </td>
-
+                              <td className="join-date-text">
+                                {formatDate(item.date)}
+                              </td>
                               <td>
                                 <span className="course-pill-lite">
                                   {item.course}
@@ -579,13 +589,11 @@ const Dashboard = () => {
                     </table>
                   </div>
 
-                  {/* FIXED FOOTER OUTSIDE SCROLL AREA */}
                   {data.revenue_details?.length > 0 && (
                     <div className="revenue-fixed-footer">
                       <table style={{ tableLayout: "fixed", width: "100%" }}>
                         <tbody>
-                          <tr>
-                            {/* Label spanning first 4 columns: DATE + STUDENT NAME + COURSE + COUNSELLOR */}
+                          <tr className="table-summary-footer">
                             <td
                               colSpan="4"
                               className="summary-label"
@@ -609,19 +617,17 @@ const Dashboard = () => {
                                     {data.revenue_details.length}
                                   </span>
                                 </span>
-                                <span>TOTAL:</span>
+                                <span style={{ marginRight: "10px" }}>
+                                  TOTALS:
+                                </span>
                               </div>
                             </td>
-
-                            {/* TOTAL FEE COLUMN (11%) */}
                             <td
                               className="summary-value summary-total"
                               style={{ width: "11%" }}
                             >
                               ₹{revenueTotals.totalFees.toLocaleString("en-IN")}
                             </td>
-
-                            {/* RECEIVED COLUMN (10%) */}
                             <td
                               className="summary-value summary-received"
                               style={{ width: "10%" }}
@@ -631,8 +637,6 @@ const Dashboard = () => {
                                 "en-IN",
                               )}
                             </td>
-
-                            {/* PENDING COLUMN (11%) */}
                             <td
                               className="summary-value summary-pending"
                               style={{ width: "11%" }}

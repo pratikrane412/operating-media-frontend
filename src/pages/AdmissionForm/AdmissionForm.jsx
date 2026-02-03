@@ -339,10 +339,26 @@ const AdmissionForm = () => {
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     const file = files[0];
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, [name]: reader.result });
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1200; // Resize to standard width
+          const scaleSize = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Compress to 70% quality to save massive space
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          setFormData({ ...formData, [name]: compressedBase64 });
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -354,10 +370,7 @@ const AdmissionForm = () => {
 
     setIsSubmitting(true);
     try {
-      await axios.post(
-        "https://operating-media-backend.onrender.com/api/admission/create/",
-        formData,
-      );
+      await axios.post("https://operating-media-backend.onrender.com/api/admission/create/", formData);
       alert("Application Submitted Successfully!");
       setFormData(initialState);
     } catch (error) {

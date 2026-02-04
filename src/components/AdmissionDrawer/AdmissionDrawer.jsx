@@ -44,6 +44,10 @@ const FormRow = ({ label, icon: Icon, children }) => (
 const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 1. ADDED REF TO TRACK INITIAL DATA LOAD
+  const isInitialLoad = useRef(true);
+
   const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
@@ -70,7 +74,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     registration_date: "",
     submission_time: "",
     no_of_installments: 0,
-    // NEW LMS FIELDS
     counsellor: "",
     login_id: "",
     password: "",
@@ -111,6 +114,8 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
   useEffect(() => {
     if (isOpen && admissionId) {
       setLoading(true);
+      // Mark as initial load so auto-calculator skips
+      isInitialLoad.current = true;
       axios
         .get(
           `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`,
@@ -127,6 +132,12 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
   }, [isOpen, admissionId]);
 
   useEffect(() => {
+    // 2. CRITICAL FIX: If this is the data from DB, skip overwriting dates
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
+
     const total = parseFloat(formData.total_fees) || 0;
     const reg = parseFloat(formData.registration_amount) || 0;
     const count = parseInt(formData.no_of_installments) || 0;
@@ -466,7 +477,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 },
               )}
 
-              {/* SECTION 6: LMS DETAILS */}
               <h4 className="drawer-section-label">
                 <Smartphone size={15} /> 6. LMS Details
               </h4>

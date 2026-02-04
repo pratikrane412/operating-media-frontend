@@ -17,7 +17,7 @@ import {
   Check,
   Calendar as CalendarIcon,
   X,
-  Trash2, // Ensure Trash2 is imported
+  Trash2,
 } from "lucide-react";
 import AdmissionDrawer from "../../components/AdmissionDrawer/AdmissionDrawer";
 import AdmissionViewDrawer from "../../components/AdmissionViewDrawer/AdmissionViewDrawer";
@@ -94,6 +94,18 @@ const ManageAdmission = () => {
       setSortOrder("desc");
     }
   };
+
+  // --- UPDATED: Robust Click Outside Logic ---
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // If the user clicks anywhere that is NOT the action menu container, close the menu
+      if (!event.target.closest(".action-menu-container")) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     axios
@@ -415,11 +427,12 @@ const ManageAdmission = () => {
                             <div className="action-menu-container">
                               <button
                                 className={`icon-btn-sm ${activeMenuId === item.id ? "active" : ""}`}
-                                onClick={() =>
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setActiveMenuId(
                                     activeMenuId === item.id ? null : item.id,
-                                  )
-                                }
+                                  );
+                                }}
                               >
                                 <MoreHorizontal size={16} />
                               </button>
@@ -435,16 +448,17 @@ const ManageAdmission = () => {
                                   >
                                     <Edit3 size={14} /> Edit
                                   </button>
-
-                                  <button
-                                    className="drop-item delete"
-                                    onClick={() =>
-                                      handleDeleteAdmission(item.id)
-                                    }
-                                    style={{ color: "#ef4444" }}
-                                  >
-                                    <Trash2 size={14} /> Delete
-                                  </button>
+                                  {hasPermission("make admission") && (
+                                    <button
+                                      className="drop-item delete"
+                                      onClick={() =>
+                                        handleDeleteAdmission(item.id)
+                                      }
+                                      style={{ color: "#ef4444" }}
+                                    >
+                                      <Trash2 size={14} /> Delete
+                                    </button>
+                                  )}
                                 </div>
                               )}
                             </div>

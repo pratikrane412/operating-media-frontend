@@ -42,6 +42,21 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
 
   if (!isOpen) return null;
 
+  // --- ADD THIS HELPER TO FIX THE ERROR ---
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "—" || dateStr === "None" || dateStr === "") return "—";
+    
+    // Handles database format (2026-01-29) and converts to UI format (29/01/2026)
+    const parts = dateStr.includes("/") ? dateStr.split("/") : dateStr.split("/");
+    
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return `${parts[0]}/${parts[1]}/${parts[2]}`;
+    }
+    return dateStr;
+  };
   // Financial Calculations
   const calculateFinances = () => {
     if (!data) return { totalPaid: 0, balance: 0, percent: 0 };
@@ -194,7 +209,12 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
                 </h4>
                 <div className="payment-list">
                   <div className="payment-row">
-                    <span>Registration</span>
+                    <span>
+                      Registration{" "}
+                      {data?.registration_date
+                        ? `(${formatDate(data.registration_date)})`
+                        : ""}
+                    </span>
                     <span className="pay-amt">₹{data.registration_amount}</span>
                     <span className="pay-status paid">Paid</span>
                   </div>

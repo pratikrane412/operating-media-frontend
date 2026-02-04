@@ -45,7 +45,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 1. ADDED REF TO TRACK INITIAL DATA LOAD
+  // Track initial load to prevent auto-calculation from overwriting DB dates
   const isInitialLoad = useRef(true);
 
   const [formData, setFormData] = useState({
@@ -79,30 +79,39 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
     password: "",
     certificate_link: "",
     available_counsellors: [],
+    // Installment Fields
     inst_1_amount: 0,
     inst_1_date: "",
     inst_1_status: "Unpaid",
+    inst_1_mode: "",
     inst_2_amount: 0,
     inst_2_date: "",
     inst_2_status: "Unpaid",
+    inst_2_mode: "",
     inst_3_amount: 0,
     inst_3_date: "",
     inst_3_status: "Unpaid",
+    inst_3_mode: "",
     inst_4_amount: 0,
     inst_4_date: "",
     inst_4_status: "Unpaid",
+    inst_4_mode: "",
     inst_5_amount: 0,
     inst_5_date: "",
     inst_5_status: "Unpaid",
+    inst_5_mode: "",
     inst_6_amount: 0,
     inst_6_date: "",
     inst_6_status: "Unpaid",
+    inst_6_mode: "",
     inst_7_amount: 0,
     inst_7_date: "",
     inst_7_status: "Unpaid",
+    inst_7_mode: "",
     inst_8_amount: 0,
     inst_8_date: "",
     inst_8_status: "Unpaid",
+    inst_8_mode: "",
   });
 
   const addMonths = (date, months) => {
@@ -114,7 +123,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
   useEffect(() => {
     if (isOpen && admissionId) {
       setLoading(true);
-      // Mark as initial load so auto-calculator skips
       isInitialLoad.current = true;
       axios
         .get(
@@ -132,7 +140,6 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
   }, [isOpen, admissionId]);
 
   useEffect(() => {
-    // 2. CRITICAL FIX: If this is the data from DB, skip overwriting dates
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
       return;
@@ -156,6 +163,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
           updatedInstallments[`inst_${i}_amount`] = 0;
           updatedInstallments[`inst_${i}_date`] = "";
           updatedInstallments[`inst_${i}_status`] = "Unpaid";
+          updatedInstallments[`inst_${i}_mode`] = "";
         }
       }
       setFormData((prev) => ({ ...prev, ...updatedInstallments }));
@@ -207,6 +215,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
             <div className="loader-container">Fetching data from server...</div>
           ) : (
             <>
+              {/* SECTION 1 to 5 (Personal, Contact, Academic, Emergency, Financial) */}
               <h4 className="drawer-section-label">
                 <User size={15} /> 1. Personal Information
               </h4>
@@ -439,6 +448,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                 </select>
               </FormRow>
 
+              {/* INSTALLMENT LOOP WITH MODE ADDED */}
               {Array.from({ length: formData.no_of_installments || 0 }).map(
                 (_, i) => {
                   const num = i + 1;
@@ -458,6 +468,20 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                           value={formData[`inst_${num}_date`] || ""}
                           onChange={handleChange}
                         />
+
+                        {/* NEW PAYMENT MODE SELECT */}
+                        <select
+                          name={`inst_${num}_mode`}
+                          value={formData[`inst_${num}_mode`] || ""}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select Mode</option>
+                          <option value="Cash">Cash</option>
+                          <option value="GPay">GPay</option>
+                          <option value="CC">CC</option>
+                          <option value="Bank Transfer">Bank Transfer</option>
+                        </select>
+
                         <select
                           name={`inst_${num}_status`}
                           value={formData[`inst_${num}_status`]}

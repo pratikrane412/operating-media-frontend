@@ -25,8 +25,12 @@
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 /* --- HEADER --- */
@@ -142,15 +146,16 @@
   width: 100%;
 }
 
-/* --- INSTALLMENT DYNAMIC ROWS --- */
+/* --- FIXED INSTALLMENT ALIGNMENT --- */
 .installment-row-container {
   display: flex;
   flex-direction: column;
   background: #ffffff;
   border: 1px solid #eef1f6;
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 10px;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .inst-num-label {
@@ -158,47 +163,67 @@
   font-weight: 800;
   color: #94a3b8;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
 }
 
 .inst-inputs {
   display: grid;
-  grid-template-columns: 1fr 1.2fr 1fr;
-  gap: 10px;
+  /* Balanced widths: Amount(75), Date(125), Mode(110), Status(85) */
+  grid-template-columns: 75px 125px 110px 85px !important;
+  gap: 8px;
+  align-items: center;
 }
 
 .inst-inputs input,
 .inst-inputs select {
-  height: 36px;
+  height: 34px !important;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 0 8px;
-  font-size: 13px;
+  padding: 0 6px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
   color: #1e293b;
   outline: none;
+  width: 100%;
+  transition: all 0.2s;
 }
 
-.inst-inputs input[readonly] {
-  color: #64748b;
-  cursor: default;
+/* Specific fix for Date Input to prevent icon overlapping text */
+.inst-inputs input[type="date"] {
+  padding-right: 2px !important;
+  font-size: 11px !important; /* Smaller font for dates to fit DD/MM/YYYY */
 }
 
-/* Status Colors */
+.inst-inputs input:focus,
+.inst-inputs select:focus {
+  border-color: #003873;
+  background: white;
+}
+
+/* Professional Status Pills inside the grid */
 select.status-paid {
-  color: #10b981; /* Green */
-  font-weight: 700;
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  color: #10b981 !important;
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
 }
 
 select.status-unpaid {
-  color: #ef4444; /* Red */
-  font-weight: 700;
-  background: #fef2f2;
-  border-color: #fecaca;
+  color: #ef4444 !important;
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
 }
 
+/* Ensure dropdown arrows don't take too much space */
+.inst-inputs select {
+  cursor: pointer;
+  appearance: none; /* Optional: simplifies the look */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px !important;
+}
 /* --- FOOTER --- */
 .drawer-footer-sticky {
   position: absolute;

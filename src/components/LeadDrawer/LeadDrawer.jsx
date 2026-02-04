@@ -342,7 +342,8 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                     />
                     <div className="form-row-mini">
                       <div className="date-input-mini">
-                        <Calendar size={14} />
+                        
+                         <span className="followup-input-label">Next Followup Date:</span> 
                         <input
                           type="date"
                           value={nextDate}

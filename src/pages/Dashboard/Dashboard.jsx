@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [feeBranchFilter, setFeeBranchFilter] = useState("All");
   const [followupCounsellorFilter, setFollowupCounsellorFilter] =
     useState("All");
+  const [hotCounsellorFilter, setHotCounsellorFilter] = useState("All");
   const [revBranch, setRevBranch] = useState("All");
   const [revCounsellor, setRevCounsellor] = useState("All");
   const [dateRange, setDateRange] = useState([null, null]);
@@ -141,7 +142,16 @@ const Dashboard = () => {
     sortFol,
   );
 
-  const hotLeadsList = sortData(data.hot_leads || [], sortHot);
+  const hotLeadsList = sortData(
+    data.hot_leads?.filter((hl) => {
+      // Normalizing name logic: "Pooja Parab" -> "Pooja"
+      const filterTerm = hotCounsellorFilter.split(" ")[0].toLowerCase();
+      const dbName = (hl.counsellor || "").toLowerCase();
+
+      return hotCounsellorFilter === "All" || dbName.includes(filterTerm);
+    }) || [],
+    sortHot,
+  );
 
   const feesList = sortData(
     data.reminders?.filter(
@@ -168,8 +178,6 @@ const Dashboard = () => {
       <div className="main-viewport">
         <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main className="content-scroll-area">
-           
-
           {loading && !data.stats.revenue ? (
             <div className="loader">Analyzing Dashboard...</div>
           ) : (
@@ -233,7 +241,9 @@ const Dashboard = () => {
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
                   <div className="toolbar-content">
-                    <span className="branch-title">TODAY'S ACTIVE FOLLOWUP QUEUE</span>
+                    <span className="branch-title">
+                      TODAY'S ACTIVE FOLLOWUP QUEUE
+                    </span>
                     <select
                       className="branch-filter-select"
                       value={followupCounsellorFilter}
@@ -341,13 +351,31 @@ const Dashboard = () => {
               </div>
 
               {/* HOT LEADS */}
+              {/* HOT LEADS PRIORITY QUEUE */}
               <div className="data-display-card mt-30 hot-leads-border">
                 <div className="data-toolbar">
-                  <div className="toolbar-left">
-                    <Zap size={18} color="#ef4444" />
-                    <span className="branch-title">Priority Hot Leads</span>
+                  <div className="toolbar-content">
+                    <div className="toolbar-left">
+                      <Zap size={18} color="#ef4444" />
+                      <span className="branch-title">Priority Hot Leads</span>
+                    </div>
+
+                    {/* ADDED COUNSELLOR FILTER HERE */}
+                    <select
+                      className="branch-filter-select"
+                      value={hotCounsellorFilter}
+                      onChange={(e) => setHotCounsellorFilter(e.target.value)}
+                    >
+                      <option value="All">All Counsellors</option>
+                      {data.counsellors?.map((name, i) => (
+                        <option key={i} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
+
                 <div className="table-sticky-wrapper">
                   <table className="modern-data-table">
                     <thead>
@@ -386,12 +414,13 @@ const Dashboard = () => {
                       {hotLeadsList.length === 0 ? (
                         <tr>
                           <td colSpan="8" className="loader">
-                            No hot leads tagged.
+                            No hot leads found for selected counsellor.
                           </td>
                         </tr>
                       ) : (
                         hotLeadsList.map((lead) => (
                           <tr key={lead.id}>
+                            {/* ... existing row data remains same ... */}
                             <td>
                               <div className="user-profile-cell">
                                 <div className="avatar-letter hot-avatar">
@@ -470,39 +499,34 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="table-sticky-wrapper">
-                  <table
-                    className="modern-data-table"
-                    style={{ tableLayout: "fixed", width: "100%" }}
-                  >
+                  <table className="modern-data-table pending-payments-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "18%" }}>STUDENT</th>
-                        <th style={{ width: "24%" }}>COURSE</th>
+                        <th>STUDENT</th>
+                        <th>COURSE</th>
                         <th
-                          style={{ width: "12%", cursor: "pointer" }}
                           onClick={() =>
                             toggleSort(setSortFee, sortFee, "admission_date")
                           }
+                          style={{ cursor: "pointer" }}
                         >
                           ADMISSION DATE{" "}
                           {sortFee.field === "admission_date" &&
                             (sortFee.order === "asc" ? "↑" : "↓")}
                         </th>
                         <th
-                          style={{ width: "12%", cursor: "pointer" }}
                           onClick={() =>
                             toggleSort(setSortFee, sortFee, "due_date")
                           }
+                          style={{ cursor: "pointer" }}
                         >
                           DUE DATE{" "}
                           {sortFee.field === "due_date" &&
                             (sortFee.order === "asc" ? "↑" : "↓")}
                         </th>
-                        <th style={{ width: "12%" }}>AMOUNT</th>
-                        <th style={{ width: "14%" }}>STATUS</th>
-                        <th style={{ width: "8%" }} className="text-center">
-                          ACTION
-                        </th>
+                        <th>AMOUNT</th>
+                        <th className="text-center">STATUS</th>
+                        <th className="text-center">ACTION</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -515,7 +539,7 @@ const Dashboard = () => {
                               >
                                 {fee.customer_name.charAt(0)}
                               </div>
-                              <span className="user-full-name truncate-text">
+                              <span className="user-full-name">
                                 {fee.customer_name}
                               </span>
                             </div>
@@ -530,11 +554,13 @@ const Dashboard = () => {
                               {formatDate(fee.admission_date)}
                             </span>
                           </td>
-                          <td className="due-date-text">
-                            {formatDate(fee.due_date)}
+                          <td>
+                            <span className="join-date-text">
+                              {formatDate(fee.due_date)}
+                            </span>
                           </td>
                           <td className="fee-amount-bold">₹{fee.amount}</td>
-                          <td>
+                          <td className="text-center">
                             <span className={`status-pill ${fee.priority}`}>
                               {fee.priority.toUpperCase()}
                             </span>

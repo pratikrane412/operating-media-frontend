@@ -149,52 +149,77 @@
   line-height: 1.4;
 }
 
-/* --- STAT CARD COLOR VARIATIONS --- */
-.blue .icon-box {
-  background: #eff6ff;
-  color: #3b82f6;
-}
-.orange .icon-box {
-  background: #fff7ed;
-  color: #f97316;
-}
+/* --- STAT CARD COLOR VARIATIONS (UPDATED) --- */
+
 /* 1. Followups - Red */
 .crm-stat-card.red {
   background-color: #fff1f2 !important;
   border-color: #fecaca !important;
 }
-.red .icon-box { background: white; color: #e11d48; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.1); }
-.red .card-body h3 { color: #be123c; }
-.red .card-label { color: #e11d48; }
+.red .icon-box {
+  background: white;
+  color: #e11d48;
+  box-shadow: 0 2px 6px rgba(225, 29, 72, 0.1);
+}
+.red .card-body h3 {
+  color: #be123c;
+}
+.red .card-label {
+  color: #e11d48;
+}
 
 /* 2. Leads - Blue */
 .crm-stat-card.blue {
   background-color: #eff6ff !important;
   border-color: #dbeafe !important;
 }
-.blue .icon-box { background: white; color: #2563eb; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1); }
-.blue .card-body h3 { color: #1d4ed8; }
-.blue .card-label { color: #2563eb; }
+.blue .icon-box {
+  background: white;
+  color: #2563eb;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1);
+}
+.blue .card-body h3 {
+  color: #1d4ed8;
+}
+.blue .card-label {
+  color: #2563eb;
+}
 
 /* 3. Admissions - Purple */
 .crm-stat-card.purple {
   background-color: #f5f3ff !important;
   border-color: #ddd6fe !important;
 }
-.purple .icon-box { background: white; color: #7c3aed; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.1); }
-.purple .card-body h3 { color: #6d28d9; }
-.purple .card-label { color: #7c3aed; }
+.purple .icon-box {
+  background: white;
+  color: #7c3aed;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.1);
+}
+.purple .card-body h3 {
+  color: #6d28d9;
+}
+.purple .card-label {
+  color: #7c3aed;
+}
 
 /* 4. Collections - Green */
 .crm-stat-card.green {
   background-color: #f0fdf4 !important;
   border-color: #dcfce7 !important;
 }
-.green .icon-box { background: white; color: #16a34a; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.1); }
-.green .card-body h3 { color: #15803d; }
-.green .card-label { color: #16a34a; }
+.green .icon-box {
+  background: white;
+  color: #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.1);
+}
+.green .card-body h3 {
+  color: #15803d;
+}
+.green .card-label {
+  color: #16a34a;
+}
 
-/* General Text Polish */
+/* General Text Polish for colored cards */
 .card-label {
   font-weight: 800;
   letter-spacing: 0.8px;
@@ -426,7 +451,7 @@
   font-weight: 800;
 }
 
-/* --- FIXED FOOTER FOR REVENUE DETAILS SECTION ONLY --- */
+/* --- FIXED FOOTER --- */
 .revenue-table-container {
   position: relative;
   display: flex;
@@ -437,7 +462,7 @@
 .revenue-table-scroll-wrapper {
   overflow-y: auto;
   overflow-x: auto;
-  max-height: 400px; /* Adjust this height as needed */
+  max-height: 400px;
   position: relative;
 }
 
@@ -549,6 +574,7 @@
 }
 
 /* --- STATUS PILLS --- */
+/* --- STATUS PILLS (COLOR CORRECTIONS) --- */
 .status-pill {
   padding: 6px 14px;
   border-radius: 20px;
@@ -558,30 +584,64 @@
   display: inline-block;
   border: 1px solid transparent;
   letter-spacing: 0.3px;
+  transition: 0.2s;
+}
+.modern-data-table thead th.text-center {
+  text-align: center !important;
+  padding-left: 0;
+  padding-right: 0;
 }
 
+/* 2. Force the Action cell to center its button content */
+.modern-data-table td.text-center {
+  text-align: center;
+}
+
+/* 3. Add this specific helper to center the button icon within the TD */
+.modern-data-table td.text-center .btn-icon-round {
+  margin: 0 auto; /* Centers the block-level button */
+  display: flex;  /* Keeps the icon inside centered */
+}
+
+/* 4. Fix for Pending Payments specifically to prevent the last column stretch */
+.pending-payments-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Define widths for other columns in Pending Payments to prevent the last one from bloating */
+.pending-payments-table th:nth-child(1) { width: 20%; } /* Student */
+.pending-payments-table th:nth-child(2) { width: 20%; } /* Course */
+.pending-payments-table th:nth-child(3) { width: 15%; } /* Admission */
+.pending-payments-table th:nth-child(4) { width: 15%; } /* Due Date */
+.pending-payments-table th:nth-child(5) { width: 12%; } /* Amount */
+.pending-payments-table th:nth-child(6) { width: 10%; } /* Status */
+.pending-payments-table th:nth-child(7) { width: 80px; } /* Action */
+/* Red for Overdue */
+.status-pill.overdue {
+  background: #fee2e2 !important; /* Light red background */
+  color: #dc2626 !important;     /* Bright red text */
+  border-color: #fecaca !important;
+}
+
+/* Yellow/Orange for Due Soon */
+.status-pill.due-soon {
+  background: #fef9c3 !important; /* Light yellow background */
+  color: #854d0e !important;     /* Brownish gold text */
+  border-color: #fde047 !important;
+}
+
+/* Blue for Today/Upcoming */
 .status-pill.today {
-  background: #dbeafe;
-  color: #1e40af;
-  border-color: #93c5fd;
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border-color: #93c5fd !important;
 }
 
 .status-pill.upcoming {
-  background: #eff6ff;
-  color: #2563eb;
-  border-color: #dbeafe;
-}
-
-.status-pill.overdue {
-  background: #bfdbfe;
-  color: #1e3a8a;
-  border-color: #93c5fd;
-}
-
-.status-pill.due-soon {
-  background: #dbeafe;
-  color: #1e40af;
-  border-color: #93c5fd;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-color: #dbeafe !important;
 }
 
 /* --- BUTTONS --- */

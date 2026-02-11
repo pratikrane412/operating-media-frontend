@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
-/* --- SCOPED ROOT: Prevents global leaking --- */
+/* =======================================================
+   ROOT
+======================================================= */
+
 .adm-portal-root {
   --adm-brand: #003873;
   --adm-bg: #f8fafc;
@@ -8,12 +11,11 @@
   --adm-muted: #64748b;
   --adm-border: #e2e8f0;
 
-  background-color: var(--adm-bg);
+  background: var(--adm-bg);
   min-height: 100vh;
-  padding: 40px;
+  padding: 40px 20px;
   font-family: "Plus Jakarta Sans", sans-serif;
   color: var(--adm-text);
-  box-sizing: border-box;
 }
 
 .adm-portal-root * {
@@ -21,77 +23,89 @@
 }
 
 .adm-full-wrapper {
-  width: 100%;
-  max-width: 1600px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-/* --- HERO MASTHEAD --- */
+/* =======================================================
+   MASTHEAD
+======================================================= */
+
 .adm-masthead {
   background: linear-gradient(135deg, #003873 0%, #0056b3 100%);
   border-radius: 24px;
-  padding: 70px 60px;
-  color: white;
-  margin-bottom: 40px;
-  box-shadow: 0 20px 40px rgba(0, 56, 115, 0.12);
+  padding: 60px 40px;
+  color: #fff;
+  margin-bottom: 35px;
 }
 
 .adm-badge {
   background: rgba(255, 255, 255, 0.2);
-  padding: 6px 16px;
-  border-radius: 50px;
+  padding: 6px 14px;
+  border-radius: 40px;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
 }
 
 .adm-masthead h1 {
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 800;
-  margin: 15px 0 5px;
-  letter-spacing: -1px;
-}
-.adm-masthead p {
-  font-size: 17px;
-  opacity: 0.85;
-  font-weight: 500;
+  margin: 15px 0 6px;
 }
 
-/* --- GRID LAYOUT --- */
+.adm-masthead p {
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+/* =======================================================
+   LAYOUT
+======================================================= */
+
 .adm-grid-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 35px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .adm-card {
-  background: white;
+  background: #fff;
   border-radius: 24px;
   padding: 35px;
   border: 1px solid var(--adm-border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  overflow: visible !important;
 }
+
+.adm-mt-30 {
+  margin-top: 30px;
+}
+
+/* =======================================================
+   CARD HEADER
+======================================================= */
 
 .adm-card-header {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-bottom: 25px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
   color: var(--adm-brand);
-  margin-bottom: 30px;
-  border-bottom: 2px solid #f8fafc;
-  padding-bottom: 15px;
 }
 
 .adm-card-header h3 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* --- INPUTS & FIELDS --- */
+/* =======================================================
+   FORM GRID
+======================================================= */
+
 .adm-inner-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -99,178 +113,78 @@
 }
 
 .adm-field {
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  grid-column: span 2;
+  gap: 6px;
 }
-.adm-field.adm-span-4 {
+
+.adm-span-4 {
   grid-column: span 4;
 }
+
+@media (max-width: 768px) {
+  .adm-field {
+    grid-column: span 4;
+  }
+}
+
+/* =======================================================
+   INPUTS
+======================================================= */
 
 .adm-portal-root label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--adm-text);
-  margin-bottom: 2px;
 }
 
 .adm-portal-root input:not([type="checkbox"]):not([type="file"]),
 .adm-portal-root select {
   height: 52px;
-  background: #fcfdfe;
-  border: 1.5px solid var(--adm-border);
   border-radius: 14px;
+  border: 1.5px solid var(--adm-border);
+  background: #fcfdfe;
   padding: 0 16px;
   font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  width: 100%;
-  outline: none;
+  transition: 0.2s ease;
 }
 
 .adm-portal-root input:focus,
 .adm-portal-root select:focus {
   border-color: var(--adm-brand);
-  background: white;
+  background: #fff;
   box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
+  outline: none;
 }
 
-/* --- MODERN SELECT DROPDOWN --- */
-.adm-select-wrapper {
-  position: relative;
-  width: 100%;
-}
+/* =======================================================
+   CUSTOM SELECT
+======================================================= */
 
-.adm-select-wrapper select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background: #fcfdfe;
-  cursor: pointer;
-  padding-right: 45px;
-}
-
-.adm-select-icon {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--adm-muted);
-  pointer-events: none;
-  transition: all 0.2s ease;
-}
-
-.adm-select-wrapper:hover .adm-select-icon {
-  color: var(--adm-brand);
-}
-
-.adm-select-wrapper select:focus {
-  border-color: var(--adm-brand);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
-}
-
-.adm-select-wrapper select:focus + .adm-select-icon {
-  color: var(--adm-brand);
-  transform: translateY(-50%) rotate(180deg);
-}
-
-/* --- MODERN DATE PICKER --- */
-.adm-date-picker-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.adm-date-picker-wrapper input[type="date"] {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  padding-right: 45px;
-}
-
-.adm-date-picker-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  right: 16px;
-  cursor: pointer;
-  opacity: 0;
-  width: 20px;
-  height: 20px;
-  z-index: 2;
-}
-
-.adm-date-icon {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--adm-muted);
-  pointer-events: none;
-  transition: all 0.2s ease;
-}
-
-.adm-date-picker-wrapper:hover .adm-date-icon {
-  color: var(--adm-brand);
-}
-
-.adm-date-picker-wrapper input[type="date"]:focus {
-  border-color: var(--adm-brand);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
-}
-
-.adm-date-picker-wrapper input[type="date"]:focus + .adm-date-icon {
-  color: var(--adm-brand);
-}
-
-/* --- CUSTOM SELECT COMPONENT --- */
 .custom-select {
   position: relative;
-  width: 100%;
 }
 
 .custom-select-trigger {
   height: 52px;
-  background: #fcfdfe;
-  border: 1.5px solid var(--adm-border);
   border-radius: 14px;
+  border: 1.5px solid var(--adm-border);
+  background: #fcfdfe;
   padding: 0 16px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  user-select: none;
+  transition: 0.2s ease;
 }
 
 .custom-select-trigger.placeholder {
   color: var(--adm-muted);
 }
 
-.custom-select-trigger:hover {
-  border-color: var(--adm-brand);
-  background: white;
-}
-
 .custom-select-trigger.open {
   border-color: var(--adm-brand);
-  background: white;
   box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
-}
-
-.custom-select-arrow {
-  color: var(--adm-muted);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-}
-
-.custom-select-arrow.rotate {
-  transform: rotate(180deg);
-  color: var(--adm-brand);
 }
 
 .custom-select-dropdown {
@@ -278,269 +192,64 @@
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: white;
-  border: 1.5px solid var(--adm-border);
+  background: #fff;
   border-radius: 14px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-  z-index: 1000;
-  max-height: 280px;
+  border: 1px solid var(--adm-border);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  max-height: 260px;
   overflow-y: auto;
-  animation: slideDown 0.2s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  z-index: 1000;
 }
 
 .custom-select-option {
-  padding: 14px 16px;
+  padding: 12px 16px;
   cursor: pointer;
-  transition: all 0.15s ease;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--adm-text);
 }
 
 .custom-select-option:hover {
-  background: #f8fafc;
-  color: var(--adm-brand);
+  background: #f1f5f9;
 }
 
-.custom-select-option.selected {
-  background: rgba(0, 56, 115, 0.06);
-  color: var(--adm-brand);
-  font-weight: 600;
-}
+/* =======================================================
+   CUSTOM DATE PICKER
+======================================================= */
 
-.custom-select-option .check-icon {
-  color: var(--adm-brand);
-  flex-shrink: 0;
-}
-
-.custom-select-dropdown::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-select-dropdown::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-select-dropdown::-webkit-scrollbar-thumb {
-  background: var(--adm-border);
-  border-radius: 10px;
-}
-
-.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
-  background: var(--adm-muted);
-}
-
-/* --- CUSTOM DATE PICKER COMPONENT --- */
 .custom-datepicker {
   position: relative;
-  width: 100%;
 }
 
 .custom-datepicker-trigger {
   height: 52px;
-  background: #fcfdfe;
-  border: 1.5px solid var(--adm-border);
   border-radius: 14px;
+  border: 1.5px solid var(--adm-border);
+  background: #fcfdfe;
   padding: 0 16px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  user-select: none;
-}
-
-.custom-datepicker-trigger.placeholder {
-  color: var(--adm-muted);
-}
-
-.custom-datepicker-trigger:hover {
-  border-color: var(--adm-brand);
-  background: white;
 }
 
 .custom-datepicker-trigger.open {
   border-color: var(--adm-brand);
-  background: white;
   box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
-}
-
-.custom-datepicker-trigger .calendar-icon {
-  color: var(--adm-muted);
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.custom-datepicker-trigger:hover .calendar-icon,
-.custom-datepicker-trigger.open .calendar-icon {
-  color: var(--adm-brand);
 }
 
 .custom-datepicker-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: white;
-  border: 1.5px solid var(--adm-border);
-  border-radius: 18px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-  z-index: 1000;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--adm-border);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
   padding: 20px;
-  min-width: 320px;
-  animation: slideDown 0.2s ease;
+  z-index: 1000;
 }
 
-.datepicker-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1.5px solid #f8fafc;
-}
-
-.datepicker-header .month-year-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.datepicker-header .month-display {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--adm-brand);
-  letter-spacing: -0.3px;
-}
-
-.datepicker-header .year-selector-btn {
-  background: rgba(0, 56, 115, 0.08);
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--adm-brand);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.datepicker-header .year-selector-btn:hover {
-  background: var(--adm-brand);
-  color: white;
-  transform: scale(1.02);
-}
-
-.datepicker-header .nav-btn {
-  background: #f8fafc;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--adm-muted);
-}
-
-.datepicker-header .nav-btn:hover {
-  background: var(--adm-brand);
-  color: white;
-  transform: scale(1.05);
-}
-
-/* Year Picker Grid */
-.year-picker-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  max-height: 280px;
-  overflow-y: auto;
-  padding: 5px;
-}
-
-.year-picker-grid::-webkit-scrollbar {
-  width: 6px;
-}
-
-.year-picker-grid::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.year-picker-grid::-webkit-scrollbar-thumb {
-  background: var(--adm-border);
-  border-radius: 10px;
-}
-
-.year-picker-grid::-webkit-scrollbar-thumb:hover {
-  background: var(--adm-muted);
-}
-
-.year-option {
-  padding: 12px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  color: var(--adm-text);
-}
-
-.year-option:hover {
-  background: #f8fafc;
-  color: var(--adm-brand);
-  transform: scale(1.05);
-}
-
-.year-option.current {
-  background: var(--adm-brand);
-  color: white;
-  font-weight: 700;
-}
-
-.year-option.current:hover {
-  background: #002d5c;
-}
-
-.datepicker-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.datepicker-weekdays .weekday {
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--adm-muted);
-  padding: 8px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
+.datepicker-weekdays,
 .datepicker-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -552,83 +261,60 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  color: var(--adm-text);
-  position: relative;
+  border-radius: 8px;
 }
 
-.datepicker-days .day.empty {
-  cursor: default;
-  pointer-events: none;
-}
-
-.datepicker-days .day:not(.empty):hover {
-  background: #f8fafc;
-  color: var(--adm-brand);
-  transform: scale(1.05);
-}
-
-.datepicker-days .day.today {
-  background: rgba(0, 56, 115, 0.08);
-  color: var(--adm-brand);
-  font-weight: 700;
+.datepicker-days .day:hover {
+  background: #f1f5f9;
 }
 
 .datepicker-days .day.selected {
   background: var(--adm-brand);
-  color: white;
-  font-weight: 700;
+  color: #fff;
 }
 
-.datepicker-days .day.selected:hover {
-  background: #002d5c;
-  transform: scale(1.05);
+/* =======================================================
+   PHONE INPUT
+======================================================= */
+
+.adm-phone-container {
+  width: 100% !important;
+  position: relative;
+  z-index: 50;
 }
 
-.datepicker-footer {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1.5px solid #f8fafc;
-  display: flex;
-  justify-content: center;
+.adm-phone-input {
+  width: 100% !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  border: 1.5px solid var(--adm-border) !important;
+  background: #fcfdfe !important;
+  padding-left: 65px !important;
 }
 
-.datepicker-footer .today-btn {
-  background: transparent;
-  border: 1.5px solid var(--adm-border);
-  padding: 10px 24px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--adm-brand);
-  cursor: pointer;
-  transition: all 0.2s ease;
+.adm-phone-dropdown {
+  border-radius: 16px !important;
+  border: 1px solid var(--adm-border) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
 }
 
-.datepicker-footer .today-btn:hover {
-  background: var(--adm-brand);
-  color: white;
-  border-color: var(--adm-brand);
-  transform: translateY(-1px);
+.adm-phone-dropdown .country-list {
+  max-height: 260px !important;
+  overflow-y: auto !important;
 }
 
-/* --- DOCUMENT UPLOAD --- */
-.adm-upload-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
+/* ================= UPLOAD PREMIUM FIX ================= */
+
 .adm-upload-box {
-  background: #f8fafc;
-  padding: 20px;
+  position: relative;
+  padding: 25px;
   border-radius: 16px;
-  border: 1px dashed var(--adm-border);
+  border: 2px dashed var(--adm-border);
+  background: #f8fafc;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: 0.2s ease;
+  cursor: pointer;
 }
 
 .adm-upload-box:hover {
@@ -637,96 +323,166 @@
 }
 
 .adm-upload-box label {
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 700;
+  display: block;
   margin-bottom: 10px;
   color: var(--adm-brand);
-  display: block;
 }
+
+/* Hide default file input */
 .adm-upload-box input[type="file"] {
-  font-size: 11px;
-  color: var(--adm-muted);
-  width: 100%;
+  opacity: 0;
+  position: absolute;
+  inset: 0;
   cursor: pointer;
 }
 
-/* --- ACTION AREA --- */
+/* Fake button look */
+.adm-upload-box::after {
+  content: "Click to Upload";
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--adm-brand);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =======================================================
+   ACTION AREA
+======================================================= */
+
 .adm-action-footer {
-  margin-top: 35px;
   padding: 40px;
-  background: white;
   border-radius: 24px;
   border: 1px solid var(--adm-border);
-  text-align: center;
+  background: #fff;
 }
 
 .adm-declaration {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 14px;
-  color: var(--adm-muted);
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 30px;
-  text-align: left;
-}
-
-.adm-declaration input {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--adm-brand);
-  flex-shrink: 0;
-  margin-top: 2px;
-  cursor: pointer;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .adm-btn-primary {
   width: 100%;
-  height: 68px;
-  background: var(--adm-brand);
-  color: white;
-  border: none;
+  height: 65px;
   border-radius: 18px;
-  font-size: 18px;
+  background: var(--adm-brand);
+  color: #fff;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
+  border: none;
   cursor: pointer;
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 15px 30px rgba(0, 56, 115, 0.2);
+  transition: 0.3s ease;
 }
 
 .adm-btn-primary:hover {
   background: #002d5c;
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px rgba(0, 56, 115, 0.3);
+}
+/* ================= DATE PICKER FULL FIX ================= */
+
+.datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
-.adm-btn-primary:disabled {
-  background: #cbd5e1;
-  transform: none;
-  box-shadow: none;
-  cursor: not-allowed;
+.nav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #f1f5f9;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
 }
 
-/* --- HELPERS --- */
-.adm-mt-30 {
-  margin-top: 30px;
+.nav-btn:hover {
+  background: var(--adm-brand);
+  color: #fff;
 }
 
-@media (max-width: 1200px) {
-  .adm-grid-layout {
-    grid-template-columns: 1fr;
-  }
-  .adm-portal-root {
-    padding: 20px;
-  }
-  .adm-masthead {
-    padding: 40px;
-  }
-  .adm-upload-grid {
-    grid-template-columns: 1fr;
-  }
+.month-year-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.month-display {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--adm-brand);
+}
+
+.year-selector-btn {
+  background: rgba(0,56,115,0.08);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.year-selector-btn:hover {
+  background: var(--adm-brand);
+  color: white;
+}
+
+/* Year grid */
+.year-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.year-option {
+  padding: 8px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.year-option:hover {
+  background: #f1f5f9;
+}
+
+.year-option.current {
+  background: var(--adm-brand);
+  color: white;
+}
+
+/* Weekdays */
+.datepicker-weekdays .weekday {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--adm-muted);
+}
+
+/* Days */
+.datepicker-days .day {
+  font-size: 13px;
+  font-weight: 600;
+  transition: 0.15s ease;
+}
+
+.datepicker-days .day:hover {
+  background: #f1f5f9;
+}
+
+.datepicker-days .day.selected {
+  background: var(--adm-brand);
+  color: white;
 }

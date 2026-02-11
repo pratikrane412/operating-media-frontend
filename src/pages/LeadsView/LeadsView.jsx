@@ -182,86 +182,49 @@ const LeadsView = () => {
   };
 
   const renderNotes = (notesString) => {
-    if (!notesString || notesString === "—" || notesString.trim() === "")
-      return <span className="no-notes-text">—</span>;
+  if (!notesString || notesString === "—" || notesString.trim() === "")
+    return <span className="no-notes-text">—</span>;
 
-    const dateRegex = /(\d{1,2}\/\d{1,2}\/\d{2,4})/g;
+  const dateRegex = /\d{1,2}\/\d{1,2}\/\d{2,4}/; // Matches 11/02/2026
+  const segments = notesString.split(",");
+  const noteEntries = [];
 
-    // 1. Try to find all dates in the string
-    const foundDates = notesString.match(dateRegex);
+  segments.forEach((segment) => {
+    const val = segment.trim();
+    if (!val) return;
 
-    // 2. If no dates are found at all, show the text with a bullet
-    if (!foundDates) {
-      return (
-        <div className="notes-timeline">
-          <div className="note-entry-horizontal">
-            <span className="note-bullet-icon">○</span>
-            <span className="note-text-horizontal">{notesString}</span>
-          </div>
+    const match = val.match(dateRegex);
+    if (match) {
+      const datePart = match[0];
+      // Remark is the segment minus the date and any trailing/leading dashes
+      const textPart = val.replace(datePart, "").replace(/^-|-$/g, "").trim();
+      noteEntries.push({ date: datePart, text: textPart || "No remark" });
+    } else {
+      noteEntries.push({ date: "—", text: val });
+    }
+  });
+
+  // Sort: Newest date at the top
+  noteEntries.sort((a, b) => {
+    if (a.date === "—") return 1;
+    if (b.date === "—") return -1;
+    const [d1, m1, y1] = a.date.split("/").map(Number);
+    const [d2, m2, y2] = b.date.split("/").map(Number);
+    return new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
+  });
+
+  return (
+    <div className="notes-timeline">
+      {noteEntries.slice(0, 3).map((entry, index) => (
+        <div key={index} className="note-entry-horizontal">
+          <span className="note-bullet-icon">○</span>
+          <span className="note-date-horizontal">{entry.date}</span>
+          <span className="note-text-horizontal">{entry.text}</span>
         </div>
-      );
-    }
-
-    // 3. If dates are found, split the content based on those dates
-    const parts = notesString
-      .split(dateRegex)
-      .filter((text) => text !== undefined);
-    const noteEntries = [];
-    let lastFoundDate = null;
-
-    // Logic to pair text with the correct date regardless of order
-    parts.forEach((part) => {
-      const trimmed = part.trim();
-      if (dateRegex.test(trimmed)) {
-        lastFoundDate = trimmed;
-      } else if (trimmed) {
-        // Clean up the text part (remove trailing dashes, commas, etc.)
-        let cleanText = trimmed
-          .replace(/^[-–—,\s]+/, "")
-          .replace(/[-–—,\s]+$/, "")
-          .trim();
-
-        if (cleanText && lastFoundDate) {
-          noteEntries.push({ date: lastFoundDate, text: cleanText });
-        } else if (cleanText && !lastFoundDate && foundDates.length > 0) {
-          // If text appeared BEFORE the first date (like "he will call-09/02/2026")
-          // Use the first available date
-          noteEntries.push({ date: foundDates[0], text: cleanText });
-        }
-      }
-    });
-
-    // 4. If we couldn't pair them properly but have a date and text
-    if (noteEntries.length === 0 && foundDates.length > 0) {
-      const date = foundDates[0];
-      const text = notesString
-        .replace(date, "")
-        .replace(/^[-–—,\s]+/, "")
-        .replace(/[-–—,\s]+$/, "")
-        .trim();
-      noteEntries.push({ date, text });
-    }
-
-    // 5. Sort by date (most recent first)
-    noteEntries.sort((a, b) => {
-      const [d1, m1, y1] = a.date.split("/").map(Number);
-      const [d2, m2, y2] = b.date.split("/").map(Number);
-      return new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
-    });
-
-    // 6. Render the top 3 entries
-    return (
-      <div className="notes-timeline">
-        {noteEntries.slice(0, 3).map((entry, index) => (
-          <div key={index} className="note-entry-horizontal">
-            <span className="note-bullet-icon">○</span>
-            <span className="note-date-horizontal">{entry.date}</span>
-            <span className="note-text-horizontal">{entry.text}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
+      ))}
+    </div>
+  );
+};
 
   useEffect(() => {
     const handleClickOutside = (event) => {

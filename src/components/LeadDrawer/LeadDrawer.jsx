@@ -88,52 +88,17 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   ];
 
   const formatTimelineDate = (dateStr) => {
-    if (!dateStr || dateStr === "N/A" || dateStr === "—" || dateStr === "None")
-      return "N/A";
+  if (!dateStr || dateStr === "N/A") return "N/A";
+  
+  // Use Regex to find the date part specifically
+  const dateRegex = /\d{1,2}\/\d{1,2}\/\d{4}/;
+  const match = dateStr.match(dateRegex);
+  if (!match) return dateStr;
 
-    // Split by dash or slash
-    const parts = dateStr.includes("-")
-      ? dateStr.split("-")
-      : dateStr.split("/");
-
-    let d, m, y;
-
-    if (parts[0].length === 4) {
-      // If format is YYYY-MM-DD
-      y = parts[0];
-      m = parts[1];
-      d = parts[2];
-    } else {
-      // If format is DD/MM/YYYY
-      d = parts[0];
-      m = parts[1];
-      y = parts[2];
-    }
-
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
-    // parseInt(d, 10) converts "01" to "1"
-    const dayNum = parseInt(d, 10);
-    const monthName = months[parseInt(m, 10) - 1];
-
-    if (!monthName || isNaN(dayNum)) return dateStr;
-
-    // This keeps the year as full 4 digits (e.g., 2025, 2026)
-    return `${dayNum} ${monthName} ${y}`;
-  };
+  const [d, m, y] = match[0].split("/");
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${parseInt(d, 10)} ${months[parseInt(m, 10) - 1]} ${y}`;
+};
 
   const formatList = (val) => {
     if (!val || val === "[]" || val === "No Tag" || val === "Reference")

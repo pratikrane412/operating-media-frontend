@@ -184,37 +184,75 @@ const LeadsView = () => {
   const renderNotes = (notesString) => {
     if (!notesString || notesString === "—" || notesString.trim() === "")
       return <span className="no-notes-text">—</span>;
+
     const dateRegex = /(\d{1,2}\/\d{1,2}\/\d{2,4})/g;
-    const parts = notesString.split(dateRegex).filter((text) => text.trim());
-    if (parts.length === 0) return <span className="no-notes-text">—</span>;
+
+    // 1. Try to find all dates in the string
+    const foundDates = notesString.match(dateRegex);
+
+    // 2. If no dates are found at all, show the text with a bullet
+    if (!foundDates) {
+      return (
+        <div className="notes-timeline">
+          <div className="note-entry-horizontal">
+            <span className="note-bullet-icon">○</span>
+            <span className="note-text-horizontal">{notesString}</span>
+          </div>
+        </div>
+      );
+    }
+
+    // 3. If dates are found, split the content based on those dates
+    const parts = notesString
+      .split(dateRegex)
+      .filter((text) => text !== undefined);
     const noteEntries = [];
-    let currentDate = null;
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i].trim();
-      if (dateRegex.test(part)) {
-        dateRegex.lastIndex = 0;
-        currentDate = part;
-      } else if (currentDate && part) {
-        let noteText = part
+    let lastFoundDate = null;
+
+    // Logic to pair text with the correct date regardless of order
+    parts.forEach((part) => {
+      const trimmed = part.trim();
+      if (dateRegex.test(trimmed)) {
+        lastFoundDate = trimmed;
+      } else if (trimmed) {
+        // Clean up the text part (remove trailing dashes, commas, etc.)
+        let cleanText = trimmed
           .replace(/^[-–—,\s]+/, "")
           .replace(/[-–—,\s]+$/, "")
           .trim();
-        if (noteText) noteEntries.push({ date: currentDate, text: noteText });
+
+        if (cleanText && lastFoundDate) {
+          noteEntries.push({ date: lastFoundDate, text: cleanText });
+        } else if (cleanText && !lastFoundDate && foundDates.length > 0) {
+          // If text appeared BEFORE the first date (like "he will call-09/02/2026")
+          // Use the first available date
+          noteEntries.push({ date: foundDates[0], text: cleanText });
+        }
       }
+    });
+
+    // 4. If we couldn't pair them properly but have a date and text
+    if (noteEntries.length === 0 && foundDates.length > 0) {
+      const date = foundDates[0];
+      const text = notesString
+        .replace(date, "")
+        .replace(/^[-–—,\s]+/, "")
+        .replace(/[-–—,\s]+$/, "")
+        .trim();
+      noteEntries.push({ date, text });
     }
-    if (noteEntries.length === 0)
-      return <div className="note-entry-simple">{notesString}</div>;
+
+    // 5. Sort by date (most recent first)
     noteEntries.sort((a, b) => {
       const [d1, m1, y1] = a.date.split("/").map(Number);
       const [d2, m2, y2] = b.date.split("/").map(Number);
-      const date1 = new Date(y1, m1 - 1, d1);
-      const date2 = new Date(y2, m2 - 1, d2);
-      return date2 - date1;
+      return new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
     });
-    const recentEntries = noteEntries.slice(0, 3);
+
+    // 6. Render the top 3 entries
     return (
       <div className="notes-timeline">
-        {recentEntries.map((entry, index) => (
+        {noteEntries.slice(0, 3).map((entry, index) => (
           <div key={index} className="note-entry-horizontal">
             <span className="note-bullet-icon">○</span>
             <span className="note-date-horizontal">{entry.date}</span>

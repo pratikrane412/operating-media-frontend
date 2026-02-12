@@ -92,10 +92,18 @@ const Dashboard = () => {
       const params = new URLSearchParams();
       params.append("branch", revBranch);
       params.append("counsellor", revCounsellor);
+      const formatDate = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      };
+
       if (startDate && endDate) {
-        params.append("start_date", startDate.toISOString().split("T")[0]);
-        params.append("end_date", endDate.toISOString().split("T")[0]);
+        params.append("start_date", formatDate(startDate));
+        params.append("end_date", formatDate(endDate));
       }
+
       const res = await axios.get(
         `https://operating-media-backend.onrender.com/api/followups-dashboard/?${params.toString()}`,
       );

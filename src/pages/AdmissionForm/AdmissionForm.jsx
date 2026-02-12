@@ -724,6 +724,7 @@ const AdmissionPortal = () => {
                   .
                 </span>
               </label>
+              <br />
               <button
                 type="submit"
                 className="adm-submit"

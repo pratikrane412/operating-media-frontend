@@ -640,6 +640,7 @@ const AdmissionPortal = () => {
                     options={[
                       { label: "Andheri", value: "Andheri" },
                       { label: "Borivali", value: "Borivali" },
+                      { label: "Online", value: "Online" },
                     ]}
                     placeholder="Choose Center"
                   />

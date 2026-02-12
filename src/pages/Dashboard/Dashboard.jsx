@@ -713,6 +713,11 @@ const Dashboard = () => {
                                   </div>
                                   <span className="user-full-name truncate-text">
                                     {item.name}
+                                    {item.paid_type > 1 && (
+                                      <span className="inst-badge">
+                                        Inst {item.paid_type}
+                                      </span>
+                                    )}
                                   </span>
                                 </div>
                               </td>

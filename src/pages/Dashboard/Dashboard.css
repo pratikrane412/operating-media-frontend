@@ -852,3 +852,38 @@
     gap: 12px;
   }
 }
+/* --- REVENUE ROW HIGHLIGHTS --- */
+
+/* 2nd Installment - Light Green tint */
+.inst-highlight-2 {
+  background-color: #f0fdf4 !important; /* Very light emerald */
+}
+.inst-highlight-2:hover {
+  background-color: #dcfce7 !important;
+}
+
+/* 3rd Installment - Light Purple tint */
+.inst-highlight-3 {
+  background-color: #f5f3ff !important; /* Very light violet */
+}
+.inst-highlight-3:hover {
+  background-color: #ede9fe !important;
+}
+
+/* 4th Installment and above - Light Blue tint */
+.inst-highlight-4, .inst-highlight-5, .inst-highlight-6 {
+  background-color: #eff6ff !important; 
+}
+
+/* Optional: Style for the "Inst X" Badge */
+.inst-badge {
+  font-size: 9px;
+  background: var(--brand-blue);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  text-transform: uppercase;
+  font-weight: 800;
+  vertical-align: middle;
+}

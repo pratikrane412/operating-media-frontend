@@ -6,7 +6,6 @@ import "react-phone-input-2/lib/style.css";
 import {
   User,
   Mail,
-  Phone,
   MapPin,
   Calendar,
   GraduationCap,
@@ -15,67 +14,53 @@ import {
   ArrowRight,
   ChevronDown,
   Check,
+  CheckCircle,
+  Fingerprint,
+  FileCheck,
 } from "lucide-react";
 
-// --- CUSTOM SELECT COMPONENT ---
-const CustomSelect = ({
-  name,
-  value,
-  onChange,
-  options,
-  placeholder,
-  required,
-}) => {
+// --- CUSTOM SELECT ---
+const EliteSelect = ({ name, value, onChange, options, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef(null);
-
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (selectRef.current && !selectRef.current.contains(event.target)) {
+    const close = (e) => {
+      if (selectRef.current && !selectRef.current.contains(e.target))
         setIsOpen(false);
-      }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const handleSelect = (optionValue) => {
-    onChange({ target: { name, value: optionValue } });
-    setIsOpen(false);
-  };
-
-  const selectedOption = options.find((opt) => opt.value === value);
-  const displayLabel = selectedOption ? selectedOption.label : placeholder;
-  const isPlaceholder = value === "" || value === null || value === undefined;
+  const selected = options.find((opt) => opt.value === value);
+  const label = selected ? selected.label : placeholder;
 
   return (
-    <div
-      className="custom-select"
-      ref={selectRef}
-      style={{ zIndex: isOpen ? 100 : 1 }}
-    >
+    <div className="adm-elite-field-box" ref={selectRef}>
       <div
-        className={`custom-select-trigger ${isOpen ? "open" : ""} ${isPlaceholder ? "placeholder" : ""}`}
+        className={`adm-elite-trigger ${isOpen ? "is-open" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{displayLabel}</span>
+        <span className={!value && value !== false ? "is-placeholder" : ""}>
+          {label}
+        </span>
         <ChevronDown
-          size={18}
-          className={`custom-select-arrow ${isOpen ? "rotate" : ""}`}
+          size={16}
+          className={`chevron ${isOpen ? "rotate" : ""}`}
         />
       </div>
       {isOpen && (
-        <div className="custom-select-dropdown">
-          {options.map((option, index) => (
+        <div className="adm-elite-dropdown">
+          {options.map((opt, i) => (
             <div
-              key={index}
-              className={`custom-select-option ${value === option.value ? "selected" : ""}`}
-              onClick={() => handleSelect(option.value)}
+              key={i}
+              className={`adm-elite-option ${value === opt.value ? "is-selected" : ""}`}
+              onClick={() => {
+                onChange({ target: { name, value: opt.value } });
+                setIsOpen(false);
+              }}
             >
-              <span>{option.label}</span>
-              {value === option.value && (
-                <Check size={16} className="check-icon" />
-              )}
+              {opt.label} {value === opt.value && <Check size={14} />}
             </div>
           ))}
         </div>
@@ -84,180 +69,156 @@ const CustomSelect = ({
   );
 };
 
-// --- CUSTOM DATE PICKER COMPONENT ---
-const CustomDatePicker = ({ name, value, onChange, required }) => {
+// --- CUSTOM DATE PICKER ---
+const EliteDatePicker = ({ name, value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(
-    value ? new Date(value) : null,
-  );
-  const [showYearPicker, setShowYearPicker] = useState(false);
-  const datePickerRef = useRef(null);
-
+  const [curr, setCurr] = useState(new Date());
+  const pickerRef = useRef(null);
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        datePickerRef.current &&
-        !datePickerRef.current.contains(event.target)
-      ) {
+    const close = (e) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target))
         setIsOpen(false);
-        setShowYearPicker(false);
-      }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const formatDate = (date) => {
-    if (!date) return "";
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  const formatDisplayDate = (date) => {
-    if (!date) return "Select Date";
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    const days = [];
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null);
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(year, month, i));
-    }
-    return days;
-  };
-
-  const generateYearRange = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = currentYear - 100; year <= currentYear + 10; year++) {
-      years.push(year);
-    }
-    return years;
-  };
-
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    onChange({ target: { name, value: formatDate(date) } });
-    setIsOpen(false);
-    setShowYearPicker(false);
-  };
-
-  const monthName = currentMonth.toLocaleDateString("en-US", { month: "long" });
-  const currentYear = currentMonth.getFullYear();
+  const days = [];
+  const start = new Date(curr.getFullYear(), curr.getMonth(), 1).getDay();
+  const end = new Date(curr.getFullYear(), curr.getMonth() + 1, 0).getDate();
+  for (let i = 0; i < start; i++) days.push(null);
+  for (let i = 1; i <= end; i++) days.push(i);
 
   return (
-    <div className="custom-datepicker" ref={datePickerRef}>
+    <div className="adm-elite-field-box" ref={pickerRef}>
       <div
-        className={`custom-datepicker-trigger ${isOpen ? "open" : ""} ${!selectedDate ? "placeholder" : ""}`}
+        className={`adm-elite-trigger ${isOpen ? "is-open" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{formatDisplayDate(selectedDate)}</span>
-        <Calendar size={18} className="calendar-icon" />
+        <span className={!value ? "is-placeholder" : ""}>
+          {value ? new Date(value).toLocaleDateString("en-GB") : "Select Date"}
+        </span>
+        <Calendar size={16} />
       </div>
       {isOpen && (
-        <div className="custom-datepicker-dropdown">
-          <div className="datepicker-header">
+        <div className="adm-elite-datepicker">
+          <div className="adm-dp-header">
             <button
               type="button"
               onClick={() =>
-                setCurrentMonth(
-                  new Date(
-                    currentMonth.getFullYear(),
-                    currentMonth.getMonth() - 1,
-                  ),
-                )
+                setCurr(new Date(curr.getFullYear(), curr.getMonth() - 1))
               }
-              className="nav-btn"
             >
-              <ChevronDown size={18} style={{ transform: "rotate(90deg)" }} />
+              ‹
             </button>
-            <div className="month-year-selector">
-              <span className="month-display">{monthName}</span>
-              <button
-                type="button"
-                className="year-selector-btn"
-                onClick={() => setShowYearPicker(!showYearPicker)}
+            <div className="adm-dp-title">
+              <select
+                className="adm-dp-month"
+                value={curr.getMonth()}
+                onChange={(e) =>
+                  setCurr(
+                    new Date(curr.getFullYear(), parseInt(e.target.value), 1),
+                  )
+                }
               >
-                {currentYear}
-              </button>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i} value={i}>
+                    {new Date(0, i).toLocaleString("en-US", { month: "long" })}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="adm-dp-year"
+                value={curr.getFullYear()}
+                onChange={(e) =>
+                  setCurr(
+                    new Date(parseInt(e.target.value), curr.getMonth(), 1),
+                  )
+                }
+              >
+                {Array.from({ length: 100 }).map((_, i) => {
+                  const year = new Date().getFullYear() - i;
+                  return (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <button
               type="button"
               onClick={() =>
-                setCurrentMonth(
-                  new Date(
-                    currentMonth.getFullYear(),
-                    currentMonth.getMonth() + 1,
-                  ),
-                )
+                setCurr(new Date(curr.getFullYear(), curr.getMonth() + 1))
               }
-              className="nav-btn"
             >
-              <ChevronDown size={18} style={{ transform: "rotate(-90deg)" }} />
+              ›
             </button>
           </div>
-          {showYearPicker ? (
-            <div className="year-picker-grid">
-              {generateYearRange().map((year) => (
-                <div
-                  key={year}
-                  className={`year-option ${year === currentYear ? "current" : ""}`}
-                  onClick={() => {
-                    setCurrentMonth(new Date(year, currentMonth.getMonth(), 1));
-                    setShowYearPicker(false);
-                  }}
-                >
-                  {year}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <>
-              <div className="datepicker-weekdays">
-                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
-                  <div key={day} className="weekday">
-                    {day}
-                  </div>
-                ))}
+          <div className="adm-dp-grid">
+            {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
+              <div key={d} className="adm-dp-w">
+                {d}
               </div>
-              <div className="datepicker-days">
-                {getDaysInMonth(currentMonth).map((date, index) => (
-                  <div
-                    key={index}
-                    className={`day ${!date ? "empty" : ""} ${selectedDate && date && date.toDateString() === selectedDate.toDateString() ? "selected" : ""}`}
-                    onClick={() => date && handleDateSelect(date)}
-                  >
-                    {date ? date.getDate() : ""}
-                  </div>
-                ))}
+            ))}
+            {days.map((d, i) => (
+              <div
+                key={i}
+                className={`adm-dp-d ${!d ? "empty" : ""} ${value && new Date(value).getDate() === d ? "active" : ""}`}
+                onClick={() =>
+                  d &&
+                  (onChange({
+                    target: {
+                      name,
+                      value: `${curr.getFullYear()}-${curr.getMonth() + 1}-${d}`,
+                    },
+                  }),
+                  setIsOpen(false))
+                }
+              >
+                {d}
               </div>
-            </>
-          )}
+            ))}
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-// --- MAIN ADMISSION FORM ---
-const AdmissionForm = () => {
+// --- CUSTOM UPLOAD BOX ---
+const EliteUpload = ({ label, name, value, onChange }) => {
+  const inputRef = useRef(null);
+  return (
+    <div
+      className={`adm-upload-box ${value ? "is-active" : ""}`}
+      onClick={() => inputRef.current.click()}
+    >
+      <input
+        type="file"
+        ref={inputRef}
+        onChange={onChange}
+        name={name}
+        style={{ display: "none" }}
+        accept="image/*"
+      />
+      <div className="icon-circ">
+        {value ? (
+          <CheckCircle size={22} color="#10b981" />
+        ) : (
+          <Upload size={22} />
+        )}
+      </div>
+      <span className="box-label">{label}</span>
+      <span className="box-subtext">
+        {value ? "Document Selected" : "Click to upload image"}
+      </span>
+    </div>
+  );
+};
+
+const AdmissionPortal = () => {
   const initialState = {
     firstName: "",
     middleName: "",
@@ -273,7 +234,7 @@ const AdmissionForm = () => {
     gender: "",
     status: "",
     dob: "",
-    employed: false,
+    employed: "",
     organization: "NA",
     course: "",
     branch: "",
@@ -287,14 +248,11 @@ const AdmissionForm = () => {
 
   const [formData, setFormData] = useState(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
-  };
-
-  const handlePhoneChange = (value) => {
-    setFormData({ ...formData, phone: value });
   };
 
   const handleFileChange = (e) => {
@@ -303,63 +261,111 @@ const AdmissionForm = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const img = new Image();
-        img.src = reader.result;
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 1200;
-          const scaleSize = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scaleSize;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
-          setFormData({ ...formData, [name]: compressedBase64 });
-        };
+        setFormData({ ...formData, [name]: reader.result });
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const validate = () => {
+    let newErrors = {};
+
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
+
+    if (!formData.middleName.trim())
+      newErrors.middleName = "Middle name is required";
+
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+
+    if (!formData.phone || formData.phone.length < 10)
+      newErrors.phone = "Valid mobile number is required";
+
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Invalid email format";
+
+    if (!formData.address.trim())
+      newErrors.address = "Street address is required";
+
+    if (!formData.gender) newErrors.gender = "Gender is required";
+
+    if (!formData.dob) newErrors.dob = "Date of birth is required";
+
+    if (!formData.course) newErrors.course = "Course selection is required";
+
+    if (!formData.branch) newErrors.branch = "Branch selection is required";
+
+    if (!formData.emergencyName.trim())
+      newErrors.emergencyName = "Emergency name is required";
+
+    if (!formData.emergencyPhone || formData.emergencyPhone.length < 10)
+      newErrors.emergencyPhone = "Valid emergency number required";
+
+    if (!formData.aadhaarFront)
+      newErrors.aadhaarFront = "Aadhaar front image required";
+
+    if (!formData.aadhaarBack)
+      newErrors.aadhaarBack = "Aadhaar back image required";
+
+    if (!formData.photo) newErrors.photo = "Passport photo required";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.agree) return alert("Please agree to the declaration.");
+
+    if (!validate()) return;
+
+    if (!formData.agree) {
+      alert("Please accept declaration");
+      return;
+    }
+
     setIsSubmitting(true);
+
     try {
       await axios.post(
         "https://operating-media-backend.onrender.com/api/admission/create/",
         formData,
       );
-      alert("Application Submitted Successfully!");
+
+      alert("Registration Successful!");
       setFormData(initialState);
-    } catch (error) {
-      alert("Submission failed. Please verify your details.");
+      setErrors({});
+    } catch (err) {
+      alert("Error submitting form.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="adm-portal-root">
-      <div className="adm-full-wrapper">
-        <form onSubmit={handleSubmit} className="adm-main-container">
-          <header className="adm-masthead">
-            <div className="adm-masthead-content">
-              <span className="adm-badge">OFFICIAL ENROLLMENT</span>
-              <h1>Admission Portal</h1>
-              <p>Operating Media • Digital Career Academy</p>
+    <div className="elite-admission-wrapper">
+      <div className="adm-mesh-bg"></div>
+      <div className="adm-shell">
+        <form onSubmit={handleSubmit}>
+          <header className="adm-hero">
+            <span className="adm-pill">Admission Form</span>
+
+            <div className="adm-hero-logo">
+              <img src="/OOPM.png" alt="Operating Media Logo" />
             </div>
+
+            <p>Complete your enrollment process below</p>
           </header>
 
-          <div className="adm-grid-layout">
-            {/* 1. PERSONAL IDENTITY */}
+          <div className="adm-workflow">
             <section className="adm-card">
               <div className="adm-card-header">
-                <User size={20} /> <h3>1. Personal Identity</h3>
+                <User /> <h2>1. Personal Identity</h2>
               </div>
-              <div className="adm-inner-grid">
-                <div className="adm-field">
-                  <label>First Name *</label>
+              <div className="adm-grid grid-3">
+                <div className="adm-group">
+                  <label>First Name</label>
                   <input
                     type="text"
                     name="firstName"
@@ -368,9 +374,12 @@ const AdmissionForm = () => {
                     required
                     placeholder="First Name"
                   />
+                  {errors.firstName && (
+                    <span className="adm-error">{errors.firstName}</span>
+                  )}
                 </div>
-                <div className="adm-field">
-                  <label>Middle Name *</label>
+                <div className="adm-group">
+                  <label>Middle Name</label>
                   <input
                     type="text"
                     name="middleName"
@@ -380,8 +389,8 @@ const AdmissionForm = () => {
                     placeholder="Middle Name"
                   />
                 </div>
-                <div className="adm-field">
-                  <label>Last Name *</label>
+                <div className="adm-group">
+                  <label>Last Name</label>
                   <input
                     type="text"
                     name="lastName"
@@ -390,95 +399,92 @@ const AdmissionForm = () => {
                     required
                     placeholder="Last Name"
                   />
+                  {errors.lastName && (
+                    <span className="adm-error">{errors.lastName}</span>
+                  )}
                 </div>
-                <div className="adm-field">
+                <div className="adm-group">
                   <label>Date of Birth</label>
-                  <CustomDatePicker
+                  <EliteDatePicker
                     name="dob"
                     value={formData.dob}
                     onChange={handleChange}
-                    required
                   />
+                  {errors.dob && (
+                    <span className="adm-error">{errors.dob}</span>
+                  )}
                 </div>
-                <div className="adm-field">
+                <div className="adm-group">
                   <label>Gender</label>
-                  <CustomSelect
+                  <EliteSelect
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
-                    placeholder="Select"
                     options={[
                       { label: "Male", value: "Male" },
                       { label: "Female", value: "Female" },
                     ]}
-                    required
+                    placeholder="Select Gender"
                   />
+                  {errors.gender && (
+                    <span className="adm-error">{errors.gender}</span>
+                  )}
                 </div>
-                <div className="adm-field">
+                <div className="adm-group">
                   <label>Marital Status</label>
-                  <CustomSelect
+                  <EliteSelect
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
-                    placeholder="Select"
                     options={[
                       { label: "Single", value: "Single" },
                       { label: "Married", value: "Married" },
                     ]}
-                    required
+                    placeholder="Select Status"
                   />
                 </div>
               </div>
             </section>
 
-            {/* 2. RESIDENTIAL ADDRESS */}
-            <section className="adm-card adm-mt-30">
+            <section className="adm-card">
               <div className="adm-card-header">
-                <MapPin size={20} /> <h3>2. Residential Address</h3>
+                <MapPin /> <h2>2. Residential Address</h2>
               </div>
-              <div className="adm-inner-grid">
-                <div className="adm-field adm-span-4">
-                  <label>Street Address *</label>
+              <div className="adm-grid grid-4">
+                <div className="adm-group span-full">
+                  <label>Street Address</label>
                   <input
                     type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
                     required
-                    placeholder="House No, Building, Street"
+                    placeholder="House No, Building, Area"
                   />
+                  {errors.address && (
+                    <span className="adm-error">{errors.address}</span>
+                  )}
                 </div>
-                <div className="adm-field adm-span-4">
-                  <label>Apartment / Suite / Area (Address 2)</label>
-                  <input
-                    type="text"
-                    name="apartment"
-                    value={formData.apartment}
-                    onChange={handleChange}
-                    placeholder="Landmark or Area"
-                  />
-                </div>
-                <div className="adm-field">
+                <div className="adm-group">
                   <label>Country</label>
                   <input
                     type="text"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    placeholder="Country Name"
                   />
                 </div>
-                <div className="adm-field">
+                <div className="adm-group">
                   <label>State</label>
                   <input
                     type="text"
                     name="state"
                     value={formData.state}
                     onChange={handleChange}
-                    placeholder="State Name"
+                    placeholder="State"
                   />
                 </div>
-                <div className="adm-field">
+                <div className="adm-group">
                   <label>City</label>
                   <input
                     type="text"
@@ -488,102 +494,103 @@ const AdmissionForm = () => {
                     placeholder="City Name"
                   />
                 </div>
-                <div className="adm-field">
+
+                <div className="adm-group">
                   <label>ZIP Code</label>
                   <input
                     type="text"
                     name="zip"
                     value={formData.zip}
                     onChange={handleChange}
-                    placeholder="ZIP Code"
+                    placeholder="Pincode"
                   />
                 </div>
               </div>
             </section>
 
-            {/* 3. COMMUNICATION DETAILS */}
-            <section className="adm-card adm-mt-30">
+            <section className="adm-card">
               <div className="adm-card-header">
-                <Phone size={20} /> <h3>3. Communication Details</h3>
+                <Fingerprint /> <h2>3. Communication Details</h2>
               </div>
-              <div className="adm-inner-grid">
-                <div className="adm-field adm-span-2">
-                  <label>Primary Mobile *</label>
+              <div className="adm-grid grid-2">
+                <div className="adm-group">
+                  <label>Primary Mobile</label>
                   <PhoneInput
                     country={"in"}
                     value={formData.phone}
-                    onChange={handlePhoneChange}
-                    enableSearch={true}
-                    disableSearchIcon={true}
-                    searchPlaceholder="Search country..."
-                    containerClass="adm-phone-container"
-                    inputClass="adm-phone-input"
-                    buttonClass="adm-phone-button"
-                    dropdownClass="adm-phone-dropdown"
-                    placeholder="Phone Number"
+                    onChange={(v) => setFormData({ ...formData, phone: v })}
+                    containerClass="adm-tel-root"
+                    inputClass="adm-tel-input"
+                    buttonClass="adm-tel-btn"
+                    dropdownClass="adm-tel-drop"
                     specialLabel=""
-                    containerStyle={{
-                      position: "relative",
-                      zIndex: 10,
-                    }}
                   />
+                  {errors.phone && (
+                    <span className="adm-error">{errors.phone}</span>
+                  )}
                 </div>
-                <div className="adm-field adm-span-2">
-                  <label>Email Address *</label>
+                <div className="adm-group">
+                  <label>Personal Email</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="example@mail.com"
+                    placeholder="email@example.com"
                   />
+                  {errors.email && (
+                    <span className="adm-error">{errors.email}</span>
+                  )}
                 </div>
               </div>
             </section>
 
-            {/* 4. EMERGENCY CONTACT */}
-            <section className="adm-card adm-mt-30 adm-accent-card">
+            <section className="adm-card">
               <div className="adm-card-header">
-                <ShieldAlert size={20} /> <h3>4. Emergency Contact</h3>
+                <ShieldAlert /> <h2>4. Emergency Contact</h2>
               </div>
-              <div className="adm-inner-grid">
-                <div className="adm-field adm-span-2">
-                  <label>Relative Name</label>
+              <div className="adm-grid grid-2">
+                <div className="adm-group">
+                  <label>Emergency Name</label>
                   <input
                     type="text"
                     name="emergencyName"
                     value={formData.emergencyName}
                     onChange={handleChange}
-                    placeholder="Contact Person Name"
+                    placeholder="Relative Name"
                   />
+                  {errors.emergencyName && (
+                    <span className="adm-error">{errors.emergencyName}</span>
+                  )}
                 </div>
-                <div className="adm-field adm-span-2">
-                  <label>Relative Phone</label>
+                <div className="adm-group">
+                  <label>Emergency Phone</label>
                   <input
                     type="tel"
                     name="emergencyPhone"
                     value={formData.emergencyPhone}
                     onChange={handleChange}
-                    placeholder="Mobile Number"
+                    placeholder=""
                   />
+                  {errors.emergencyPhone && (
+                    <span className="adm-error">{errors.emergencyPhone}</span>
+                  )}
                 </div>
               </div>
             </section>
 
-            {/* 5. ACADEMIC & PROFESSIONAL */}
-            <section className="adm-card adm-mt-30">
+            <section className="adm-card">
               <div className="adm-card-header">
-                <GraduationCap size={20} /> <h3>5. Academic & Professional</h3>
+                <GraduationCap /> <h2>5. Academic & Professional</h2>
               </div>
-              <div className="adm-inner-grid">
-                <div className="adm-field adm-span-2">
-                  <label>Preferred Course *</label>
-                  <CustomSelect
+              <div className="adm-grid grid-3">
+                <div className="adm-group">
+                  <label>Course</label>
+                  <EliteSelect
                     name="course"
                     value={formData.course}
                     onChange={handleChange}
-                    placeholder="Select Path"
                     options={[
                       {
                         label: "Masters in Digital Marketing",
@@ -618,112 +625,111 @@ const AdmissionForm = () => {
                         value: "WordPress Development Course",
                       },
                     ]}
-                    required
+                    placeholder="Select Path"
                   />
+                  {errors.course && (
+                    <span className="adm-error">{errors.course}</span>
+                  )}
                 </div>
-                <div className="adm-field adm-span-2">
-                  <label>Branch Center *</label>
-                  <CustomSelect
+                <div className="adm-group">
+                  <label>Branch</label>
+                  <EliteSelect
                     name="branch"
                     value={formData.branch}
                     onChange={handleChange}
-                    placeholder="Select Location"
                     options={[
                       { label: "Andheri", value: "Andheri" },
                       { label: "Borivali", value: "Borivali" },
                     ]}
-                    required
+                    placeholder="Choose Center"
                   />
+                  {errors.branch && (
+                    <span className="adm-error">{errors.branch}</span>
+                  )}
                 </div>
-                <div className="adm-field adm-span-2">
+                <div className="adm-group">
                   <label>Employment Status</label>
-                  <CustomSelect
+                  <EliteSelect
                     name="employed"
                     value={formData.employed}
                     onChange={handleChange}
-                    placeholder="Select Status"
                     options={[
                       { label: "Yes", value: true },
                       { label: "No", value: false },
                     ]}
-                    required
-                  />
-                </div>
-                <div className="adm-field adm-span-2">
-                  <label>Organization Name</label>
-                  <input
-                    type="text"
-                    name="organization"
-                    value={formData.organization}
-                    onChange={handleChange}
-                    placeholder="NA"
+                    placeholder="Select Status"
                   />
                 </div>
               </div>
             </section>
 
-            {/* 6. DOCUMENTS */}
-            <section className="adm-card adm-mt-30 adm-doc-card">
+            <section className="adm-card">
               <div className="adm-card-header">
-                <Upload size={20} /> <h3>6. Document Verification</h3>
+                <FileCheck /> <h2>6. Document Verification</h2>
               </div>
               <div className="adm-upload-grid">
-                <div className="adm-upload-box">
-                  <label>Aadhaar Front</label>
-                  <input
-                    type="file"
-                    name="aadhaarFront"
-                    onChange={handleFileChange}
-                    required
-                  />
-                </div>
-                <div className="adm-upload-box">
-                  <label>Aadhaar Back</label>
-                  <input
-                    type="file"
-                    name="aadhaarBack"
-                    onChange={handleFileChange}
-                    required
-                  />
-                </div>
-                <div className="adm-upload-box">
-                  <label>Passport Photo</label>
-                  <input
-                    type="file"
-                    name="photo"
-                    onChange={handleFileChange}
-                    required
-                  />
-                </div>
+                <EliteUpload
+                  label="Aadhaar Front"
+                  name="aadhaarFront"
+                  value={formData.aadhaarFront}
+                  onChange={handleFileChange}
+                />
+                {errors.aadhaarFront && (
+                  <span className="adm-error">{errors.aadhaarFront}</span>
+                )}
+                <EliteUpload
+                  label="Aadhaar Back"
+                  name="aadhaarBack"
+                  value={formData.aadhaarBack}
+                  onChange={handleFileChange}
+                />
+                {errors.aadhaarBack && (
+                  <span className="adm-error">{errors.aadhaarBack}</span>
+                )}
+                <EliteUpload
+                  label="Passport Photo"
+                  name="photo"
+                  value={formData.photo}
+                  onChange={handleFileChange}
+                />
+                {errors.photo && (
+                  <span className="adm-error">{errors.photo}</span>
+                )}
               </div>
             </section>
 
-            {/* SUBMIT AREA */}
-            <div className="adm-action-footer">
-              <label className="adm-declaration">
+            <div className="adm-footer">
+              <label className="adm-agree">
                 <input
                   type="checkbox"
                   name="agree"
                   checked={formData.agree}
                   onChange={handleChange}
-                  required
                 />
-                I hereby declare that the information provided by me is true to
-                the best of my knowledge. I take sole responsibility for any
-                misrepresentation and Operating Media shall not be held liable
-                for it. By ticking, I agree to the terms and conditions
-              </label>
-              <br />
 
+                <span>
+                  I hereby declare that the information provided by me is true
+                  to the best of my knowledge. I take sole responsibility for
+                  any misrepresentation and Operating Media shall not be held
+                  liable for it. By ticking, I agree to the{" "}
+                  <a
+                    href="/terms-and-conditions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="adm-terms-link"
+                  >
+                    Terms and Conditions
+                  </a>
+                  .
+                </span>
+              </label>
               <button
                 type="submit"
-                className="adm-btn-primary"
+                className="adm-submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting
-                  ? "Processing Application..."
-                  : "Submit My Application"}
-                <ArrowRight size={20} />
+                {isSubmitting ? "PROCESSING..." : "SUBMIT APPLICATION"}{" "}
+                <ArrowRight />
               </button>
             </div>
           </div>
@@ -733,4 +739,4 @@ const AdmissionForm = () => {
   );
 };
 
-export default AdmissionForm;
+export default AdmissionPortal;

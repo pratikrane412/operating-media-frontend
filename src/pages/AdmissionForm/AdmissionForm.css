@@ -1,488 +1,841 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
-/* =======================================================
-   ROOT
-======================================================= */
+.elite-admission-wrapper {
+  --e-brand: #003873;
+  --e-bg: #f8fafc;
+  --e-border: #e2e8f0;
+  --e-text: #0f172a;
+  --e-muted: #64748b;
 
-.adm-portal-root {
-  --adm-brand: #003873;
-  --adm-bg: #f8fafc;
-  --adm-text: #0f172a;
-  --adm-muted: #64748b;
-  --adm-border: #e2e8f0;
-
-  background: var(--adm-bg);
+  background-color: var(--e-bg);
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 40px;
   font-family: "Plus Jakarta Sans", sans-serif;
-  color: var(--adm-text);
+  color: var(--e-text);
 }
 
-.adm-portal-root * {
-  box-sizing: border-box;
-}
-
-.adm-full-wrapper {
-  max-width: 1100px;
+.elite-admission-wrapper .adm-shell {
+  max-width: 1600px;
   margin: 0 auto;
-}
-
-/* =======================================================
-   MASTHEAD
-======================================================= */
-
-.adm-masthead {
-  background: linear-gradient(135deg, #003873 0%, #0056b3 100%);
-  border-radius: 24px;
-  padding: 60px 40px;
-  color: #fff;
-  margin-bottom: 35px;
-}
-
-.adm-badge {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 6px 14px;
-  border-radius: 40px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.adm-masthead h1 {
-  font-size: 40px;
-  font-weight: 800;
-  margin: 15px 0 6px;
-}
-
-.adm-masthead p {
-  font-size: 15px;
-  opacity: 0.9;
-}
-
-/* =======================================================
-   LAYOUT
-======================================================= */
-
-.adm-grid-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.adm-card {
-  background: #fff;
-  border-radius: 24px;
-  padding: 35px;
-  border: 1px solid var(--adm-border);
-  overflow: visible !important;
-}
-
-.adm-mt-30 {
-  margin-top: 30px;
-}
-
-/* =======================================================
-   CARD HEADER
-======================================================= */
-
-.adm-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 25px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #f1f5f9;
-  color: var(--adm-brand);
-}
-
-.adm-card-header h3 {
-  font-size: 15px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-/* =======================================================
-   FORM GRID
-======================================================= */
-
-.adm-inner-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.adm-field {
-  grid-column: span 2;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.adm-span-4 {
-  grid-column: span 4;
-}
-
-@media (max-width: 768px) {
-  .adm-field {
-    grid-column: span 4;
-  }
-}
-
-/* =======================================================
-   INPUTS
-======================================================= */
-
-.adm-portal-root label {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.adm-portal-root input:not([type="checkbox"]):not([type="file"]),
-.adm-portal-root select {
-  height: 52px;
-  border-radius: 14px;
-  border: 1.5px solid var(--adm-border);
-  background: #fcfdfe;
-  padding: 0 16px;
-  font-size: 14px;
-  transition: 0.2s ease;
-}
-
-.adm-portal-root input:focus,
-.adm-portal-root select:focus {
-  border-color: var(--adm-brand);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
-  outline: none;
-}
-
-/* =======================================================
-   CUSTOM SELECT
-======================================================= */
-
-.custom-select {
   position: relative;
 }
+.elite-admission-wrapper .adm-hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.elite-admission-wrapper h1 {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--e-brand);
+  margin: 15px 0;
+}
 
-.custom-select-trigger {
-  height: 52px;
-  border-radius: 14px;
-  border: 1.5px solid var(--adm-border);
+.elite-admission-wrapper .adm-workflow {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.elite-admission-wrapper .adm-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px;
+  border: 1px solid var(--e-border);
+  box-shadow: 0 10px 30px -10px rgba(0, 56, 115, 0.05);
+  overflow: visible !important;
+}
+.elite-admission-wrapper .adm-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  color: var(--e-brand);
+  border-bottom: 1.5px solid #f8fafc;
+  padding-bottom: 15px;
+}
+.elite-admission-wrapper .adm-card-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* GRID SYSTEM */
+.elite-admission-wrapper .adm-grid {
+  display: grid;
+  gap: 24px;
+}
+.elite-admission-wrapper .grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.elite-admission-wrapper .grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.elite-admission-wrapper .grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.elite-admission-wrapper .adm-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.elite-admission-wrapper .adm-group.span-full {
+  grid-column: 1 / -1;
+}
+
+.elite-admission-wrapper label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0.8px;
+  color: #475569;
+  margin-left: 2px;
+}
+
+/* UNIFIED INPUTS */
+.elite-admission-wrapper input:not([type="checkbox"]),
+.elite-admission-wrapper .adm-elite-trigger {
+  height: 54px;
   background: #fcfdfe;
-  padding: 0 16px;
+  border: 1.5px solid var(--e-border);
+  border-radius: 12px;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--e-text);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  outline: none;
+  transition: 0.2s;
+}
+
+.elite-admission-wrapper input:focus,
+.elite-admission-wrapper .adm-elite-trigger.is-open {
+  border-color: var(--e-brand);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.05);
+}
+
+/* --- PHONE INPUT FIXES --- */
+.elite-admission-wrapper .adm-tel-root {
+  width: 100% !important;
+}
+.elite-admission-wrapper .adm-tel-input {
+  width: 100% !important;
+  height: 54px !important;
+  background: #fcfdfe !important;
+  border: 1.5px solid var(--e-border) !important;
+  border-radius: 12px !important;
+  padding-left: 60px !important;
+  font-family: inherit !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+.elite-admission-wrapper .adm-tel-btn {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 12px 0 0 12px !important;
+  width: 50px !important;
+}
+/* This removes the vertical grey line glitch */
+.react-tel-input .flag-dropdown {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* --- UPLOAD BOX FIXES --- */
+.elite-admission-wrapper .adm-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.elite-admission-wrapper .adm-upload-box {
+  background: #f8fafc;
+  border: 2.5px dashed var(--e-border);
+  border-radius: 18px;
+  padding: 30px 15px;
+  text-align: center;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.elite-admission-wrapper .adm-upload-box:hover {
+  border-color: var(--e-brand);
+  background: #f0f7ff;
+  transform: translateY(-3px);
+}
+.elite-admission-wrapper .adm-upload-box.is-active {
+  border-style: solid;
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+.elite-admission-wrapper .icon-circ {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--e-brand);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+.elite-admission-wrapper .adm-upload-box.is-active .icon-circ {
+  color: #10b981;
+}
+.elite-admission-wrapper .box-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--e-brand);
+}
+.elite-admission-wrapper .box-subtext {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--e-muted);
 }
 
-.custom-select-trigger.placeholder {
-  color: var(--adm-muted);
+/* DROPDOWNS */
+.elite-admission-wrapper .adm-elite-field-box {
+  position: relative;
+  width: 100%;
 }
-
-.custom-select-trigger.open {
-  border-color: var(--adm-brand);
-  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
-}
-
-.custom-select-dropdown {
+.elite-admission-wrapper .adm-elite-dropdown,
+.elite-admission-wrapper .adm-elite-datepicker {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 10px);
   left: 0;
   right: 0;
   background: #fff;
-  border-radius: 14px;
-  border: 1px solid var(--adm-border);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-  max-height: 260px;
-  overflow-y: auto;
-  z-index: 1000;
+  border: 1px solid var(--e-border);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  padding: 10px;
 }
 
-.custom-select-option {
-  padding: 12px 16px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
+/* FOOTER */
+.elite-admission-wrapper .adm-footer {
+  margin-top: 15px;
+  padding: 40px;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  text-align: center;
 }
-
-.custom-select-option:hover {
-  background: #f1f5f9;
-}
-
-/* =======================================================
-   CUSTOM DATE PICKER
-======================================================= */
-
-.custom-datepicker {
-  position: relative;
-}
-
-.custom-datepicker-trigger {
-  height: 52px;
-  border-radius: 14px;
-  border: 1.5px solid var(--adm-border);
-  background: #fcfdfe;
-  padding: 0 16px;
+.elite-admission-wrapper .adm-submit {
+  width: 100%;
+  height: 75px;
+  background: var(--e-brand);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 20px;
+  font-weight: 800;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 15px;
   cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 12px 30px rgba(0, 56, 115, 0.2);
+}
+/* ===== PREMIUM DATEPICKER ===== */
+
+.elite-admission-wrapper .adm-elite-datepicker {
+  backdrop-filter: blur(18px);
+  background: linear-gradient(145deg, #ffffff, #f8fbff);
+  border: 1px solid rgba(0, 56, 115, 0.08);
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 60px rgba(0, 56, 115, 0.15),
+    0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 18px;
+  animation: fadeScaleIn 0.25s ease;
 }
 
-.custom-datepicker-trigger.open {
-  border-color: var(--adm-brand);
-  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.06);
+/* Header */
+.elite-admission-wrapper .adm-dp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  font-weight: 700;
+  color: var(--e-brand);
 }
 
-.custom-datepicker-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid var(--adm-border);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-  padding: 20px;
-  z-index: 1000;
+.elite-admission-wrapper .adm-dp-header button {
+  background: rgba(0, 56, 115, 0.08);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
-.datepicker-weekdays,
-.datepicker-days {
+.elite-admission-wrapper .adm-dp-header button:hover {
+  background: var(--e-brand);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Grid */
+.elite-admission-wrapper .adm-dp-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 8px;
 }
 
-.datepicker-days .day {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-.datepicker-days .day:hover {
-  background: #f1f5f9;
-}
-
-.datepicker-days .day.selected {
-  background: var(--adm-brand);
-  color: #fff;
-}
-
-/* =======================================================
-   PHONE INPUT
-======================================================= */
-
-.adm-phone-container {
-  width: 100% !important;
-  position: relative;
-  z-index: 50;
-}
-
-.adm-phone-input {
-  width: 100% !important;
-  height: 52px !important;
-  border-radius: 14px !important;
-  border: 1.5px solid var(--adm-border) !important;
-  background: #fcfdfe !important;
-  padding-left: 65px !important;
-}
-
-.adm-phone-dropdown {
-  border-radius: 16px !important;
-  border: 1px solid var(--adm-border) !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
-}
-
-.adm-phone-dropdown .country-list {
-  max-height: 260px !important;
-  overflow-y: auto !important;
-}
-
-/* ================= UPLOAD PREMIUM FIX ================= */
-
-.adm-upload-box {
-  position: relative;
-  padding: 25px;
-  border-radius: 16px;
-  border: 2px dashed var(--adm-border);
-  background: #f8fafc;
-  text-align: center;
-  transition: 0.2s ease;
-  cursor: pointer;
-}
-
-.adm-upload-box:hover {
-  border-color: var(--adm-brand);
-  background: #f0f7ff;
-}
-
-.adm-upload-box label {
-  font-size: 13px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 10px;
-  color: var(--adm-brand);
-}
-
-/* Hide default file input */
-.adm-upload-box input[type="file"] {
-  opacity: 0;
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-}
-
-/* Fake button look */
-.adm-upload-box::after {
-  content: "Click to Upload";
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: var(--adm-brand);
-  color: white;
+/* Week Days */
+.elite-admission-wrapper .adm-dp-w {
   font-size: 12px;
-  font-weight: 600;
-}
-
-
-/* =======================================================
-   ACTION AREA
-======================================================= */
-
-.adm-action-footer {
-  padding: 40px;
-  border-radius: 24px;
-  border: 1px solid var(--adm-border);
-  background: #fff;
-}
-
-.adm-declaration {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.adm-btn-primary {
-  width: 100%;
-  height: 65px;
-  border-radius: 18px;
-  background: var(--adm-brand);
-  color: #fff;
   font-weight: 700;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s ease;
+  color: var(--e-muted);
+  text-align: center;
+  padding-bottom: 6px;
 }
 
-.adm-btn-primary:hover {
-  background: #002d5c;
-}
-/* ================= DATE PICKER FULL FIX ================= */
-
-.datepicker-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.nav-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  background: #f1f5f9;
-  cursor: pointer;
+/* Date Cells */
+.elite-admission-wrapper .adm-dp-d {
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: 0.2s ease;
-}
-
-.nav-btn:hover {
-  background: var(--adm-brand);
-  color: #fff;
-}
-
-.month-year-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.month-display {
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--adm-brand);
-}
-
-.year-selector-btn {
-  background: rgba(0,56,115,0.08);
-  border: none;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-weight: 700;
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.2s ease;
+  font-weight: 600;
+  transition: 0.25s ease;
 }
 
-.year-selector-btn:hover {
-  background: var(--adm-brand);
+.elite-admission-wrapper .adm-dp-d:hover {
+  background: rgba(0, 56, 115, 0.08);
+  transform: translateY(-2px);
+}
+
+.elite-admission-wrapper .adm-dp-d.active {
+  background: linear-gradient(135deg, #003873, #0050a4);
   color: white;
+  box-shadow: 0 8px 20px rgba(0, 56, 115, 0.4);
+  transform: scale(1.05);
 }
 
-/* Year grid */
-.year-picker-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  max-height: 250px;
+.elite-admission-wrapper .adm-dp-d.empty {
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Animation */
+@keyframes fadeScaleIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+/* ===== PREMIUM DROPDOWN ===== */
+
+.elite-admission-wrapper .adm-elite-dropdown {
+  backdrop-filter: blur(16px);
+  background: linear-gradient(145deg, #ffffff, #f7faff);
+  border: 1px solid rgba(0, 56, 115, 0.08);
+  border-radius: 18px;
+  box-shadow: 
+    0 20px 60px rgba(0, 56, 115, 0.15),
+    0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  animation: fadeScaleIn 0.2s ease;
+  max-height: 240px;
   overflow-y: auto;
 }
 
-.year-option {
-  padding: 8px;
-  text-align: center;
-  border-radius: 8px;
+/* Scrollbar Styling */
+.elite-admission-wrapper .adm-elite-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.elite-admission-wrapper .adm-elite-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(0, 56, 115, 0.3);
+  border-radius: 10px;
+}
+
+/* Options */
+.elite-admission-wrapper .adm-elite-option {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.25s ease;
 }
 
-.year-option:hover {
-  background: #f1f5f9;
+.elite-admission-wrapper .adm-elite-option:hover {
+  background: rgba(0, 56, 115, 0.08);
+  transform: translateX(4px);
 }
 
-.year-option.current {
-  background: var(--adm-brand);
+.elite-admission-wrapper .adm-elite-option.is-selected {
+  background: linear-gradient(135deg, #003873, #0050a4);
   color: white;
+  box-shadow: 0 8px 20px rgba(0, 56, 115, 0.35);
+}
+/* ============================= */
+/* 📱 TABLET (Below 1024px) */
+/* ============================= */
+
+@media (max-width: 1024px) {
+
+  .elite-admission-wrapper {
+    padding: 25px 18px;
+  }
+
+  .elite-admission-wrapper .adm-card {
+    padding: 28px;
+  }
+
+  .elite-admission-wrapper .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .elite-admission-wrapper .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .elite-admission-wrapper .adm-upload-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
 }
 
-/* Weekdays */
-.datepicker-weekdays .weekday {
-  font-size: 11px;
+
+/* ============================= */
+/* 📱 MOBILE (Below 768px) */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+  .elite-admission-wrapper {
+    padding: 18px 12px;
+  }
+
+  .elite-admission-wrapper h1 {
+    font-size: 34px;
+  }
+
+  .elite-admission-wrapper .adm-card {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  /* All grids stack */
+  .elite-admission-wrapper .grid-2,
+  .elite-admission-wrapper .grid-3,
+  .elite-admission-wrapper .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Inputs slightly taller for touch */
+  .elite-admission-wrapper input:not([type="checkbox"]),
+  .elite-admission-wrapper .adm-elite-trigger,
+  .elite-admission-wrapper .adm-tel-input {
+    height: 58px;
+    font-size: 16px;
+  }
+
+  /* Dropdown full width and bigger tap */
+  .elite-admission-wrapper .adm-elite-dropdown {
+    border-radius: 16px;
+    padding: 10px;
+    max-height: 300px;
+  }
+
+  .elite-admission-wrapper .adm-elite-option {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  /* Datepicker full width */
+  .elite-admission-wrapper .adm-elite-datepicker {
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .elite-admission-wrapper .adm-dp-d {
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .elite-admission-wrapper .adm-dp-header button {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* Upload grid single column */
+  .elite-admission-wrapper .adm-upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .elite-admission-wrapper .adm-upload-box {
+    padding: 26px 15px;
+  }
+
+  /* Footer spacing */
+  .elite-admission-wrapper .adm-footer {
+    padding: 25px 18px;
+  }
+
+  .elite-admission-wrapper .adm-submit {
+    height: 64px;
+    font-size: 16px;
+    border-radius: 16px;
+  }
+
+}
+
+
+/* ============================= */
+/* 📱 SMALL MOBILE (Below 480px) */
+/* ============================= */
+
+@media (max-width: 480px) {
+
+  .elite-admission-wrapper h1 {
+    font-size: 28px;
+  }
+
+  .elite-admission-wrapper .adm-card-header h2 {
+    font-size: 16px;
+  }
+
+  .elite-admission-wrapper label {
+    font-size: 10px;
+  }
+
+  .elite-admission-wrapper .adm-dp-d {
+    height: 42px;
+  }
+
+}
+/* ============================= */
+/* 💎 PREMIUM HERO SECTION */
+/* ============================= */
+
+.elite-admission-wrapper .adm-hero {
+  position: relative;
+  padding: 60px 20px 50px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #ffffff, #f2f7ff);
+  box-shadow: 
+    0 20px 60px rgba(0, 56, 115, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  margin-bottom: 50px;
+  overflow: hidden;
+}
+
+/* subtle glow background */
+.elite-admission-wrapper .adm-hero::before {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0,56,115,0.08), transparent 70%);
+  top: -150px;
+  right: -120px;
+  pointer-events: none;
+}
+
+.elite-admission-wrapper .adm-pill {
+  display: inline-block;
+  padding: 8px 18px;
+  font-size: 12px;
   font-weight: 700;
-  text-align: center;
-  color: var(--adm-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 50px;
+  background: rgba(0, 56, 115, 0.08);
+  color: var(--e-brand);
 }
 
-/* Days */
-.datepicker-days .day {
-  font-size: 13px;
+.elite-admission-wrapper h1 {
+  font-size: 56px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #003873, #0050a4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 20px 0 10px;
+}
+
+.elite-admission-wrapper .adm-hero p {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--e-muted);
+}
+/* ============================= */
+/* 💎 PREMIUM DECLARATION CARD */
+/* ============================= */
+
+.elite-admission-wrapper .adm-agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 28px 30px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff, #f4f8ff);
+  border: 1px solid rgba(0, 56, 115, 0.08);
+  box-shadow:
+    0 15px 40px rgba(0, 56, 115, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  font-size: 14px;
   font-weight: 600;
-  transition: 0.15s ease;
+  line-height: 1.8;
+  color: #1e293b;
+  text-align: left;
+  transition: all 0.3s ease;
 }
 
-.datepicker-days .day:hover {
-  background: #f1f5f9;
+.elite-admission-wrapper .adm-agree:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 25px 60px rgba(0, 56, 115, 0.15);
 }
 
-.datepicker-days .day.selected {
-  background: var(--adm-brand);
+/* ============================= */
+/* ✨ CUSTOM CHECKBOX */
+/* ============================= */
+
+.elite-admission-wrapper .adm-agree input[type="checkbox"] {
+  appearance: none;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid var(--e-brand);
+  background: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.elite-admission-wrapper .adm-agree input[type="checkbox"]:hover {
+  transform: scale(1.05);
+}
+
+.elite-admission-wrapper .adm-agree input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #003873, #0050a4);
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(0, 56, 115, 0.4);
+}
+
+.elite-admission-wrapper .adm-agree input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
   color: white;
+  font-size: 16px;
+  font-weight: bold;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+}
+
+/* ============================= */
+/* 🏷 Terms Highlight */
+/* ============================= */
+
+.elite-admission-wrapper .adm-agree span {
+  flex: 1;
+}
+
+.elite-admission-wrapper .adm-agree span strong,
+.elite-admission-wrapper .adm-agree span a {
+  color: var(--e-brand);
+  font-weight: 700;
+}
+/* ============================= */
+/* 🚀 PREMIUM SUBMIT BUTTON */
+/* ============================= */
+
+.elite-admission-wrapper .adm-submit {
+  width: 100%;
+  height: 80px;
+  border-radius: 30px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #003873, #0050a4);
+  box-shadow:
+    0 15px 40px rgba(0, 56, 115, 0.35);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle shine effect */
+.elite-admission-wrapper .adm-submit::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.3),
+    transparent 70%
+  );
+  transition: all 0.6s ease;
+}
+
+.elite-admission-wrapper .adm-submit:hover::before {
+  left: 100%;
+}
+
+.elite-admission-wrapper .adm-submit:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 25px 60px rgba(0, 56, 115, 0.45);
+}
+
+.elite-admission-wrapper .adm-submit:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+
+  .elite-admission-wrapper .adm-agree {
+    padding: 20px;
+    font-size: 13px;
+  }
+
+  .elite-admission-wrapper .adm-submit {
+    height: 65px;
+    font-size: 16px;
+    border-radius: 20px;
+  }
+
+}
+/* ============================= */
+/* 💎 FULL WIDTH HERO LOGO */
+/* ============================= */
+
+.elite-admission-wrapper .adm-hero-logo {
+  width: 100%;
+  margin: 25px 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.elite-admission-wrapper .adm-hero-logo img {
+  width: 100%;
+  max-width: 600px;   /* control how wide it can grow */
+  height: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 15px 40px rgba(0, 56, 115, 0.25));
+}
+
+/* Optional subtle hover */
+.elite-admission-wrapper .adm-hero-logo img:hover {
+  transform: scale(1.02);
+}
+
+/* ============================= */
+/* ❌ ERROR STYLING */
+/* ============================= */
+
+.elite-admission-wrapper .adm-error {
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.elite-admission-wrapper input.error,
+.elite-admission-wrapper .adm-elite-trigger.error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+/* ============================= */
+/* 📅 MONTH + YEAR SELECT */
+/* ============================= */
+
+.elite-admission-wrapper .adm-dp-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.elite-admission-wrapper .adm-dp-month,
+.elite-admission-wrapper .adm-dp-year {
+  appearance: none;
+  border: 1px solid var(--e-border);
+  background: #f8fafc;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--e-brand);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.elite-admission-wrapper .adm-dp-month:hover,
+.elite-admission-wrapper .adm-dp-year:hover {
+  border-color: var(--e-brand);
+  background: white;
+}
+/* ============================= */
+/* 📱 FIX BLUR ON MOBILE */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+  .elite-admission-wrapper .adm-elite-dropdown,
+  .elite-admission-wrapper .adm-elite-datepicker {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #ffffff !important;
+  }
+
+}
+/* ============================= */
+/* 🔵 TERMS & CONDITIONS LINK */
+/* ============================= */
+
+.elite-admission-wrapper .adm-terms-link {
+  color: var(--e-brand);
+  font-weight: 700;
+  text-decoration: none;
+  position: relative;
+  transition: 0.25s ease;
+}
+
+/* underline animation */
+.elite-admission-wrapper .adm-terms-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(135deg, #003873, #0050a4);
+  transition: width 0.3s ease;
+}
+
+.elite-admission-wrapper .adm-terms-link:hover {
+  color: #0050a4;
+}
+
+.elite-admission-wrapper .adm-terms-link:hover::after {
+  width: 100%;
 }

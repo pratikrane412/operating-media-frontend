@@ -839,3 +839,67 @@
 .elite-admission-wrapper .adm-terms-link:hover::after {
   width: 100%;
 }
+/* ============================= */
+/* HERO LAYOUT STRUCTURE */
+/* ============================= */
+
+.elite-admission-wrapper .adm-hero {
+  position: relative;
+  padding: 70px 20px 60px;
+  border-radius: 28px;
+  background: linear-gradient(135deg,#ffffff,#f2f7ff);
+  box-shadow:
+    0 20px 60px rgba(0,56,115,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  text-align: center;
+}
+
+/* LOGO TOP LEFT */
+.adm-hero-logo-corner {
+  position: absolute;
+  top: 25px;
+  left: 30px;
+  height: 70px;
+  object-fit: contain;
+}
+
+/* CENTER CONTENT */
+.adm-hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* BIG TITLE */
+.elite-admission-wrapper .adm-pill {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 14px 30px;
+  border-radius: 50px;
+  background: linear-gradient(135deg,#003873,#0050a4);
+  color: white;
+  margin-bottom: 15px;
+  box-shadow: 0 10px 25px rgba(0,56,115,0.25);
+}
+
+/* subtitle */
+.adm-hero-center p {
+  font-size: 18px;
+  color: var(--e-muted);
+  font-weight: 500;
+}
+@media (max-width:768px){
+
+  .adm-hero-logo-corner{
+    position: static;
+    margin-bottom: 15px;
+    height: 55px;
+  }
+
+  .elite-admission-wrapper .adm-pill{
+    font-size:22px;
+    padding:10px 20px;
+  }
+
+}

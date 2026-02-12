@@ -261,7 +261,23 @@ const AdmissionPortal = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, [name]: reader.result });
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          // Standardize width to 1000px (Plenty for documents)
+          const MAX_WIDTH = 1000;
+          const scale = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scale;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Compress to 60% quality JPEG
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
+          setFormData({ ...formData, [name]: compressedBase64 });
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -349,13 +365,12 @@ const AdmissionPortal = () => {
       <div className="adm-shell">
         <form onSubmit={handleSubmit}>
           <header className="adm-hero">
-            <span className="adm-pill">Admission Form</span>
+            <img src="/OOPM.png" alt="logo" className="adm-hero-logo-corner" />
 
-            <div className="adm-hero-logo">
-              <img src="/OOPM.png" alt="Operating Media Logo" />
+            <div className="adm-hero-center">
+              <span className="adm-pill">Admission Form</span>
+              <p>Complete your enrollment process below</p>
             </div>
-
-            <p>Complete your enrollment process below</p>
           </header>
 
           <div className="adm-workflow">
@@ -365,7 +380,7 @@ const AdmissionPortal = () => {
               </div>
               <div className="adm-grid grid-3">
                 <div className="adm-group">
-                  <label>First Name</label>
+                  <label>First Name *</label>
                   <input
                     type="text"
                     name="firstName"
@@ -379,7 +394,7 @@ const AdmissionPortal = () => {
                   )}
                 </div>
                 <div className="adm-group">
-                  <label>Middle Name</label>
+                  <label>Middle Name *</label>
                   <input
                     type="text"
                     name="middleName"
@@ -390,7 +405,7 @@ const AdmissionPortal = () => {
                   />
                 </div>
                 <div className="adm-group">
-                  <label>Last Name</label>
+                  <label>Last Name *</label>
                   <input
                     type="text"
                     name="lastName"
@@ -404,7 +419,7 @@ const AdmissionPortal = () => {
                   )}
                 </div>
                 <div className="adm-group">
-                  <label>Date of Birth</label>
+                  <label>Date of Birth *</label>
                   <EliteDatePicker
                     name="dob"
                     value={formData.dob}
@@ -415,7 +430,7 @@ const AdmissionPortal = () => {
                   )}
                 </div>
                 <div className="adm-group">
-                  <label>Gender</label>
+                  <label>Gender *</label>
                   <EliteSelect
                     name="gender"
                     value={formData.gender}
@@ -452,7 +467,7 @@ const AdmissionPortal = () => {
               </div>
               <div className="adm-grid grid-4">
                 <div className="adm-group span-full">
-                  <label>Street Address</label>
+                  <label>Street Address *</label>
                   <input
                     type="text"
                     name="address"
@@ -514,7 +529,7 @@ const AdmissionPortal = () => {
               </div>
               <div className="adm-grid grid-2">
                 <div className="adm-group">
-                  <label>Primary Mobile</label>
+                  <label>Primary Mobile *</label>
                   <PhoneInput
                     country={"in"}
                     value={formData.phone}
@@ -530,7 +545,7 @@ const AdmissionPortal = () => {
                   )}
                 </div>
                 <div className="adm-group">
-                  <label>Personal Email</label>
+                  <label>Personal Email *</label>
                   <input
                     type="email"
                     name="email"
@@ -552,7 +567,7 @@ const AdmissionPortal = () => {
               </div>
               <div className="adm-grid grid-2">
                 <div className="adm-group">
-                  <label>Emergency Name</label>
+                  <label>Emergency Name *</label>
                   <input
                     type="text"
                     name="emergencyName"
@@ -565,7 +580,7 @@ const AdmissionPortal = () => {
                   )}
                 </div>
                 <div className="adm-group">
-                  <label>Emergency Phone</label>
+                  <label>Emergency Phone *</label>
                   <input
                     type="tel"
                     name="emergencyPhone"
@@ -586,7 +601,7 @@ const AdmissionPortal = () => {
               </div>
               <div className="adm-grid grid-3">
                 <div className="adm-group">
-                  <label>Course</label>
+                  <label>Course *</label>
                   <EliteSelect
                     name="course"
                     value={formData.course}
@@ -632,7 +647,7 @@ const AdmissionPortal = () => {
                   )}
                 </div>
                 <div className="adm-group">
-                  <label>Branch</label>
+                  <label>Branch *</label>
                   <EliteSelect
                     name="branch"
                     value={formData.branch}
@@ -670,7 +685,7 @@ const AdmissionPortal = () => {
               </div>
               <div className="adm-upload-grid">
                 <EliteUpload
-                  label="Aadhaar Front"
+                  label="Aadhaar Front *"
                   name="aadhaarFront"
                   value={formData.aadhaarFront}
                   onChange={handleFileChange}
@@ -679,7 +694,7 @@ const AdmissionPortal = () => {
                   <span className="adm-error">{errors.aadhaarFront}</span>
                 )}
                 <EliteUpload
-                  label="Aadhaar Back"
+                  label="Aadhaar Back *"
                   name="aadhaarBack"
                   value={formData.aadhaarBack}
                   onChange={handleFileChange}
@@ -688,7 +703,7 @@ const AdmissionPortal = () => {
                   <span className="adm-error">{errors.aadhaarBack}</span>
                 )}
                 <EliteUpload
-                  label="Passport Photo"
+                  label="Passport Photo *"
                   name="photo"
                   value={formData.photo}
                   onChange={handleFileChange}

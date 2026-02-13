@@ -729,7 +729,7 @@ const AdmissionPortal = () => {
                   any misrepresentation and Operating Media shall not be held
                   liable for it. By ticking, I agree to the{" "}
                   <a
-                    href="/terms-and-conditions"
+                    href="https://www.operatingmedia.com/terms-and-conditions/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="adm-terms-link"

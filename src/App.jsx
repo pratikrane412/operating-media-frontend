@@ -13,6 +13,8 @@ import ManageStaff from "./pages/ManageStaff/ManageStaff";
 import ManageSalary from "./pages/ManageSalary/ManageSalary";
 import ManageStudent from "./pages/ManageStudent/ManageStudent";
 import ManageAdmission from "./pages/ManageAdmission/ManageAdmission";
+import CounsellorForm from "./pages/CounsellorForm/CounsellorForm";
+
 
 function App() {
   return (
@@ -106,6 +108,7 @@ function App() {
           }
         />
         <Route path="/admission" element={<AdmissionForm />} />
+        <Route path="/counsellor" element={<CounsellorForm />} />
       </Routes>
     </Router>
   );

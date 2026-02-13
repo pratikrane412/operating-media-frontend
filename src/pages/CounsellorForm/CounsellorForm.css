@@ -13,10 +13,16 @@
   font-family: "Plus Jakarta Sans", sans-serif;
   color: var(--e-text);
 }
+.executive-portal-root {
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  padding: 60px 0;   /* remove side padding */
+}
+
 
 .exec-shell {
-  max-width: 1000px;
-  margin: 0 auto;
+  width: 100%;
+  padding: 0 60px;   /* side breathing space */
 }
 
 /* --- HEADER --- */
@@ -363,4 +369,56 @@ select:focus {
   .exec-card {
     padding: 25px;
   }
+}
+.executive-portal-root {
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  padding: 40px 15px;   /* proper mobile spacing */
+}
+@media (max-width: 768px) {
+  .exec-header h1 {
+    font-size: 24px;
+  }
+
+  .exec-header p {
+    font-size: 13px;
+  }
+}
+@media (max-width: 768px) {
+
+  .exec-shell {
+    width: 100%;
+    padding: 0;
+  }
+
+  .exec-card {
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .exec-card-head {
+    margin-bottom: 20px;
+  }
+
+  .grid-3,
+  .grid-2,
+  .grid-60-40,
+  .exec-select-grid,
+  .exec-check-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .exec-toggle-row {
+    flex-direction: column;
+  }
+
+  .exec-toggle-btn {
+    width: 100%;
+  }
+
+  .exec-btn-primary {
+    height: 55px;
+    font-size: 14px;
+  }
+
 }

@@ -182,49 +182,54 @@ const LeadsView = () => {
   };
 
   const renderNotes = (notesString) => {
-  if (!notesString || notesString === "—" || notesString.trim() === "")
-    return <span className="no-notes-text">—</span>;
+    if (!notesString || notesString === "—" || notesString.trim() === "")
+      return <span className="no-notes-text">—</span>;
 
-  const dateRegex = /\d{1,2}\/\d{1,2}\/\d{2,4}/; // Matches 11/02/2026
-  const segments = notesString.split(",");
-  const noteEntries = [];
+    const dateRegex = /\d{1,2}\/\d{1,2}\/\d{2,4}/;
 
-  segments.forEach((segment) => {
-    const val = segment.trim();
-    if (!val) return;
+    // 1. Split by || (New format) or fallback to comma (Old format)
+    const segments = notesString.includes("||")
+      ? notesString.split("||")
+      : notesString.split(",");
 
-    const match = val.match(dateRegex);
-    if (match) {
-      const datePart = match[0];
-      // Remark is the segment minus the date and any trailing/leading dashes
-      const textPart = val.replace(datePart, "").replace(/^-|-$/g, "").trim();
-      noteEntries.push({ date: datePart, text: textPart || "No remark" });
-    } else {
-      noteEntries.push({ date: "—", text: val });
-    }
-  });
+    const noteEntries = [];
 
-  // Sort: Newest date at the top
-  noteEntries.sort((a, b) => {
-    if (a.date === "—") return 1;
-    if (b.date === "—") return -1;
-    const [d1, m1, y1] = a.date.split("/").map(Number);
-    const [d2, m2, y2] = b.date.split("/").map(Number);
-    return new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
-  });
+    segments.forEach((segment) => {
+      const val = segment.trim();
+      if (!val) return;
 
-  return (
-    <div className="notes-timeline">
-      {noteEntries.slice(0, 3).map((entry, index) => (
-        <div key={index} className="note-entry-horizontal">
-          <span className="note-bullet-icon">○</span>
-          <span className="note-date-horizontal">{entry.date}</span>
-          <span className="note-text-horizontal">{entry.text}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
+      // 2. Find the date (This is the LOG date saved by the backend)
+      const match = val.match(dateRegex);
+      if (match) {
+        const datePart = match[0];
+        // Text is everything except the date and the trailing dash
+        const textPart = val.replace(datePart, "").replace(/-$/, "").trim();
+        noteEntries.push({ date: datePart, text: textPart || "No remark" });
+      } else {
+        noteEntries.push({ date: "—", text: val });
+      }
+    });
+
+    // 3. Sort: Newest log at the top
+    noteEntries.sort((a, b) => {
+      if (a.date === "—") return 1;
+      if (b.date === "—") return -1;
+      const [d1, m1, y1] = a.date.split("/").map(Number);
+      const [d2, m2, y2] = b.date.split("/").map(Number);
+      return new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1);
+    });
+
+    return (
+      <div className="notes-timeline">
+        {noteEntries.slice(0, 3).map((entry, index) => (
+          <div key={index} className="note-entry-horizontal">
+            <span className="note-date-horizontal">{entry.date}</span>
+            <span className="note-text-horizontal">{entry.text}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {

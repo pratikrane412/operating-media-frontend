@@ -88,17 +88,30 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   ];
 
   const formatTimelineDate = (dateStr) => {
-  if (!dateStr || dateStr === "N/A") return "N/A";
-  
-  // Use Regex to find the date part specifically
-  const dateRegex = /\d{1,2}\/\d{1,2}\/\d{4}/;
-  const match = dateStr.match(dateRegex);
-  if (!match) return dateStr;
+    if (!dateStr || dateStr === "N/A") return "N/A";
 
-  const [d, m, y] = match[0].split("/");
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  return `${parseInt(d, 10)} ${months[parseInt(m, 10) - 1]} ${y}`;
-};
+    // Use Regex to find the date part specifically
+    const dateRegex = /\d{1,2}\/\d{1,2}\/\d{4}/;
+    const match = dateStr.match(dateRegex);
+    if (!match) return dateStr;
+
+    const [d, m, y] = match[0].split("/");
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return `${parseInt(d, 10)} ${months[parseInt(m, 10) - 1]} ${y}`;
+  };
 
   const formatList = (val) => {
     if (!val || val === "[]" || val === "No Tag" || val === "Reference")
@@ -182,22 +195,26 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
 
   const handleAddFollowup = async (e) => {
     e.preventDefault();
-    if (!newRemark || !nextDate) return;
+
+    // Allow if EITHER remark exists OR date exists
+    if (!newRemark.trim() && !nextDate) return;
+
     setSubmitting(true);
     try {
       await axios.post(
         `https://operating-media-backend.onrender.com/api/leads/${leadId}/followup/`,
         {
-          remark: newRemark,
-          next_date: nextDate,
+          remark: newRemark.trim(), // Can be empty string now
+          next_date: nextDate, // Can be empty string now
         },
       );
-      fetchLeadDetails();
+
       setNewRemark("");
       setNextDate("");
+      fetchLeadDetails();
       if (onUpdate) onUpdate();
     } catch (err) {
-      alert("Failed to add followup");
+      console.error(err);
     } finally {
       setSubmitting(false);
     }
@@ -307,19 +324,24 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                     />
                     <div className="form-row-mini">
                       <div className="date-input-mini">
-                        
-                         <span className="followup-input-label">Next Followup Date:</span> 
+                        <span className="followup-input-label">
+                          Next Followup Date:
+                        </span>
                         <input
                           type="date"
                           value={nextDate}
                           onChange={(e) => setNextDate(e.target.value)}
+                          style={{ colorScheme: "light" }} // Helps with visibility in some browsers
                         />
                       </div>
                       <div className="form-btns-mini">
                         <button
                           className="btn-save-mini"
                           onClick={handleAddFollowup}
-                          disabled={submitting || !newRemark || !nextDate}
+                          // Disabled only if both are empty
+                          disabled={
+                            submitting || (!newRemark.trim() && !nextDate)
+                          }
                         >
                           {submitting ? "..." : <Send size={14} />}
                         </button>

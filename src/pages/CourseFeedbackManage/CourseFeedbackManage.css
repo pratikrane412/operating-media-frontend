@@ -1,124 +1,296 @@
-#fb-management-module {
-  --brand: #003873;
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+#course-feedback-management-portal {
+  --navy: #003873;
   --bg: #f8fafc;
   --border: #e2e8f0;
+  --muted: #64748b;
   background-color: var(--bg);
   min-height: 100vh;
   font-family: "Plus Jakarta Sans", sans-serif;
 }
-#fb-management-module .fb-m-content {
+
+#course-feedback-management-portal .cf-m-content-area {
   padding: 30px;
   margin-top: 70px;
 }
-#fb-management-module .fb-m-header {
-  margin-bottom: 30px;
-}
-#fb-management-module .fb-m-badge {
-  display: inline-block;
+
+/* Filter Card */
+#course-feedback-management-portal .cf-m-filter-card {
   background: white;
-  padding: 4px 12px;
-  border-radius: 50px;
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--brand);
-  margin-bottom: 10px;
-  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 25px;
+  border: 1px solid #eef1f6;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-#fb-management-module h2 {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--brand);
-  letter-spacing: -1px;
-}
-#fb-management-module .fb-m-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-#fb-management-module .fb-m-toolbar {
-  padding: 15px 25px;
-  border-bottom: 1px solid #f1f5f9;
-}
-#fb-management-module .fb-m-search {
+#course-feedback-management-portal .cf-m-filter-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  padding: 0 15px;
-  border-radius: 8px;
-  height: 40px;
-  width: 300px;
+  margin-bottom: 20px;
+  color: var(--navy);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
 }
-#fb-management-module .fb-m-search input {
+#course-feedback-management-portal .cf-m-filter-grid {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+#course-feedback-management-portal .cf-m-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+#course-feedback-management-portal label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+}
+#course-feedback-management-portal select {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  font-size: 13px;
+  outline: none;
+  background: #fcfdfe;
+  width: 100%;
+  cursor: pointer;
+}
+
+#course-feedback-management-portal .cf-m-filter-actions {
+  display: flex;
+  gap: 8px;
+}
+#course-feedback-management-portal .cf-m-btn-reset,
+#course-feedback-management-portal .cf-m-btn-apply {
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+  padding: 0 15px;
+  font-size: 12px;
+}
+#course-feedback-management-portal .cf-m-btn-reset {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+#course-feedback-management-portal .cf-m-btn-apply {
+  background: var(--navy);
   border: none;
-  background: transparent;
+  color: white;
+}
+
+/* Data Card & Toolbar */
+#course-feedback-management-portal .cf-m-data-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #eef1f6;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+#course-feedback-management-portal .cf-m-toolbar {
+  padding: 15px 25px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#course-feedback-management-portal .cf-m-entries-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+#course-feedback-management-portal .cf-m-entries-select select {
+  border: 1px solid var(--border);
+  width: 70px;
+  height: 34px;
+  border-radius: 6px;
+  padding: 0 5px;
+  cursor: pointer;
+}
+#course-feedback-management-portal .cf-m-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+#course-feedback-management-portal .cf-m-search-wrapper input {
+  border: 1px solid var(--border);
+  padding: 8px 15px;
+  border-radius: 8px;
+  width: 280px;
   outline: none;
   font-size: 13px;
-  width: 100%;
+  background: #f8fafc;
 }
-#fb-management-module .fb-m-scroll {
+
+/* Table */
+#course-feedback-management-portal .cf-m-table-sticky-wrapper {
   overflow-x: auto;
-  max-height: 65vh;
+  max-height: 60vh;
 }
-#fb-management-module .fb-m-table {
+#course-feedback-management-portal .cf-m-modern-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  min-width: 1000px;
 }
-#fb-management-module .fb-m-table thead th {
+#course-feedback-management-portal .cf-m-modern-table thead th {
   position: sticky;
   top: 0;
-  background: var(--brand);
+  background: var(--navy);
   color: white;
-  padding: 14px 20px;
+  padding: 12px 20px;
   text-align: left;
   font-size: 11px;
   font-weight: 900;
   z-index: 10;
+  border-bottom: 2px solid #00284d;
 }
-#fb-management-module .fb-m-table td {
-  padding: 16px 20px;
+#course-feedback-management-portal .cf-m-modern-table td {
+  padding: 14px 20px;
   border-bottom: 1px solid #f8fafc;
   font-size: 13px;
   vertical-align: middle;
 }
-#fb-management-module .fb-m-student {
-  color: var(--brand);
-}
-#fb-management-module .fb-m-date {
-  font-weight: 600;
-  color: #64748b;
-  font-size: 12px;
-}
-#fb-management-module .fb-m-insta {
+
+/* Actions & Dropdown List */
+#course-feedback-management-portal .cf-m-action-btns {
   display: flex;
+  gap: 8px;
+  justify-content: center;
   align-items: center;
-  gap: 6px;
-  color: #e1306c;
-  font-weight: 700;
 }
-#fb-management-module .fb-m-btn-view {
+#course-feedback-management-portal .cf-m-icon-btn {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: white;
-  cursor: pointer;
   color: #94a3b8;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
 }
-#fb-management-module .fb-m-center {
+#course-feedback-management-portal .cf-m-icon-btn:hover,
+#course-feedback-management-portal .cf-m-icon-btn.active {
+  color: var(--navy);
+  border-color: var(--navy);
+  background-color: #f0f7ff;
+}
+#course-feedback-management-portal .cf-m-menu-container {
+  position: relative;
+}
+#course-feedback-management-portal .cf-m-dropdown-list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  width: 160px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  padding: 6px;
+  margin-top: 8px;
+}
+#course-feedback-management-portal .cf-m-drop-item {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#course-feedback-management-portal .cf-m-drop-item:hover {
+  background: #f8fafc;
+  color: var(--navy);
+}
+#course-feedback-management-portal .cf-m-drop-item.delete {
+  color: #ef4444;
+}
+
+/* PAGINATION FOOTER - MATCHES YOUR IMAGE */
+#course-feedback-management-portal .cf-m-table-footer {
+  padding: 16px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  background: #fff;
+}
+#course-feedback-management-portal .cf-m-showing-text {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+#course-feedback-management-portal .cf-m-sep {
+  margin: 0 10px;
+  color: #cbd5e1;
+}
+#course-feedback-management-portal .cf-m-pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+#course-feedback-management-portal .cf-m-page-nav,
+#course-feedback-management-portal .cf-m-page-num {
+  height: 34px;
+  min-width: 34px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#course-feedback-management-portal .cf-m-page-num.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+  box-shadow: 0 4px 10px rgba(0, 56, 115, 0.2);
+}
+#course-feedback-management-portal .cf-m-page-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#course-feedback-management-portal .cf-m-center {
   text-align: center !important;
 }
-#fb-management-module .fb-m-msg {
+#course-feedback-management-portal .cf-m-table-loader {
   text-align: center;
-  padding: 40px !important;
-  color: #94a3b8;
+  padding: 60px !important;
+  color: var(--muted);
   font-weight: 600;
 }

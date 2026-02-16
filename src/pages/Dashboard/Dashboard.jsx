@@ -249,23 +249,27 @@ const Dashboard = () => {
               <div className="data-display-card mt-30">
                 <div className="data-toolbar">
                   <div className="toolbar-content">
-                    <span className="branch-title">
-                      TODAY'S ACTIVE FOLLOWUP QUEUE
-                    </span>
-                    <select
-                      className="branch-filter-select"
-                      value={followupCounsellorFilter}
-                      onChange={(e) =>
-                        setFollowupCounsellorFilter(e.target.value)
-                      }
-                    >
-                      <option value="All">All Counsellors</option>
-                      {data.counsellors?.map((name, i) => (
-                        <option key={i} value={name}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="toolbar-left">
+                      <span className="branch-title">
+                        TODAY'S ACTIVE FOLLOWUP QUEUE
+                      </span>
+                    </div>
+                    <div className="toolbar-right">
+                      <select
+                        className="branch-filter-select"
+                        value={followupCounsellorFilter}
+                        onChange={(e) =>
+                          setFollowupCounsellorFilter(e.target.value)
+                        }
+                      >
+                        <option value="All">All Counsellors</option>
+                        {data.counsellors?.map((name, i) => (
+                          <option key={i} value={name}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
                 <div className="table-sticky-wrapper">
@@ -369,18 +373,20 @@ const Dashboard = () => {
                     </div>
 
                     {/* ADDED COUNSELLOR FILTER HERE */}
-                    <select
-                      className="branch-filter-select"
-                      value={hotCounsellorFilter}
-                      onChange={(e) => setHotCounsellorFilter(e.target.value)}
-                    >
-                      <option value="All">All Counsellors</option>
-                      {data.counsellors?.map((name, i) => (
-                        <option key={i} value={name}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="toolbar-right">
+                      <select
+                        className="branch-filter-select"
+                        value={hotCounsellorFilter}
+                        onChange={(e) => setHotCounsellorFilter(e.target.value)}
+                      >
+                        <option value="All">All Counsellors</option>
+                        {data.counsellors?.map((name, i) => (
+                          <option key={i} value={name}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
 
@@ -495,15 +501,17 @@ const Dashboard = () => {
                       <HandCoins size={18} className="title-icon-blue" />
                       <span className="branch-title">Pending Payments</span>
                     </div>
-                    <select
-                      className="branch-filter-select"
-                      value={feeBranchFilter}
-                      onChange={(e) => setFeeBranchFilter(e.target.value)}
-                    >
-                      <option value="All">All Branches</option>
-                      <option value="Andheri">Andheri</option>
-                      <option value="Borivali">Borivali</option>
-                    </select>
+                    <div className="toolbar-right">
+                      <select
+                        className="branch-filter-select"
+                        value={feeBranchFilter}
+                        onChange={(e) => setFeeBranchFilter(e.target.value)}
+                      >
+                        <option value="All">All Branches</option>
+                        <option value="Andheri">Andheri</option>
+                        <option value="Borivali">Borivali</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
                 <div className="table-sticky-wrapper">
@@ -600,14 +608,7 @@ const Dashboard = () => {
                       <IndianRupee size={18} className="title-icon-blue" />
                       <span className="branch-title">Revenue Details</span>
                     </div>
-                    <div
-                      className="rev-filter-group"
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className="toolbar-right">
                       <select
                         className="branch-filter-select"
                         value={revBranch}

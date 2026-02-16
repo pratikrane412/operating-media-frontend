@@ -244,18 +244,66 @@
 }
 
 .data-toolbar {
-  padding: 22px 26px;
+  padding: 14px 0 14px 18px;   /* reduced from 22px */
+  border-bottom: 1px solid #cbd5e1;
+  background: white;
+}
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;   /* THIS pushes it fully right */
+}
+
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.data-toolbar {
+  padding: 14px 18px 14px 18px;
   border-bottom: 1px solid #cbd5e1;
   background: white;
 }
 
 .toolbar-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   width: 100%;
 }
 
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;  /* Don't grow or shrink */
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;  /* Pushes to extreme right */
+  flex: 0 0 auto;  /* Don't grow or shrink */
+}
 .branch-title {
   font-size: 13px;
   font-weight: 800;
@@ -270,28 +318,44 @@
   gap: 10px;
 }
 
+/* --- COMPACT PREMIUM DROPDOWN --- */
 .branch-filter-select {
-  padding: 8px 14px;
-  border-radius: 8px;
+  height: 30px;              /* reduced */
+  min-width: 130px;          /* smaller */
+  padding: 0 28px 0 10px;    /* tight padding */
+  border-radius: 6px;
   border: 1px solid #e2e8f0;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #003873;
+  background-color: #ffffff;
   cursor: pointer;
-  background: white;
-  transition: all 0.2s ease;
   outline: none;
+  appearance: none;
+  transition: all 0.2s ease;
+  line-height: 1;
 }
 
+/* Hover */
 .branch-filter-select:hover {
   border-color: #003873;
-  background: #f8fafc;
+  background-color: #f8fafc;
 }
 
+/* Focus */
 .branch-filter-select:focus {
   border-color: #003873;
-  box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 56, 115, 0.08);
 }
+
+/* Custom dropdown arrow */
+.branch-filter-select {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23003873' height='12' viewBox='0 0 20 20' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M5.5 7l4.5 4 4.5-4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+}
+
 
 /* --- TABLE STYLING --- */
 .table-sticky-wrapper {

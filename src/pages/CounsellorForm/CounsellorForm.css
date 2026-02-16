@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
-.executive-portal-root {
+/* THIS IS THE SCOPING CLASS THAT PROTECTS OTHER PAGES */
+.counsellor-portal-scoped {
   --e-navy: #003873;
   --e-text: #1e293b;
   --e-muted: #64748b;
@@ -9,29 +10,24 @@
 
   background-color: #f1f5f9;
   min-height: 100vh;
-  padding: 60px 20px;
+  padding: 60px 40px;
   font-family: "Plus Jakarta Sans", sans-serif;
   color: var(--e-text);
 }
-.executive-portal-root {
-  background-color: #f1f5f9;
-  min-height: 100vh;
-  padding: 60px 0;   /* remove side padding */
-}
 
-
-.exec-shell {
+.counsellor-portal-scoped .cf-shell {
+  max-width: 1200px;
+  margin: 0 auto;
   width: 100%;
-  padding: 0 60px;   /* side breathing space */
 }
 
 /* --- HEADER --- */
-.exec-header {
+.counsellor-portal-scoped .cf-header {
   margin-bottom: 40px;
   border-left: 5px solid var(--e-navy);
   padding-left: 25px;
 }
-.exec-tag {
+.counsellor-portal-scoped .cf-tag {
   font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
@@ -40,13 +36,13 @@
   margin-bottom: 5px;
   display: block;
 }
-.exec-header h1 {
+.counsellor-portal-scoped .cf-header h1 {
   font-size: 34px;
   font-weight: 800;
   color: var(--e-navy);
   letter-spacing: -1px;
 }
-.exec-header p {
+.counsellor-portal-scoped .cf-header p {
   font-size: 15px;
   color: var(--e-muted);
   font-weight: 500;
@@ -54,19 +50,19 @@
 }
 
 /* --- CARDS --- */
-.exec-workflow {
+.counsellor-portal-scoped .cf-workflow {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.exec-card {
+.counsellor-portal-scoped .cf-card {
   background: white;
   border-radius: 12px;
   padding: 35px 40px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
-.exec-card-head {
+.counsellor-portal-scoped .cf-card-head {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -75,7 +71,7 @@
   border-bottom: 1px solid #f1f5f9;
   padding-bottom: 15px;
 }
-.exec-card-head h3 {
+.counsellor-portal-scoped .cf-card-head h3 {
   font-size: 15px;
   font-weight: 800;
   text-transform: uppercase;
@@ -83,27 +79,27 @@
 }
 
 /* --- GRID --- */
-.exec-grid {
+.counsellor-portal-scoped .cf-grid {
   display: grid;
   gap: 25px;
 }
-.grid-3 {
+.counsellor-portal-scoped .grid-3 {
   grid-template-columns: repeat(3, 1fr);
 }
-.grid-2 {
+.counsellor-portal-scoped .grid-2 {
   grid-template-columns: 1fr 1fr;
 }
-.grid-60-40 {
+.counsellor-portal-scoped .grid-60-40 {
   grid-template-columns: 1.5fr 1fr;
 }
-.exec-group {
+.counsellor-portal-scoped .cf-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 /* --- TYPOGRAPHY --- */
-label {
+.counsellor-portal-scoped label {
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -112,9 +108,9 @@ label {
 }
 
 /* --- INPUTS --- */
-input:not([type="checkbox"]),
-textarea,
-select {
+.counsellor-portal-scoped input:not([type="checkbox"]),
+.counsellor-portal-scoped textarea,
+.counsellor-portal-scoped select {
   height: 50px;
   background: var(--e-input);
   border: 1px solid var(--e-border);
@@ -125,24 +121,24 @@ select {
   outline: none;
   transition: 0.2s;
 }
-textarea {
+.counsellor-portal-scoped textarea {
   height: auto;
   padding: 15px;
   font-family: inherit;
 }
-input:focus,
-textarea:focus,
-select:focus {
+.counsellor-portal-scoped input:focus,
+.counsellor-portal-scoped textarea:focus,
+.counsellor-portal-scoped select:focus {
   border-color: var(--e-navy);
   background: white;
   box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.04);
 }
 
 /* --- PHONE INPUT --- */
-.exec-tel-box {
+.counsellor-portal-scoped .cf-tel-box {
   width: 100% !important;
 }
-.exec-tel-input {
+.counsellor-portal-scoped .cf-tel-input {
   width: 100% !important;
   height: 50px !important;
   background: var(--e-input) !important;
@@ -151,18 +147,18 @@ select:focus {
   padding-left: 55px !important;
   font-family: inherit !important;
 }
-.exec-tel-btn {
+.counsellor-portal-scoped .cf-tel-btn {
   border: none !important;
   background: transparent !important;
   width: 45px !important;
 }
 
-/* --- BUTTON TOGGLES --- */
-.exec-toggle-row {
+/* --- BUTTON TOGGLES (SIDE BY SIDE FIX) --- */
+.counsellor-portal-scoped .cf-toggle-row {
   display: flex;
   gap: 10px;
 }
-.exec-toggle-btn {
+.counsellor-portal-scoped .cf-toggle-btn {
   flex: 1;
   height: 48px;
   border: 1px solid var(--e-border);
@@ -177,19 +173,19 @@ select:focus {
   background: white;
   color: var(--e-muted);
 }
-.exec-toggle-btn.active {
+.counsellor-portal-scoped .cf-toggle-btn.active {
   background: var(--e-navy);
   color: white;
   border-color: var(--e-navy);
 }
 
 /* --- SELECTION BOXES --- */
-.exec-select-grid {
+.counsellor-portal-scoped .cf-select-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-.exec-select-box {
+.counsellor-portal-scoped .cf-select-box {
   padding: 14px;
   border: 1px solid var(--e-border);
   border-radius: 8px;
@@ -201,22 +197,22 @@ select:focus {
   cursor: pointer;
   transition: 0.2s;
 }
-.exec-select-box:hover {
+.counsellor-portal-scoped .cf-select-box:hover {
   border-color: var(--e-navy);
 }
-.exec-select-box.active {
+.counsellor-portal-scoped .cf-select-box.active {
   background: rgba(0, 56, 115, 0.05);
   border-color: var(--e-navy);
   color: var(--e-navy);
 }
 
 /* --- CHECKBOX ITEMS --- */
-.exec-check-grid {
+.counsellor-portal-scoped .cf-check-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-.exec-check-item {
+.counsellor-portal-scoped .cf-check-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -225,7 +221,7 @@ select:focus {
   font-weight: 600;
   padding: 4px 0;
 }
-.exec-box {
+.counsellor-portal-scoped .cf-box {
   width: 18px;
   height: 18px;
   border: 2px solid var(--e-border);
@@ -235,18 +231,14 @@ select:focus {
   justify-content: center;
   transition: 0.2s;
 }
-.exec-check-item.active .exec-box {
+.counsellor-portal-scoped .cf-check-item.active .cf-box {
   background: var(--e-navy);
   border-color: var(--e-navy);
   color: white;
 }
-.exec-check-item.active span {
-  color: var(--e-navy);
-  font-weight: 800;
-}
 
 /* --- COURSE LIST --- */
-.exec-course-list {
+.counsellor-portal-scoped .cf-course-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -255,7 +247,7 @@ select:focus {
   border-radius: 8px;
   border: 1px solid #e2e8f0;
 }
-.exec-course-row {
+.counsellor-portal-scoped .cf-course-row {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -264,14 +256,14 @@ select:focus {
   cursor: pointer;
   transition: 0.1s;
 }
-.exec-course-row:hover {
+.counsellor-portal-scoped .cf-course-row:hover {
   background: white;
 }
-.exec-course-row.active {
+.counsellor-portal-scoped .cf-course-row.active {
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-.exec-checkbox-mini {
+.counsellor-portal-scoped .cf-checkbox-mini {
   width: 18px;
   height: 18px;
   border: 2px solid var(--e-border);
@@ -281,22 +273,18 @@ select:focus {
   justify-content: center;
   color: white;
 }
-.active .exec-checkbox-mini {
+.counsellor-portal-scoped .active .cf-checkbox-mini {
   background: var(--e-navy);
   border-color: var(--e-navy);
 }
-.exec-course-row span {
-  font-size: 13px;
-  font-weight: 600;
-}
 
 /* --- STAFF LIST --- */
-.exec-staff-list {
+.counsellor-portal-scoped .cf-staff-list {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.exec-staff-item {
+.counsellor-portal-scoped .cf-staff-item {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -307,28 +295,28 @@ select:focus {
   font-size: 13px;
   font-weight: 600;
 }
-.exec-staff-item:hover {
+.counsellor-portal-scoped .cf-staff-item:hover {
   background: #f1f5f9;
 }
-.exec-staff-item.active {
+.counsellor-portal-scoped .cf-staff-item.active {
   background: var(--e-navy);
   color: white;
 }
-.staff-dot {
+.counsellor-portal-scoped .staff-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--e-border);
 }
-.active .staff-dot {
+.counsellor-portal-scoped .active .staff-dot {
   background: white;
 }
 
 /* --- SUBMIT --- */
-.exec-footer {
+.counsellor-portal-scoped .cf-footer {
   margin-top: 10px;
 }
-.exec-btn-primary {
+.counsellor-portal-scoped .cf-btn-primary {
   width: 100%;
   height: 65px;
   background: var(--e-navy);
@@ -346,7 +334,7 @@ select:focus {
   transition: 0.3s;
   box-shadow: 0 4px 12px rgba(0, 56, 115, 0.2);
 }
-.exec-btn-primary:hover {
+.counsellor-portal-scoped .cf-btn-primary:hover {
   background: #002d5c;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 56, 115, 0.3);
@@ -359,66 +347,28 @@ select:focus {
   margin-top: 20px;
 }
 
-@media (max-width: 768px) {
-  .grid-3,
-  .grid-2,
-  .grid-60-40,
-  .exec-select-grid {
-    grid-template-columns: 1fr;
-  }
-  .exec-card {
-    padding: 25px;
+/* MOBILE RESPONSIVE WITHIN SCOPE */
+@media (max-width: 1024px) {
+  .counsellor-portal-scoped .grid-3 {
+    grid-template-columns: 1fr 1fr;
   }
 }
-.executive-portal-root {
-  background-color: #f1f5f9;
-  min-height: 100vh;
-  padding: 40px 15px;   /* proper mobile spacing */
-}
+
 @media (max-width: 768px) {
-  .exec-header h1 {
-    font-size: 24px;
+  .counsellor-portal-scoped {
+    padding: 40px 15px;
   }
-
-  .exec-header p {
-    font-size: 13px;
-  }
-}
-@media (max-width: 768px) {
-
-  .exec-shell {
-    width: 100%;
-    padding: 0;
-  }
-
-  .exec-card {
-    padding: 20px;
-    border-radius: 10px;
-  }
-
-  .exec-card-head {
-    margin-bottom: 20px;
-  }
-
-  .grid-3,
-  .grid-2,
-  .grid-60-40,
-  .exec-select-grid,
-  .exec-check-grid {
+  .counsellor-portal-scoped .grid-3,
+  .counsellor-portal-scoped .grid-2,
+  .counsellor-portal-scoped .grid-60-40,
+  .counsellor-portal-scoped .cf-select-grid,
+  .counsellor-portal-scoped .cf-check-grid {
     grid-template-columns: 1fr !important;
   }
-
-  .exec-toggle-row {
+  .counsellor-portal-scoped .cf-card {
+    padding: 25px 20px;
+  }
+  .counsellor-portal-scoped .cf-toggle-row {
     flex-direction: column;
   }
-
-  .exec-toggle-btn {
-    width: 100%;
-  }
-
-  .exec-btn-primary {
-    height: 55px;
-    font-size: 14px;
-  }
-
 }

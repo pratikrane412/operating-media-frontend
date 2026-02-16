@@ -13,10 +13,7 @@ import {
   ArrowRight,
   Check,
   Smartphone,
-  Target,
-  Hash,
-  Info,
-  Building2,
+  CheckCircle,
 } from "lucide-react";
 
 const CounsellorForm = () => {
@@ -50,58 +47,52 @@ const CounsellorForm = () => {
     });
   };
 
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic Validation
-    if (formData.phone.length < 10) return alert("Please enter a valid phone number");
-    if (formData.courses.length === 0) return alert("Please select at least one course");
+    if (formData.phone.length < 10)
+      return alert("Please enter a valid phone number");
+    if (formData.courses.length === 0)
+      return alert("Please select at least one course");
 
     setIsSubmitting(true);
-    
     try {
-      // The Backend API expects these field names exactly
       const response = await axios.post(
         "https://operating-media-backend.onrender.com/api/enquiries/submit/",
-        formData
+        formData,
       );
-
       if (response.status === 201 || response.status === 200) {
-        alert("Success! Enquiry has been recorded in the database.");
-        setFormData(initialState); // Clear form on success
+        alert("Enquiry Recorded Successfully!");
+        setFormData(initialState);
       }
     } catch (err) {
-      console.error("Submission Error:", err.response?.data || err.message);
-      alert("Submission failed. Error: " + (err.response?.data?.error || "Server Error"));
+      alert("Submission failed. Check network.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-
   return (
-    <div className="executive-portal-root">
-      <div className="exec-shell">
+    <div className="counsellor-portal-scoped">
+      <div className="cf-shell">
         <form onSubmit={handleSubmit}>
-          {/* CORPORATE HEADER */}
-          <header className="exec-header">
-            <div className="exec-brand-line">
+          <header className="cf-header">
+            <div className="cf-brand-line">
               <h1>Operating Media - Counseling Form</h1>
               <p>Operating Media • Digital Career Academy Enrollment</p>
             </div>
           </header>
 
-          <div className="exec-workflow">
-            {/* SECTION 1 - PRIMARY DATA */}
-            <section className="exec-card">
-              <div className="exec-card-head">
+          <div className="cf-workflow">
+            {/* SECTION 1 - PERSONAL DATA */}
+            <section className="cf-card">
+              <div className="cf-card-head">
                 <User size={18} /> <h3>1. Primary Lead Information</h3>
               </div>
-              <div className="exec-grid grid-3">
-                <div className="exec-group">
+              <div className="cf-grid grid-3">
+                <div className="cf-group">
                   <label>Full Name *</label>
                   <input
                     type="text"
@@ -112,7 +103,7 @@ const CounsellorForm = () => {
                     placeholder="Student's Name"
                   />
                 </div>
-                <div className="exec-group">
+                <div className="cf-group">
                   <label>Email Address *</label>
                   <input
                     type="email"
@@ -123,23 +114,23 @@ const CounsellorForm = () => {
                     placeholder="Email ID"
                   />
                 </div>
-                <div className="exec-group">
+                <div className="cf-group">
                   <label>WhatsApp Number *</label>
                   <PhoneInput
                     country={"in"}
                     value={formData.phone}
                     onChange={(v) => setFormData({ ...formData, phone: v })}
-                    containerClass="exec-tel-box"
-                    inputClass="exec-tel-input"
-                    buttonClass="exec-tel-btn"
-                    dropdownClass="exec-tel-drop"
+                    containerClass="cf-tel-box"
+                    inputClass="cf-tel-input"
+                    buttonClass="cf-tel-btn"
+                    dropdownClass="cf-tel-drop"
                     specialLabel=""
                   />
                 </div>
               </div>
 
-              <div className="exec-grid grid-3 mt-25">
-                <div className="exec-group">
+              <div className="cf-grid grid-3 mt-25">
+                <div className="cf-group">
                   <label>Location *</label>
                   <input
                     type="text"
@@ -150,7 +141,7 @@ const CounsellorForm = () => {
                     placeholder="Area/City"
                   />
                 </div>
-                <div className="exec-group">
+                <div className="cf-group">
                   <label>Age *</label>
                   <input
                     type="number"
@@ -161,13 +152,13 @@ const CounsellorForm = () => {
                     placeholder="Age"
                   />
                 </div>
-                <div className="exec-group">
+                <div className="cf-group">
                   <label>Gender *</label>
-                  <div className="exec-toggle-row">
+                  <div className="cf-toggle-row">
                     {["Male", "Female"].map((g) => (
                       <div
                         key={g}
-                        className={`exec-toggle-btn ${formData.gender === g ? "active" : ""}`}
+                        className={`cf-toggle-btn ${formData.gender === g ? "active" : ""}`}
                         onClick={() => setFormData({ ...formData, gender: g })}
                       >
                         {g}
@@ -179,19 +170,19 @@ const CounsellorForm = () => {
             </section>
 
             {/* SECTION 2 - BACKGROUND */}
-            <section className="exec-card">
-              <div className="exec-card-head">
+            <section className="cf-card">
+              <div className="cf-card-head">
                 <Briefcase size={18} /> <h3>2. Career Background</h3>
               </div>
-              <div className="exec-grid grid-2">
-                <div className="exec-group">
+              <div className="cf-grid grid-2">
+                <div className="cf-group">
                   <label>Current Profession *</label>
-                  <div className="exec-select-grid">
+                  <div className="cf-select-grid">
                     {["Student", "Working Pro", "Business", "Graduated"].map(
                       (p) => (
                         <div
                           key={p}
-                          className={`exec-select-box ${formData.profession === p ? "active" : ""}`}
+                          className={`cf-select-box ${formData.profession === p ? "active" : ""}`}
                           onClick={() =>
                             setFormData({ ...formData, profession: p })
                           }
@@ -202,9 +193,9 @@ const CounsellorForm = () => {
                     )}
                   </div>
                 </div>
-                <div className="exec-group">
+                <div className="cf-group">
                   <label>Marketing Source *</label>
-                  <div className="exec-check-grid">
+                  <div className="cf-check-grid">
                     {[
                       "Google",
                       "Instagram",
@@ -216,10 +207,10 @@ const CounsellorForm = () => {
                     ].map((s) => (
                       <div
                         key={s}
-                        className={`exec-check-item ${formData.source.includes(s) ? "active" : ""}`}
+                        className={`cf-check-item ${formData.source.includes(s) ? "active" : ""}`}
                         onClick={() => handleToggle("source", s)}
                       >
-                        <div className="exec-box">
+                        <div className="cf-box">
                           {formData.source.includes(s) && <Check size={12} />}
                         </div>
                         <span>{s}</span>
@@ -228,8 +219,8 @@ const CounsellorForm = () => {
                   </div>
                 </div>
               </div>
-              <div className="exec-group full-width mt-25">
-                <label>Purpose of Course Joining *</label>
+              <div className="cf-group full-width mt-25">
+                <label>Purpose of Joining *</label>
                 <textarea
                   name="purpose"
                   value={formData.purpose}
@@ -242,14 +233,14 @@ const CounsellorForm = () => {
             </section>
 
             {/* SECTION 3 - PREFERENCES */}
-            <section className="exec-card">
-              <div className="exec-card-head">
+            <section className="cf-card">
+              <div className="cf-card-head">
                 <BookOpen size={18} /> <h3>3. Academic Selection</h3>
               </div>
-              <div className="exec-grid grid-60-40">
-                <div className="exec-group">
+              <div className="cf-grid grid-60-40">
+                <div className="cf-group">
                   <label>Courses Selected (Multiple)</label>
-                  <div className="exec-course-list">
+                  <div className="cf-course-list">
                     {[
                       "Master's Program in Digital Marketing",
                       "Advanced Diploma in Digital Marketing",
@@ -261,10 +252,10 @@ const CounsellorForm = () => {
                     ].map((c) => (
                       <div
                         key={c}
-                        className={`exec-course-row ${formData.courses.includes(c) ? "active" : ""}`}
+                        className={`cf-course-row ${formData.courses.includes(c) ? "active" : ""}`}
                         onClick={() => handleToggle("courses", c)}
                       >
-                        <div className="exec-checkbox-mini">
+                        <div className="cf-checkbox-mini">
                           {formData.courses.includes(c) && <Check size={12} />}
                         </div>
                         <span>{c}</span>
@@ -272,14 +263,14 @@ const CounsellorForm = () => {
                     ))}
                   </div>
                 </div>
-                <div className="exec-sidebar">
-                  <div className="exec-group">
+                <div className="cf-sidebar">
+                  <div className="cf-group">
                     <label>Batch *</label>
-                    <div className="exec-toggle-row">
+                    <div className="cf-toggle-row">
                       {["Weekday", "Weekend"].map((b) => (
                         <div
                           key={b}
-                          className={`exec-toggle-btn ${formData.batch_preference === b ? "active" : ""}`}
+                          className={`cf-toggle-btn ${formData.batch_preference === b ? "active" : ""}`}
                           onClick={() =>
                             setFormData({ ...formData, batch_preference: b })
                           }
@@ -289,7 +280,7 @@ const CounsellorForm = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="exec-group mt-20">
+                  <div className="cf-group mt-20">
                     <label>Branch *</label>
                     <select
                       name="branch_preference"
@@ -300,7 +291,7 @@ const CounsellorForm = () => {
                       <option value="">Select Branch</option>
                       <option value="Andheri">Andheri</option>
                       <option value="Borivali">Borivali</option>
-                      <option value="Online">Online ions</option>
+                      <option value="Online">Online</option>
                     </select>
                   </div>
                 </div>
@@ -308,14 +299,14 @@ const CounsellorForm = () => {
             </section>
 
             {/* SECTION 4 - ASSIGNMENT */}
-            <section className="exec-card">
-              <div className="exec-card-head">
+            <section className="cf-card">
+              <div className="cf-card-head">
                 <UserCheck size={18} /> <h3>4. Staff Assignment</h3>
               </div>
-              <div className="exec-grid grid-2">
-                <div className="exec-group">
+              <div className="cf-grid grid-2">
+                <div className="cf-group">
                   <label>Point of Contact (POC)</label>
-                  <div className="exec-staff-list">
+                  <div className="cf-staff-list">
                     {[
                       "Pooja Parab",
                       "Aniket Pawar",
@@ -325,7 +316,7 @@ const CounsellorForm = () => {
                     ].map((p) => (
                       <div
                         key={p}
-                        className={`exec-staff-item ${formData.poc === p ? "active" : ""}`}
+                        className={`cf-staff-item ${formData.poc === p ? "active" : ""}`}
                         onClick={() => setFormData({ ...formData, poc: p })}
                       >
                         <div className="staff-dot"></div>
@@ -334,9 +325,9 @@ const CounsellorForm = () => {
                     ))}
                   </div>
                 </div>
-                <div className="exec-group">
+                <div className="cf-group">
                   <label>Counselors</label>
-                  <div className="exec-check-grid">
+                  <div className="cf-check-grid">
                     {[
                       "Harsh Pareek",
                       "Pooja Parab",
@@ -348,10 +339,10 @@ const CounsellorForm = () => {
                     ].map((c) => (
                       <div
                         key={c}
-                        className={`exec-check-item ${formData.counselor_name.includes(c) ? "active" : ""}`}
+                        className={`cf-check-item ${formData.counselor_name.includes(c) ? "active" : ""}`}
                         onClick={() => handleToggle("counselor_name", c)}
                       >
-                        <div className="exec-box">
+                        <div className="cf-box">
                           {formData.counselor_name.includes(c) && (
                             <Check size={12} />
                           )}
@@ -364,10 +355,14 @@ const CounsellorForm = () => {
               </div>
             </section>
 
-            {/* FOOTER */}
-            <div className="exec-footer">
-              <button type="submit" className="exec-btn-primary" disabled={isSubmitting}>
-                {isSubmitting ? "STORING ENQUIRY..." : "SUBMIT FORM"} <ArrowRight size={20} />
+            <div className="cf-footer">
+              <button
+                type="submit"
+                className="cf-btn-primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "PROCESSING..." : "SUBMIT COUNSELING FORM"}{" "}
+                <ArrowRight size={20} />
               </button>
             </div>
           </div>

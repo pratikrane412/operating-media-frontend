@@ -1,0 +1,298 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+.trainer-feedback-wrapper {
+  --navy: #003873;
+  --bg: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+
+  background-color: var(--bg);
+  min-height: 100vh;
+  padding: 60px 40px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: var(--text);
+}
+
+.tf-shell-full {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* --- HEADER --- */
+.tf-header {
+  margin-bottom: 40px;
+  border-left: 6px solid var(--navy);
+  padding-left: 30px;
+}
+.tf-badge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--navy);
+  display: block;
+  margin-bottom: 5px;
+}
+.tf-header h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+}
+
+/* --- CARDS --- */
+.tf-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.tf-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.tf-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  color: var(--navy);
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+.tf-card-head h3 {
+  font-size: 17px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- GRIDS --- */
+.tf-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+.tf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+.tf-grid-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.tf-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #475569;
+  margin-left: 2px;
+}
+
+input,
+select,
+textarea {
+  height: 52px;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: 0.2s;
+  width: 100%;
+}
+textarea {
+  height: auto;
+  padding: 18px;
+  line-height: 1.6;
+  font-family: inherit;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--navy);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.05);
+}
+
+/* --- SELECTION WIDGETS --- */
+.tf-toggle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.tf-toggle-item {
+  padding: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  text-align: center;
+}
+.tf-toggle-item:hover {
+  border-color: var(--navy);
+}
+.tf-toggle-item.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+  box-shadow: 0 4px 12px rgba(0, 56, 115, 0.2);
+}
+
+.tf-btn-row {
+  display: flex;
+  gap: 15px;
+}
+.tf-btn-choice {
+  flex: 1;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.tf-btn-choice.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+
+/* --- RATING SCALE --- */
+.tf-rating-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.tf-rating-box {
+  flex: 1;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  background: #f8fafc;
+}
+.tf-rating-box:hover {
+  border-color: var(--navy);
+  transform: translateY(-2px);
+}
+.tf-rating-box.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+  box-shadow: 0 8px 20px rgba(0, 56, 115, 0.2);
+}
+
+/* --- SUBMIT --- */
+.tf-submit-btn {
+  width: 100%;
+  height: 75px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 10px 25px rgba(0, 56, 115, 0.2);
+}
+.tf-submit-btn:hover {
+  background: #002d5c;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .tf-grid-3,
+  .tf-grid-2,
+  .tf-toggle-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .tf-rating-scale {
+    flex-wrap: wrap;
+  }
+  .tf-rating-box {
+    flex: 0 0 18%;
+  }
+  .tf-card {
+    padding: 30px 20px;
+  }
+}
+/* 1. Desktop Layout (10 across) */
+.tf-rating-grid { 
+  display: grid; 
+  grid-template-columns: repeat(10, 1fr); 
+  gap: 10px; 
+  width: 100%;
+  margin-top: 10px;
+}
+
+.tf-rating-box { 
+  aspect-ratio: 1 / 1; /* Makes them perfect squares */
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  border: 1.5px solid var(--border); 
+  border-radius: 8px; 
+  font-weight: 800; 
+  cursor: pointer; 
+  transition: 0.2s; 
+  background: #f8fafc; 
+  font-size: 14px;
+}
+
+.tf-rating-box.active { 
+  background: var(--navy); 
+  color: white; 
+  border-color: var(--navy); 
+  box-shadow: 0 8px 20px rgba(0, 56, 115, 0.2); 
+}
+
+/* 2. Mobile Layout (5 across, 2 rows) */
+@media (max-width: 768px) {
+  .tf-rating-grid { 
+    grid-template-columns: repeat(5, 1fr); /* 5 buttons per row */
+    gap: 8px; 
+  }
+
+  .tf-rating-box { 
+    font-size: 13px;
+    height: 45px; /* Fixed height for easier tapping */
+  }
+}
+
+/* 3. Small Mobile Layout */
+@media (max-width: 400px) {
+  .tf-rating-grid { 
+    gap: 5px; 
+  }
+}

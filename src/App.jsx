@@ -14,6 +14,7 @@ import ManageSalary from "./pages/ManageSalary/ManageSalary";
 import ManageStudent from "./pages/ManageStudent/ManageStudent";
 import ManageAdmission from "./pages/ManageAdmission/ManageAdmission";
 import CounsellorForm from "./pages/CounsellorForm/CounsellorForm";
+import FeedbackForm from "./pages/FeedbackForm/FeedbackForm";
 
 
 function App() {
@@ -109,6 +110,7 @@ function App() {
         />
         <Route path="/admission" element={<AdmissionForm />} />
         <Route path="/counsellor" element={<CounsellorForm />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
     </Router>
   );

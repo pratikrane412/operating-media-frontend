@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute"; 
+import ProtectedRoute from "./components/ProtectedRoute";
 import AdmissionForm from "./pages/AdmissionForm/AdmissionForm";
 import Login from "./pages/Login/Login";
 import BranchLogin from "./pages/Login/BranchLogin";
@@ -16,7 +16,9 @@ import ManageAdmission from "./pages/ManageAdmission/ManageAdmission";
 import CounsellorForm from "./pages/CounsellorForm/CounsellorForm";
 import FeedbackForm from "./pages/FeedbackForm/FeedbackForm";
 import TrainerFeedback from "./pages/TrainerFeedback/TrainerFeedback";
-
+import TrainerFeedbackManage from "./pages/TrainerFeedbackManage/TrainerFeedbackManage";
+import EnquiryManage from "./pages/EnquiryManage/EnquiryManage";
+import CourseFeedbackManage from "./pages/CourseFeedbackManage/CourseFeedbackManage";
 
 function App() {
   return (
@@ -106,6 +108,30 @@ function App() {
           element={
             <ProtectedRoute>
               <ManageAdmission />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainer-feedback-list"
+          element={
+            <ProtectedRoute>
+              <TrainerFeedbackManage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/enquiry-list"
+          element={
+            <ProtectedRoute>
+              <EnquiryManage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/course-feedback-list"
+          element={
+            <ProtectedRoute>
+              <CourseFeedbackManage />
             </ProtectedRoute>
           }
         />

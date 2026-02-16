@@ -1,0 +1,182 @@
+#enq-management-module {
+  --navy: #003873;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  background-color: var(--bg);
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+#enq-management-module .enq-m-content {
+  padding: 30px;
+  margin-top: 70px;
+}
+#enq-management-module .enq-m-filter-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  border: 1px solid var(--border);
+  margin-bottom: 25px;
+}
+#enq-management-module .enq-m-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: var(--navy);
+  font-weight: 800;
+  font-size: 13px;
+}
+#enq-management-module .enq-m-filter-grid {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+#enq-management-module .enq-m-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+#enq-management-module label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+}
+#enq-management-module .enq-m-select,
+#enq-management-module .enq-m-input {
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  font-size: 13px;
+  outline: none;
+  background: #fcfdfe;
+  width: 100%;
+}
+#enq-management-module .enq-m-date-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 42px;
+  background: white;
+}
+#enq-management-module .enq-m-datepicker {
+  border: none !important;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+}
+#enq-management-module .enq-m-actions {
+  display: flex;
+  gap: 10px;
+}
+#enq-management-module .enq-m-btn-reset {
+  background: white;
+  border: 1px solid var(--border);
+  height: 42px;
+  padding: 0 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#enq-management-module .enq-m-btn-apply {
+  background: var(--navy);
+  color: white;
+  border: none;
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+#enq-management-module .enq-m-table-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+#enq-management-module .enq-m-toolbar {
+  padding: 15px 25px;
+  border-bottom: 1px solid #f1f5f9;
+}
+#enq-management-module .enq-m-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  padding: 0 15px;
+  border-radius: 8px;
+  height: 40px;
+  width: 350px;
+}
+#enq-management-module .enq-m-search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+}
+#enq-management-module .enq-m-table-wrapper {
+  overflow-x: auto;
+  max-height: 60vh;
+}
+#enq-management-module .enq-m-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+#enq-management-module .enq-m-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--navy);
+  color: white;
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 900;
+  z-index: 10;
+}
+#enq-management-module .enq-m-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 13px;
+  vertical-align: middle;
+}
+#enq-management-module .enq-m-name {
+  color: var(--navy);
+}
+#enq-management-module .enq-m-pill {
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+#enq-management-module .enq-m-view {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+#enq-management-module .enq-m-center {
+  text-align: center !important;
+}
+#enq-management-module .enq-m-msg {
+  text-align: center;
+  padding: 40px !important;
+  color: #94a3b8;
+  font-weight: 600;
+}

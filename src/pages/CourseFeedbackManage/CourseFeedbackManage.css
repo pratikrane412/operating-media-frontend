@@ -1,0 +1,124 @@
+#fb-management-module {
+  --brand: #003873;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  background-color: var(--bg);
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+#fb-management-module .fb-m-content {
+  padding: 30px;
+  margin-top: 70px;
+}
+#fb-management-module .fb-m-header {
+  margin-bottom: 30px;
+}
+#fb-management-module .fb-m-badge {
+  display: inline-block;
+  background: white;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+#fb-management-module h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: -1px;
+}
+#fb-management-module .fb-m-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+#fb-management-module .fb-m-toolbar {
+  padding: 15px 25px;
+  border-bottom: 1px solid #f1f5f9;
+}
+#fb-management-module .fb-m-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  padding: 0 15px;
+  border-radius: 8px;
+  height: 40px;
+  width: 300px;
+}
+#fb-management-module .fb-m-search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+}
+#fb-management-module .fb-m-scroll {
+  overflow-x: auto;
+  max-height: 65vh;
+}
+#fb-management-module .fb-m-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+#fb-management-module .fb-m-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--brand);
+  color: white;
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 900;
+  z-index: 10;
+}
+#fb-management-module .fb-m-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 13px;
+  vertical-align: middle;
+}
+#fb-management-module .fb-m-student {
+  color: var(--brand);
+}
+#fb-management-module .fb-m-date {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 12px;
+}
+#fb-management-module .fb-m-insta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e1306c;
+  font-weight: 700;
+}
+#fb-management-module .fb-m-btn-view {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#fb-management-module .fb-m-center {
+  text-align: center !important;
+}
+#fb-management-module .fb-m-msg {
+  text-align: center;
+  padding: 40px !important;
+  color: #94a3b8;
+  font-weight: 600;
+}

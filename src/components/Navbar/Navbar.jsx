@@ -7,8 +7,8 @@ import {
   Info,
   GraduationCap,
   Users,
-  UserCheck,
   ClipboardList,
+  FileText,
   ChevronDown,
 } from "lucide-react";
 import ProfileDropdown from "./ProfileDropdown";
@@ -24,6 +24,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const clickOutside = (e) => {
+      // Logic to close dropdowns if clicked outside the nav container
       if (navRef.current && !navRef.current.contains(e.target))
         setActiveDropdown(null);
       if (dropRef.current && !dropRef.current.contains(e.target))
@@ -48,16 +49,15 @@ const Navbar = () => {
           />
         </div>
 
+        {/* Start of Main Links Container */}
         <div className="top-menu-links" ref={navRef}>
           <NavLink to="/dashboard" className="top-link">
             <LayoutDashboard size={18} /> <span>Dashboard</span>
           </NavLink>
 
-          {/* LEADS - ACCESSIBLE TO ALL */}
+          {/* LEADS */}
           <div
-            className={`top-nav-dropdown ${
-              activeDropdown === "leads" ? "is-open" : ""
-            }`}
+            className={`top-nav-dropdown ${activeDropdown === "leads" ? "is-open" : ""}`}
           >
             <div
               className="top-link trigger"
@@ -72,12 +72,10 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* COURSE & BATCH - RESTRICTED */}
+          {/* COURSE & BATCH */}
           {(hasPermission("view batch") || hasPermission("view course")) && (
             <div
-              className={`top-nav-dropdown ${
-                activeDropdown === "courses" ? "is-open" : ""
-              }`}
+              className={`top-nav-dropdown ${activeDropdown === "courses" ? "is-open" : ""}`}
             >
               <div
                 className="top-link trigger"
@@ -107,12 +105,10 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* STAFF - RESTRICTED */}
+          {/* STAFF */}
           {(hasPermission("view staff") || hasPermission("manage staff")) && (
             <div
-              className={`top-nav-dropdown ${
-                activeDropdown === "staff" ? "is-open" : ""
-              }`}
+              className={`top-nav-dropdown ${activeDropdown === "staff" ? "is-open" : ""}`}
             >
               <div
                 className="top-link trigger"
@@ -139,11 +135,9 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* ADMISSION - ACCESSIBLE TO ALL */}
+          {/* ADMISSION */}
           <div
-            className={`top-nav-dropdown ${
-              activeDropdown === "admission" ? "is-open" : ""
-            }`}
+            className={`top-nav-dropdown ${activeDropdown === "admission" ? "is-open" : ""}`}
           >
             <div
               className="top-link trigger"
@@ -161,7 +155,41 @@ const Navbar = () => {
               </NavLink>
             </div>
           </div>
+
+          {/* FORMS - PROPERLY PLACED INSIDE THE CONTAINER */}
+          <div
+            className={`top-nav-dropdown ${activeDropdown === "forms" ? "is-open" : ""}`}
+          >
+            <div
+              className="top-link trigger"
+              onClick={() => toggleDropdown("forms")}
+            >
+              <FileText size={18} /> <span>Forms</span>{" "}
+              <ChevronDown size={14} />
+            </div>
+            <div className="top-submenu">
+              <NavLink
+                to="/enquiry-list"
+                onClick={() => setActiveDropdown(null)}
+              >
+                Counsellor Feedback
+              </NavLink>
+              <NavLink
+                to="/course-feedback-list"
+                onClick={() => setActiveDropdown(null)}
+              >
+                Course Feedback 
+              </NavLink>
+              <NavLink
+                to="/trainer-feedback-list"
+                onClick={() => setActiveDropdown(null)}
+              >
+                Trainer Feedback 
+              </NavLink>
+            </div>
+          </div>
         </div>
+        {/* End of Main Links Container */}
       </div>
 
       <div className="header-actions">

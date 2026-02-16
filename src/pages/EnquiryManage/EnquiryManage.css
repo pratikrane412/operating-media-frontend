@@ -1,23 +1,33 @@
-#enq-management-module {
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+#enquiry-management-portal {
   --navy: #003873;
   --bg: #f8fafc;
+  --text: #1e293b;
+  --muted: #64748b;
   --border: #e2e8f0;
+
   background-color: var(--bg);
   min-height: 100vh;
   font-family: "Plus Jakarta Sans", sans-serif;
+  color: var(--text);
 }
-#enq-management-module .enq-m-content {
+
+#enquiry-management-portal .enq-content-area {
   padding: 30px;
   margin-top: 70px;
 }
-#enq-management-module .enq-m-filter-card {
+
+/* --- FILTER CARD --- */
+#enquiry-management-portal .enq-filter-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 25px;
-  border: 1px solid var(--border);
+  border: 1px solid #eef1f6;
   margin-bottom: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-#enq-management-module .enq-m-title {
+#enquiry-management-portal .enq-filter-header {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -25,29 +35,29 @@
   color: var(--navy);
   font-weight: 800;
   font-size: 13px;
+  text-transform: uppercase;
 }
-#enq-management-module .enq-m-filter-grid {
+#enquiry-management-portal .enq-filter-grid {
   display: flex;
-  gap: 20px;
+  gap: 18px;
   align-items: flex-end;
   flex-wrap: wrap;
 }
-#enq-management-module .enq-m-group {
+#enquiry-management-portal .enq-filter-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
   flex: 1;
-  min-width: 200px;
+  min-width: 160px;
 }
-#enq-management-module label {
+#enquiry-management-portal .enq-filter-group label {
   font-size: 10px;
   font-weight: 800;
-  color: #64748b;
-  text-transform: uppercase;
+  color: var(--muted);
 }
-#enq-management-module .enq-m-select,
-#enq-management-module .enq-m-input {
-  height: 42px;
+#enquiry-management-portal select,
+#enquiry-management-portal .enq-text-input {
+  height: 40px;
   border-radius: 8px;
   border: 1px solid var(--border);
   padding: 0 12px;
@@ -56,127 +66,302 @@
   background: #fcfdfe;
   width: 100%;
 }
-#enq-management-module .enq-m-date-box {
+
+#enquiry-management-portal .enq-date-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0 12px;
-  height: 42px;
+  height: 40px;
   background: white;
 }
-#enq-management-module .enq-m-datepicker {
+#enquiry-management-portal .enq-date-field {
   border: none !important;
-  outline: none;
   font-size: 13px;
+  outline: none;
   width: 100%;
   cursor: pointer;
-  background: transparent;
+  background: transparent !important;
 }
-#enq-management-module .enq-m-actions {
+#enquiry-management-portal .enq-cal-icon {
+  color: var(--muted);
+  margin-right: 8px;
+}
+
+#enquiry-management-portal .enq-filter-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
-#enq-management-module .enq-m-btn-reset {
-  background: white;
-  border: 1px solid var(--border);
-  height: 42px;
-  padding: 0 15px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-#enq-management-module .enq-m-btn-apply {
-  background: var(--navy);
-  color: white;
-  border: none;
-  height: 42px;
-  padding: 0 20px;
+#enquiry-management-portal .enq-btn-reset,
+#enquiry-management-portal .enq-btn-apply {
+  height: 40px;
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+  padding: 0 15px;
+  font-size: 12px;
 }
-#enq-management-module .enq-m-table-card {
+#enquiry-management-portal .enq-btn-reset {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+#enquiry-management-portal .enq-btn-apply {
+  background: var(--navy);
+  border: none;
+  color: white;
+}
+
+/* --- DATA CARD --- */
+#enquiry-management-portal .enq-data-card {
   background: white;
   border-radius: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #eef1f6;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-#enq-management-module .enq-m-toolbar {
+#enquiry-management-portal .enq-toolbar {
   padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #f1f5f9;
 }
-#enq-management-module .enq-m-search {
+#enquiry-management-portal .enq-search-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  padding: 0 15px;
-  border-radius: 8px;
-  height: 40px;
-  width: 350px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
 }
-#enq-management-module .enq-m-search input {
-  border: none;
-  background: transparent;
+#enquiry-management-portal .enq-search-input-wrapper input {
+  border: 1px solid var(--border);
+  padding: 8px 15px;
+  border-radius: 8px;
+  width: 280px;
   outline: none;
   font-size: 13px;
-  width: 100%;
 }
-#enq-management-module .enq-m-table-wrapper {
+
+/* --- TABLE --- */
+#enquiry-management-portal .enq-table-sticky-wrapper {
   overflow-x: auto;
-  max-height: 60vh;
+  max-height: 65vh;
 }
-#enq-management-module .enq-m-table {
+#enquiry-management-portal .enq-modern-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  min-width: 1200px;
 }
-#enq-management-module .enq-m-table thead th {
+#enquiry-management-portal .enq-modern-table thead th {
   position: sticky;
   top: 0;
   background: var(--navy);
   color: white;
-  padding: 14px 20px;
+  padding: 12px 20px;
   text-align: left;
   font-size: 11px;
   font-weight: 900;
   z-index: 10;
+  border-bottom: 2px solid #00284d;
 }
-#enq-management-module .enq-m-table td {
-  padding: 16px 20px;
+#enquiry-management-portal .enq-modern-table td {
+  padding: 14px 20px;
   border-bottom: 1px solid #f8fafc;
   font-size: 13px;
   vertical-align: middle;
 }
-#enq-management-module .enq-m-name {
-  color: var(--navy);
+
+#enquiry-management-portal .enq-student-cell {
+  color: #0f172a;
 }
-#enq-management-module .enq-m-pill {
+#enquiry-management-portal .enq-course-pill {
   background: #f1f5f9;
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 700;
+  color: #475569;
+  border: 1px solid var(--border);
 }
-#enq-management-module .enq-m-view {
+#enquiry-management-portal .enq-date-text,
+#enquiry-management-portal .enq-counselor-text,
+#enquiry-management-portal .enq-phone-text {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+#enquiry-management-portal .enq-email-text {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- ACTIONS --- */
+#enquiry-management-portal .enq-action-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+#enquiry-management-portal .enq-icon-btn {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: white;
+  color: #94a3b8;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  transition: 0.2s;
 }
-#enq-management-module .enq-m-center {
+#enquiry-management-portal .enq-icon-btn:hover,
+#enquiry-management-portal .enq-icon-btn.active {
+  color: var(--navy);
+  border-color: var(--navy);
+  background: #f0f7ff;
+}
+
+#enquiry-management-portal .enq-menu-container {
+  position: relative;
+}
+#enquiry-management-portal .enq-dropdown-list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  width: 150px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 6px;
+  border: 1px solid var(--border);
+  margin-top: 5px;
+}
+#enquiry-management-portal .enq-drop-item {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#enquiry-management-portal .enq-drop-item:hover {
+  background: #f8fafc;
+  color: var(--navy);
+}
+#enquiry-management-portal .enq-drop-item.delete {
+  color: #ef4444;
+}
+
+/* --- FOOTER --- */
+#enquiry-management-portal .enq-table-footer {
+  padding: 16px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+}
+#enquiry-management-portal .enq-showing-text {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+#enquiry-management-portal .enq-pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+#enquiry-management-portal .enq-page-nav,
+#enquiry-management-portal .enq-page-num {
+  height: 34px;
+  min-width: 34px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#enquiry-management-portal .enq-page-num.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+  box-shadow: 0 4px 10px rgba(0, 56, 115, 0.2);
+}
+#enquiry-management-portal .enq-page-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#enquiry-management-portal .text-center {
   text-align: center !important;
 }
-#enq-management-module .enq-m-msg {
+#enquiry-management-portal .enq-table-loader {
   text-align: center;
-  padding: 40px !important;
-  color: #94a3b8;
+  padding: 60px !important;
+  color: var(--muted);
   font-weight: 600;
+  font-style: italic;
+}
+/* --- FIX FOR ENTRIES SELECTOR --- */
+
+#enquiry-management-portal .enq-entries {
+  display: flex !important;
+  flex-direction: row !important; /* Force horizontal */
+  align-items: center !important;
+  gap: 8px !important; /* Space between words and box */
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap; /* Prevent words from jumping to next line */
+}
+
+#enquiry-management-portal .enq-entries select {
+  width: 70px !important; /* Control width of the 50/100 box */
+  height: 34px !important; /* Professional height */
+  padding: 0 8px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--border) !important;
+  background-color: #fff !important;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  /* Add custom arrow like the other dropdowns */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px !important;
+}
+
+#enquiry-management-portal .enq-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  border-bottom: 1px solid #f1f5f9;
 }

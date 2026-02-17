@@ -3,28 +3,38 @@
 #course-feedback-management-portal {
   --navy: #003873;
   --bg: #f8fafc;
-  --border: #e2e8f0;
+  --text: #1e293b;
   --muted: #64748b;
+  --border: #e2e8f0;
+
   background-color: var(--bg);
   min-height: 100vh;
   font-family: "Plus Jakarta Sans", sans-serif;
 }
 
-#course-feedback-management-portal .cf-m-content-area {
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.cf-m-viewport {
   padding: 30px;
   margin-top: 70px;
 }
 
-/* Filter Card */
-#course-feedback-management-portal .cf-m-filter-card {
-  background: white;
-  border-radius: 16px;
+/* =====================================================
+   FILTER CARD
+===================================================== */
+
+.cf-m-filter-card {
+  background: #ffffff;
+  border-radius: 14px;
   padding: 25px;
   border: 1px solid #eef1f6;
   margin-bottom: 25px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-#course-feedback-management-portal .cf-m-filter-header {
+
+.cf-m-filter-head {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -34,80 +44,94 @@
   font-size: 13px;
   text-transform: uppercase;
 }
-#course-feedback-management-portal .cf-m-filter-grid {
+
+.cf-m-filter-grid {
   display: flex;
   gap: 18px;
   align-items: flex-end;
   flex-wrap: wrap;
 }
-#course-feedback-management-portal .cf-m-filter-group {
+
+.cf-m-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
   flex: 1;
-  min-width: 200px;
+  min-width: 180px;
 }
-#course-feedback-management-portal label {
+
+label {
   font-size: 10px;
   font-weight: 800;
   color: var(--muted);
+  text-transform: uppercase;
 }
-#course-feedback-management-portal select {
+
+/* Dropdown */
+select {
   height: 40px;
   border-radius: 8px;
   border: 1px solid var(--border);
   padding: 0 12px;
   font-size: 13px;
-  outline: none;
   background: #fcfdfe;
   width: 100%;
-  cursor: pointer;
+  outline: none;
 }
 
-#course-feedback-management-portal .cf-m-filter-actions {
+/* Buttons */
+.cf-m-actions {
   display: flex;
-  gap: 8px;
+  align-items: flex-end;
+  gap: 10px;
 }
-#course-feedback-management-portal .cf-m-btn-reset,
-#course-feedback-management-portal .cf-m-btn-apply {
+
+.cf-m-btn-reset {
   height: 40px;
+  width: 40px;
   border-radius: 8px;
-  font-weight: 700;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: 0.2s;
-  padding: 0 15px;
-  font-size: 12px;
-}
-#course-feedback-management-portal .cf-m-btn-reset {
-  background: white;
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-#course-feedback-management-portal .cf-m-btn-apply {
-  background: var(--navy);
-  border: none;
-  color: white;
+  justify-content: center;
 }
 
-/* Data Card & Toolbar */
-#course-feedback-management-portal .cf-m-data-card {
-  background: white;
+.cf-m-btn-apply {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* =====================================================
+   DATA CARD
+===================================================== */
+
+.cf-m-data-card {
+  background: #ffffff;
   border-radius: 12px;
   border: 1px solid #eef1f6;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-#course-feedback-management-portal .cf-m-toolbar {
+
+.cf-m-toolbar {
   padding: 15px 25px;
-  border-bottom: 1px solid #f1f5f9;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #f1f5f9;
 }
-#course-feedback-management-portal .cf-m-entries-select {
+
+.cf-m-entries-select,
+.cf-m-search-box {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -115,182 +139,191 @@
   font-weight: 600;
   color: var(--muted);
 }
-#course-feedback-management-portal .cf-m-entries-select select {
-  border: 1px solid var(--border);
-  width: 70px;
+
+.cf-m-entries-select select {
+  width: 75px;
   height: 34px;
   border-radius: 6px;
-  padding: 0 5px;
-  cursor: pointer;
+  border: 1px solid var(--border);
 }
-#course-feedback-management-portal .cf-m-search-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-}
-#course-feedback-management-portal .cf-m-search-wrapper input {
+
+.cf-m-search-wrapper input {
   border: 1px solid var(--border);
   padding: 8px 15px;
   border-radius: 8px;
   width: 280px;
-  outline: none;
   font-size: 13px;
   background: #f8fafc;
+  outline: none;
 }
 
-/* Table */
-#course-feedback-management-portal .cf-m-table-sticky-wrapper {
+/* =====================================================
+   TABLE
+===================================================== */
+
+.cf-m-table-scroll {
   overflow-x: auto;
-  max-height: 60vh;
+  max-height: 65vh;
 }
-#course-feedback-management-portal .cf-m-modern-table {
+
+.cf-m-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  min-width: 1000px;
+  min-width: 2000px;
+  border-collapse: collapse;
 }
-#course-feedback-management-portal .cf-m-modern-table thead th {
+
+/* Header */
+.cf-m-table thead th {
   position: sticky;
   top: 0;
   background: var(--navy);
-  color: white;
-  padding: 12px 20px;
-  text-align: left;
+  color: #ffffff;
+  padding: 14px 20px;
   font-size: 11px;
   font-weight: 900;
-  z-index: 10;
+  text-align: left;
+  white-space: nowrap;
   border-bottom: 2px solid #00284d;
 }
-#course-feedback-management-portal .cf-m-modern-table td {
+
+/* Rows */
+.cf-m-table tbody tr {
+  border-bottom: 1px solid #eef1f6;
+}
+
+/* Cells */
+.cf-m-table td {
   padding: 14px 20px;
-  border-bottom: 1px solid #f8fafc;
   font-size: 13px;
-  vertical-align: middle;
+  color: var(--text);
+  vertical-align: top; /* important for multi-line */
+  white-space: nowrap;
 }
 
-/* Actions & Dropdown List */
-#course-feedback-management-portal .cf-m-action-btns {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-}
-#course-feedback-management-portal .cf-m-icon-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: white;
-  color: #94a3b8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: 0.2s;
-}
-#course-feedback-management-portal .cf-m-icon-btn:hover,
-#course-feedback-management-portal .cf-m-icon-btn.active {
+/* Bold name */
+.cf-m-bold {
   color: var(--navy);
-  border-color: var(--navy);
-  background-color: #f0f7ff;
+  font-weight: 700;
 }
-#course-feedback-management-portal .cf-m-menu-container {
-  position: relative;
-}
-#course-feedback-management-portal .cf-m-dropdown-list {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  width: 160px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  z-index: 1000;
-  padding: 6px;
-  margin-top: 8px;
-}
-#course-feedback-management-portal .cf-m-drop-item {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: transparent;
-  font-size: 12px;
+
+/* Small muted */
+.cf-m-small {
+  font-size: 12.5px;
+  color: var(--muted);
   font-weight: 600;
-  color: #475569;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-#course-feedback-management-portal .cf-m-drop-item:hover {
-  background: #f8fafc;
-  color: var(--navy);
-}
-#course-feedback-management-portal .cf-m-drop-item.delete {
-  color: #ef4444;
 }
 
-/* PAGINATION FOOTER - MATCHES YOUR IMAGE */
-#course-feedback-management-portal .cf-m-table-footer {
+/* Multi-line columns */
+.cf-m-long-text {
+  white-space: normal !important;
+  line-height: 1.5;
+  min-width: 250px;
+  color: #475569;
+}
+
+/* Instagram */
+.cf-m-insta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e1306c;
+  font-weight: 600;
+}
+
+/* Status Pills */
+.cf-m-status {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.cf-m-status.yes {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.cf-m-status.no {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Loader */
+.cf-m-loader {
+  text-align: center;
+  padding: 60px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* =====================================================
+   PAGINATION
+===================================================== */
+
+.cf-m-table-footer {
   padding: 16px 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid #f1f5f9;
-  background: #fff;
+  background: #ffffff;
 }
-#course-feedback-management-portal .cf-m-showing-text {
+
+.cf-m-showing {
   font-size: 13px;
   color: var(--muted);
   font-weight: 600;
 }
-#course-feedback-management-portal .cf-m-sep {
-  margin: 0 10px;
-  color: #cbd5e1;
-}
-#course-feedback-management-portal .cf-m-pagination {
+
+.cf-m-pagination {
   display: flex;
   gap: 8px;
   align-items: center;
 }
-#course-feedback-management-portal .cf-m-page-nav,
-#course-feedback-management-portal .cf-m-page-num {
+
+.cf-m-page-nav,
+.cf-m-page-num {
   height: 34px;
   min-width: 34px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: white;
+  background: #ffffff;
   cursor: pointer;
-  transition: 0.2s;
-  font-size: 13px;
-  font-weight: 700;
-  color: #475569;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  transition: 0.2s ease;
 }
-#course-feedback-management-portal .cf-m-page-num.active {
+
+.cf-m-page-num.active {
   background: var(--navy);
-  color: white;
+  color: #ffffff;
   border-color: var(--navy);
-  box-shadow: 0 4px 10px rgba(0, 56, 115, 0.2);
 }
-#course-feedback-management-portal .cf-m-page-nav:disabled {
+
+.cf-m-page-nav:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-#course-feedback-management-portal .cf-m-center {
-  text-align: center !important;
-}
-#course-feedback-management-portal .cf-m-table-loader {
-  text-align: center;
-  padding: 60px !important;
-  color: var(--muted);
-  font-weight: 600;
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+  .cf-m-table-footer {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cf-m-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

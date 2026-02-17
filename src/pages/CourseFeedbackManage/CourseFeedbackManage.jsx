@@ -10,12 +10,7 @@ import {
   RotateCcw,
   Check,
   Instagram,
-  Eye,
-  CheckCircle2,
-  XCircle,
-  MoreHorizontal,
-  Edit3,
-  Trash2,
+  X,
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./CourseFeedbackManage.css";
@@ -24,26 +19,34 @@ const CourseFeedbackManage = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeMenuId, setActiveMenuId] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
-  // Pagination & Filter States
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({ profession: "", reviewStatus: "" });
 
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".cf-m-menu-container")) {
-        setActiveMenuId(null);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+  // --- DRAG SCROLL LOGIC ---
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -67,7 +70,6 @@ const CourseFeedbackManage = () => {
       setTotalPages(res.data.total_pages || 1);
       setTotalCount(res.data.total_count || dataResults.length);
     } catch (err) {
-      console.error("Fetch error:", err);
       setFeedbacks([]);
     } finally {
       setLoading(false);
@@ -91,14 +93,14 @@ const CourseFeedbackManage = () => {
     <div id="course-feedback-management-portal">
       <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 
-      <main className="cf-m-content-area">
-        {/* FILTERS CARD */}
+      <main className="cf-m-viewport">
+        {/* FILTERS */}
         <div className="cf-m-filter-card">
-          <div className="cf-m-filter-header">
+          <div className="cf-m-filter-head">
             <Filter size={16} /> <span>INSIGHT FILTERS</span>
           </div>
           <div className="cf-m-filter-grid">
-            <div className="cf-m-filter-group">
+            <div className="cf-m-group">
               <label>PROFESSION</label>
               <select
                 value={filters.profession}
@@ -108,10 +110,10 @@ const CourseFeedbackManage = () => {
               >
                 <option value="">All Professions</option>
                 <option value="Student">Student</option>
-                <option value="Professional">Working Professional</option>
+                <option value="Working Pro">Working Professional</option>
               </select>
             </div>
-            <div className="cf-m-filter-group">
+            <div className="cf-m-group">
               <label>REVIEW STATUS</label>
               <select
                 value={filters.reviewStatus}
@@ -120,11 +122,11 @@ const CourseFeedbackManage = () => {
                 }
               >
                 <option value="">All Status</option>
-                <option value="Yes">Review Submitted</option>
-                <option value="No">Pending Review</option>
+                <option value="Yes">Yes (Submitted)</option>
+                <option value="No">No (Pending)</option>
               </select>
             </div>
-            <div className="cf-m-filter-actions">
+            <div className="cf-m-actions">
               <button
                 className="cf-m-btn-reset"
                 onClick={() => {
@@ -133,22 +135,16 @@ const CourseFeedbackManage = () => {
                   setPage(1);
                 }}
               >
-                <RotateCcw size={14} />
+                <RotateCcw size={16} />
               </button>
-              <button
-                className="cf-m-btn-apply"
-                onClick={() => {
-                  setPage(1);
-                  fetchData();
-                }}
-              >
-                <Check size={14} /> APPLY
+              <button className="cf-m-btn-apply" onClick={fetchData}>
+                <Check size={16} /> APPLY
               </button>
             </div>
           </div>
         </div>
 
-        {/* DATA TABLE CARD */}
+        {/* DATA TABLE */}
         <div className="cf-m-data-card">
           <div className="cf-m-toolbar">
             <div className="cf-m-entries-select">
@@ -181,80 +177,55 @@ const CourseFeedbackManage = () => {
             </div>
           </div>
 
-          <div className="cf-m-table-sticky-wrapper">
-            <table className="cf-m-modern-table">
+          <div
+            className={`cf-m-table-scroll ${isDragging ? "is-dragging" : ""}`}
+            ref={scrollRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+          >
+            <table className="cf-m-table">
               <thead>
                 <tr>
-                  <th>STUDENT</th>
-                  <th>SUBMISSION DATE</th>
-                  <th>PROFESSION</th>
-                  <th className="cf-m-center">REVIEW DONE?</th>
-                  <th>INSTAGRAM</th>
-                  <th className="cf-m-center">ACTION</th>
+                  <th style={{ width: "220px" }}>STUDENT NAME</th>
+                  <th style={{ width: "140px" }}>SUBMISSION DATE</th>
+                  <th style={{ width: "180px" }}>PROFESSION</th>
+                  <th style={{ width: "100px" }} className="cf-m-center">
+                    REVIEW
+                  </th>
+                  <th style={{ width: "180px" }}>INSTAGRAM</th>
+                  <th style={{ width: "450px" }}>REASON FOR DM</th>
+                  <th style={{ width: "450px" }}>COURSE IMPACT</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="6" className="cf-m-table-loader">
-                      Fetching logs...
-                    </td>
-                  </tr>
-                ) : feedbacks.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="cf-m-table-loader">
-                      No records found.
+                    <td colSpan="7" className="cf-m-loader">
+                      Syncing feedback records...
                     </td>
                   </tr>
                 ) : (
                   feedbacks.map((item) => (
-                    <tr key={item.id} className="cf-m-row">
-                      <td className="cf-m-name-cell">
+                    <tr key={item.id}>
+                      <td className="cf-m-bold">
                         <strong>{item.name}</strong>
                       </td>
-                      <td className="cf-m-date-cell">{item.date}</td>
-                      <td className="cf-m-prof-cell">{item.profession}</td>
+                      <td className="cf-m-small">{item.date}</td>
+                      <td className="cf-m-small">{item.profession}</td>
                       <td className="cf-m-center">
-                        {item.review === "Yes" ? (
-                          <CheckCircle2 size={18} color="#10b981" />
-                        ) : (
-                          <XCircle size={18} color="#ef4444" />
-                        )}
+                        <span
+                          className={`cf-m-status ${item.review.toLowerCase()}`}
+                        >
+                          {item.review}
+                        </span>
                       </td>
-                      <td className="cf-m-insta-cell">
-                        <Instagram size={14} color="#e1306c" />
-                        <span>{item.insta_handle}</span>
+                      <td className="cf-m-insta">
+                        <Instagram size={13} /> {item.insta_handle}
                       </td>
-                      <td>
-                        <div className="cf-m-action-btns">
-                          <button className="cf-m-icon-btn">
-                            <Eye size={16} />
-                          </button>
-                          <div className="cf-m-menu-container">
-                            <button
-                              className={`cf-m-icon-btn ${activeMenuId === item.id ? "active" : ""}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveMenuId(
-                                  activeMenuId === item.id ? null : item.id,
-                                );
-                              }}
-                            >
-                              <MoreHorizontal size={16} />
-                            </button>
-                            {activeMenuId === item.id && (
-                              <div className="cf-m-dropdown-list">
-                                <button className="cf-m-drop-item">
-                                  <Edit3 size={14} /> Edit
-                                </button>
-                                <button className="cf-m-drop-item delete">
-                                  <Trash2 size={14} /> Delete
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </td>
+                      <td className="cf-m-long-text">{item.reason_dm}</td>
+                      <td className="cf-m-long-text">{item.impact}</td>
                     </tr>
                   ))
                 )}
@@ -262,14 +233,14 @@ const CourseFeedbackManage = () => {
             </table>
           </div>
 
-          {/* THE PAGINATION FOOTER */}
           <div className="cf-m-table-footer">
-            <span className="cf-m-showing-text">
+            <span className="cf-m-showing">
               Showing page <strong>{page}</strong> of{" "}
               <strong>{totalPages}</strong>
-              <span className="cf-m-sep"> | </span> Total:{" "}
+              <span className="cf-m-sep"> | </span> Total Records:{" "}
               <strong>{totalCount}</strong>
             </span>
+
             <div className="cf-m-pagination">
               <button
                 className="cf-m-page-nav"
@@ -285,6 +256,7 @@ const CourseFeedbackManage = () => {
               >
                 <ChevronLeft size={16} />
               </button>
+
               {getPageNumbers().map((num) => (
                 <button
                   key={num}
@@ -294,6 +266,7 @@ const CourseFeedbackManage = () => {
                   {num}
                 </button>
               ))}
+
               <button
                 className="cf-m-page-nav"
                 disabled={page === totalPages}

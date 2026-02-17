@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import {
   Search,
   ChevronLeft,
   ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Filter,
   RotateCcw,
   Check,
-  Calendar as CalendarIcon,
-  Eye,
   Star,
+  Eye,
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./TrainerFeedbackManage.css";
@@ -21,19 +20,38 @@ const TrainerFeedbackManage = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
+
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
-
   const [filters, setFilters] = useState({
     trainer: "",
     course: "",
-    fromDate: "",
-    toDate: "",
+    startDate: "",
+    endDate: "",
   });
+
+  // --- DRAG SCROLL LOGIC ---
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -47,8 +65,8 @@ const TrainerFeedbackManage = () => {
             search,
             trainer: filters.trainer,
             course: filters.course,
-            from: filters.fromDate,
-            to: filters.toDate,
+            start_date: filters.startDate,
+            end_date: filters.endDate,
           },
         },
       );
@@ -69,39 +87,29 @@ const TrainerFeedbackManage = () => {
     fetchData();
   }, [page, pageSize, filters, search]);
 
-  const handleDateChange = (update) => {
-    setDateRange(update);
-    const [start, end] = update;
-    setFilters({
-      ...filters,
-      fromDate: start ? start.toISOString().split("T")[0] : "",
-      toDate: end ? end.toISOString().split("T")[0] : "",
-    });
-  };
-
-  const getRatingColor = (rating) => {
-    if (rating >= 9) return "tf-m-rating-excellent";
-    if (rating >= 7) return "tf-m-rating-good";
-    if (rating >= 5) return "tf-m-rating-average";
-    return "tf-m-rating-poor";
+  const getPageNumbers = () => {
+    const pages = [];
+    let startPage = Math.max(1, page - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+    for (let i = Math.max(1, startPage); i <= endPage; i++) pages.push(i);
+    return pages;
   };
 
   return (
-    <div className="tf-m-page-root">
+    <div id="trainer-feedback-management-portal">
       <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 
-      {/* SCOPE STARTS HERE - APPLYING TO MAIN CONTENT ONLY */}
-      <main className="tf-m-content-container">
+      <main className="tf-m-viewport">
         {/* FILTERS */}
-        <div className="tf-m-card-filter">
-          <div className="tf-m-card-head">
-            <Filter size={16} /> <span>FILTER FEEDBACK</span>
+        <div className="tf-m-filter-card">
+          <div className="tf-m-filter-head">
+            <Filter size={16} /> <span>TRAINING INSIGHT FILTERS</span>
           </div>
-          <div className="tf-m-filter-flex">
-            <div className="tf-m-input-group">
+          <div className="tf-m-filter-grid">
+            <div className="tf-m-group">
               <label>TRAINER</label>
               <select
-                className="tf-m-select-field"
                 value={filters.trainer}
                 onChange={(e) =>
                   setFilters({ ...filters, trainer: e.target.value })
@@ -109,129 +117,158 @@ const TrainerFeedbackManage = () => {
               >
                 <option value="">All Trainers</option>
                 <option value="Harsh Pareek">Harsh Pareek</option>
-                <option value="Pooja Parab">Pooja Parab</option>
+                <option value="Shraddha Rane">Shraddha Rane</option>
               </select>
             </div>
-            <div className="tf-m-input-group">
-              <label>COURSE</label>
-              <select
-                className="tf-m-select-field"
-                value={filters.course}
-                onChange={(e) =>
-                  setFilters({ ...filters, course: e.target.value })
-                }
-              >
-                <option value="">All Courses</option>
-                <option value="Masters">Masters in DM</option>
-              </select>
-            </div>
-            <div className="tf-m-input-group">
-              <label>DATE RANGE</label>
-              <div className="tf-m-date-box">
-                <CalendarIcon size={14} />
-                <DatePicker
-                  selectsRange
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={handleDateChange}
-                  placeholderText="Select Range"
-                  dateFormat="MMM d, yyyy"
-                  className="tf-m-datepicker-input"
+
+            <div className="tf-m-group">
+              <label>START DATE</label>
+              <div className="tf-m-date-input-wrapper">
+                <input
+                  type="date"
+                  className="tf-m-picker-field"
+                  value={filters.startDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, startDate: e.target.value })
+                  }
                 />
               </div>
             </div>
-            <div className="tf-m-btn-group">
+
+            <div className="tf-m-group">
+              <label>END DATE</label>
+              <div className="tf-m-date-input-wrapper">
+                <input
+                  type="date"
+                  className="tf-m-picker-field"
+                  value={filters.endDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, endDate: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="tf-m-actions">
               <button
                 className="tf-m-btn-reset"
                 onClick={() => {
                   setFilters({
                     trainer: "",
                     course: "",
-                    fromDate: "",
-                    toDate: "",
+                    startDate: "",
+                    endDate: "",
                   });
-                  setDateRange([null, null]);
                   setSearch("");
+                  setPage(1);
                 }}
               >
-                <RotateCcw size={14} />
+                <RotateCcw size={16} />
               </button>
               <button className="tf-m-btn-apply" onClick={fetchData}>
-                <Check size={14} /> APPLY
+                <Check size={16} /> APPLY
               </button>
             </div>
           </div>
         </div>
 
-        {/* TABLE */}
-        <div className="tf-m-card-table">
-          <div className="tf-m-table-toolbar">
-            <div className="tf-m-entries-ctrl">
-              Show{" "}
+        <div className="tf-m-data-card">
+          <div className="tf-m-toolbar">
+            <div className="tf-m-entries-select">
+              Show
               <select
-                className="tf-m-mini-select"
                 value={pageSize}
-                onChange={(e) => setPageSize(e.target.value)}
+                onChange={(e) => {
+                  setPageSize(e.target.value);
+                  setPage(1);
+                }}
               >
                 <option value="50">50</option>
-              </select>{" "}
+                <option value="100">100</option>
+              </select>
               entries
             </div>
+
             <div className="tf-m-search-box">
-              <Search size={16} />
-              <input
-                type="text"
-                className="tf-m-search-input"
-                placeholder="Search student..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+              <span>Search:</span>
+              <div className="tf-m-search-wrapper">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="Search student name..."
+                />
+              </div>
             </div>
           </div>
 
-          <div className="tf-m-scroll-area">
-            <table className="tf-m-data-table">
+          <div
+            className={`tf-m-table-scroll ${isDragging ? "is-dragging" : ""}`}
+            ref={scrollRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+          >
+            <table className="tf-m-table">
               <thead>
                 <tr>
-                  <th>Student</th>
-                  <th>Trainer</th>
-                  <th className="tf-m-txt-center">Rating</th>
-                  <th>Date</th>
-                  <th className="tf-m-txt-center">Action</th>
+                  <th style={{ width: "220px" }}>STUDENT NAME</th>
+                  <th style={{ width: "150px" }}>SUBMISSION DATE</th>
+                  <th style={{ width: "250px" }}>COURSE NAME</th>
+                  <th style={{ width: "200px" }}>TRAINER NAME</th>
+                  <th style={{ width: "180px" }}>KNOWLEDGE</th>
+                  <th style={{ width: "180px" }}>COVERAGE</th>
+                  <th style={{ width: "180px" }}>COMMUNICATION</th>
+                  <th style={{ width: "120px" }}>RATING</th>
+                  <th style={{ width: "450px" }}>ADDITIONAL COMMENTS</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="5" className="tf-m-status-msg">
-                      Loading...
+                    <td colSpan="9" className="tf-m-loader">
+                      Syncing trainer feedback...
                     </td>
                   </tr>
                 ) : feedbacks.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="tf-m-status-msg">
-                      No records.
+                    <td colSpan="9" className="tf-m-loader">
+                      No records found.
                     </td>
                   </tr>
                 ) : (
                   feedbacks.map((item) => (
                     <tr key={item.id}>
-                      <td className="tf-m-bold-name">{item.student}</td>
-                      <td>{item.trainer}</td>
-                      <td className="tf-m-txt-center">
-                        <div
-                          className={`tf-m-rating-pill ${getRatingColor(item.rating)}`}
-                        >
-                          <Star size={12} fill="currentColor" /> {item.rating}
-                          /10
+                      <td className="tf-m-bold">{item.student_name}</td>
+                      <td className="tf-m-small">{item.date}</td>
+                      <td className="tf-m-small">{item.course_name}</td>
+                      <td className="tf-m-bold" style={{ color: "#475569" }}>
+                        {item.trainer_name}
+                      </td>
+                      <td>
+                        <span className="tf-m-pill">
+                          {item.trainer_knowledge}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="tf-m-pill">
+                          {item.content_coverage}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="tf-m-pill">{item.communication}</span>
+                      </td>
+                      <td>
+                        <div className="tf-m-rating-box">
+                          <Star size={12} fill="#eab308" color="#eab308" />
+                          <strong>{item.rating}/10</strong>
                         </div>
                       </td>
-                      <td className="tf-m-date-val">{item.date}</td>
-                      <td className="tf-m-txt-center">
-                        <button className="tf-m-circle-btn">
-                          <Eye size={16} />
-                        </button>
-                      </td>
+                      <td className="tf-m-long-text">{item.comments}</td>
                     </tr>
                   ))
                 )}
@@ -240,22 +277,50 @@ const TrainerFeedbackManage = () => {
           </div>
 
           <div className="tf-m-table-footer">
-            <span className="tf-m-total-txt">Total: {totalCount} records</span>
-            <div className="tf-m-pagination-nav">
+            <span className="tf-m-showing">
+              Showing page <strong>{page}</strong> of{" "}
+              <strong>{totalPages}</strong>
+              <span className="tf-m-sep"> | </span> Total Records:{" "}
+              <strong>{totalCount}</strong>
+            </span>
+
+            <div className="tf-m-pagination">
               <button
-                className="tf-m-nav-btn"
+                className="tf-m-page-nav"
+                disabled={page === 1}
+                onClick={() => setPage(1)}
+              >
+                <ChevronsLeft size={16} />
+              </button>
+              <button
+                className="tf-m-page-nav"
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
               >
                 <ChevronLeft size={16} />
               </button>
-              <span className="tf-m-page-indicator">{page}</span>
+              {getPageNumbers().map((num) => (
+                <button
+                  key={num}
+                  className={`tf-m-page-num ${page === num ? "active" : ""}`}
+                  onClick={() => setPage(num)}
+                >
+                  {num}
+                </button>
+              ))}
               <button
-                className="tf-m-nav-btn"
+                className="tf-m-page-nav"
                 disabled={page === totalPages}
                 onClick={() => setPage(page + 1)}
               >
                 <ChevronRight size={16} />
+              </button>
+              <button
+                className="tf-m-page-nav"
+                disabled={page === totalPages}
+                onClick={() => setPage(totalPages)}
+              >
+                <ChevronsRight size={16} />
               </button>
             </div>
           </div>

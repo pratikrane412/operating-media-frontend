@@ -1,258 +1,341 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
-.tf-m-page-root {
-  background-color: #f8fafc;
+#trainer-feedback-management-portal {
+  --navy: #003873;
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  background-color: var(--bg);
   min-height: 100vh;
   font-family: "Plus Jakarta Sans", sans-serif;
 }
 
-.tf-m-content-container {
+.tf-m-viewport {
   padding: 30px;
   margin-top: 70px;
 }
 
-/* --- FILTER CARD --- */
-.tf-m-card-filter {
+/* Filter Section */
+.tf-m-filter-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 25px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #eef1f6;
   margin-bottom: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-.tf-m-card-head {
+.tf-m-filter-head {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
-  color: #003873;
+  color: var(--navy);
   font-weight: 800;
   font-size: 13px;
+  text-transform: uppercase;
 }
-.tf-m-filter-flex {
+.tf-m-filter-grid {
   display: flex;
-  gap: 20px;
+  gap: 18px;
   align-items: flex-end;
   flex-wrap: wrap;
 }
-.tf-m-input-group {
+.tf-m-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
   flex: 1;
-  min-width: 180px;
+  min-width: 170px;
 }
-.tf-m-input-group label {
+#trainer-feedback-management-portal label {
   font-size: 10px;
   font-weight: 800;
-  color: #64748b;
+  color: var(--muted);
   text-transform: uppercase;
 }
 
-/* --- SPECIFIC INPUT FIELDS --- */
-.tf-m-select-field {
-  height: 42px;
+/* Inputs */
+.tf-m-date-input-wrapper {
+  height: 40px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 0 12px;
-  font-size: 13px;
-  outline: none;
   background: #fcfdfe;
-  width: 100%;
-}
-.tf-m-date-box {
-  position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 0 12px;
-  height: 42px;
-  background: white;
 }
-.tf-m-datepicker-input {
+.tf-m-picker-field {
   border: none !important;
   font-size: 13px;
   outline: none;
   width: 100%;
   cursor: pointer;
-  background: transparent;
+  background: transparent !important;
+}
+select {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  font-size: 13px;
+  background: #fcfdfe;
+  outline: none;
 }
 
-/* --- SPECIFIC BUTTONS --- */
-.tf-m-btn-group {
+/* Buttons */
+.tf-m-actions {
   display: flex;
   gap: 10px;
 }
-.tf-m-btn-reset,
-.tf-m-btn-apply {
-  height: 42px;
+.tf-m-btn-reset {
+  height: 40px;
+  width: 40px;
   border-radius: 8px;
-  font-weight: 700;
+  border: 1.5px solid #cbd5e1;
+  background: white;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-.tf-m-btn-reset {
-  background: white;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  padding: 0 15px;
+  justify-content: center;
 }
 .tf-m-btn-apply {
-  background: #003873;
-  border: none;
-  color: white;
+  height: 40px;
   padding: 0 20px;
+  border-radius: 8px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
 }
 
-/* --- TABLE CARD --- */
-.tf-m-card-table {
+/* Table Container */
+.tf-m-data-card {
   background: white;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #eef1f6;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
-.tf-m-table-toolbar {
+.tf-m-toolbar {
   padding: 15px 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f1f5f9;
 }
-.tf-m-search-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 0 15px;
+.tf-m-search-wrapper input {
+  border: 1px solid var(--border);
+  padding: 8px 15px;
   border-radius: 8px;
-  height: 40px;
-  width: 300px;
-}
-.tf-m-search-input {
-  border: none !important;
-  background: transparent !important;
-  outline: none !important;
+  width: 280px;
   font-size: 13px;
-  width: 100%;
-  height: 100%;
-}
-.tf-m-mini-select {
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  padding: 2px 5px;
-  outline: none;
+  background: #f8fafc;
 }
 
-/* --- TABLE DATA --- */
-.tf-m-scroll-area {
+/* Table */
+.tf-m-table-scroll {
   overflow-x: auto;
-  max-height: 60vh;
+  max-height: 65vh;
+  cursor: grab;
 }
-.tf-m-data-table {
+.tf-m-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
+  min-width: 2200px;
 }
-.tf-m-data-table thead th {
+.tf-m-table thead th {
   position: sticky;
   top: 0;
-  background: #003873;
+  background: var(--navy);
   color: white;
   padding: 14px 20px;
-  text-align: left;
   font-size: 11px;
   font-weight: 900;
-  z-index: 10;
+  text-align: left;
+  border-bottom: 2px solid #00284d;
 }
-.tf-m-data-table td {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f8fafc;
+.tf-m-table td {
+  padding: 14px 20px;
   font-size: 13px;
+  color: var(--text);
+  border-bottom: 1px solid #f8fafc;
   vertical-align: middle;
 }
-.tf-m-bold-name {
-  color: #003873;
+
+/* Specialized Cells */
+.tf-m-bold {
+  color: var(--navy);
   font-weight: 700;
 }
-
-/* --- RATINGS --- */
-.tf-m-rating-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+.tf-m-small {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.tf-m-pill {
+  background: #f1f5f9;
   padding: 4px 10px;
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 800;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  border: 1px solid var(--border);
 }
-.tf-m-rating-excellent {
-  background: #dcfce7;
-  color: #166534;
-}
-.tf-m-rating-good {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-.tf-m-rating-average {
-  background: #fef9c3;
-  color: #854d0e;
-}
-.tf-m-rating-poor {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.tf-m-circle-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #e2e8f0;
-  background: white;
-  color: #94a3b8;
-  cursor: pointer;
+.tf-m-rating-box {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  background: #fffbeb;
+  color: #92400e;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #fef3c7;
+  width: fit-content;
+}
+.tf-m-long-text {
+  white-space: normal !important;
+  min-width: 400px;
+  line-height: 1.5;
 }
 
-/* --- FOOTER & PAGINATION --- */
+/* Pagination */
 .tf-m-table-footer {
-  padding: 15px 25px;
+  padding: 16px 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid #f1f5f9;
 }
-.tf-m-pagination-nav {
+.tf-m-pagination {
+  display: flex;
+  gap: 8px;
+}
+.tf-m-page-nav,
+.tf-m-page-num {
+  height: 34px;
+  min-width: 34px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+.tf-m-page-num.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+.tf-m-loader {
+  text-align: center;
+  padding: 60px;
+  color: var(--muted);
+  font-weight: 600;
+}
+/* =====================================================
+   TOOLBAR (Show entries & Search)
+===================================================== */
+
+.tf-m-toolbar {
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Fix "Show 50 entries" alignment */
+.tf-m-entries-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tf-m-entries-select select {
+  width: 75px;
+  height: 32px; /* Reduced height to match second screenshot */
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 0 5px;
+  font-size: 13px;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+/* Fix Search Box */
+.tf-m-search-box {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-.tf-m-nav-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background: white;
-  cursor: pointer;
-}
-.tf-m-nav-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.tf-m-page-indicator {
-  font-weight: 800;
-  color: #003873;
-}
-.tf-m-status-msg {
-  text-align: center;
-  padding: 40px !important;
-  color: #94a3b8;
+  font-size: 13px;
   font-weight: 600;
+  color: var(--muted);
 }
-.tf-m-txt-center {
-  text-align: center !important;
+
+.tf-m-search-wrapper input {
+  border: 1px solid var(--border);
+  padding: 8px 15px;
+  border-radius: 8px;
+  width: 280px;
+  font-size: 13px;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.tf-m-search-wrapper input:focus {
+  border-color: var(--navy);
+  background: #ffffff;
+}
+
+/* =====================================================
+   TABLE FONT UPDATES
+===================================================== */
+
+.tf-m-table thead th {
+  font-size: 11px; /* Small, bold headers */
+  letter-spacing: 0.02em;
+}
+
+.tf-m-table td {
+  font-size: 13px; /* Standard body text */
+}
+
+.tf-m-bold {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tf-m-small {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.tf-m-pill {
+  font-size: 10.5px; /* Smaller text inside pills */
+  padding: 3px 8px;
+}
+
+.tf-m-rating-box {
+  padding: 3px 8px;
+}
+
+.tf-m-rating-box strong {
+  font-size: 12px;
+}
+
+/* Pagination Text font size */
+.tf-m-showing {
+  font-size: 13px;
+  font-weight: 600;
 }

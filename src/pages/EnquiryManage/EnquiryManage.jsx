@@ -8,33 +8,28 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Eye,
-  MoreHorizontal,
-  Edit3,
   Filter,
   RotateCcw,
   Check,
   Calendar as CalendarIcon,
   X,
-  Trash2,
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./EnquiryManage.css";
+import EnquiryDetailDrawer from "../../components/EnquiryDetailDrawer/EnquiryDetailDrawer";
 
 const EnquiryManage = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
-
-  // Pagination & Search States
+  const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const [activeMenuId, setActiveMenuId] = useState(null);
 
-  // Filter States
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [filters, setFilters] = useState({
@@ -44,9 +39,23 @@ const EnquiryManage = () => {
     fromDate: "",
     toDate: "",
   });
+  const [options, setOptions] = useState({ counsellors: [] });
 
-  const [sortField, setSortField] = useState("date");
-  const [sortOrder, setSortOrder] = useState("desc");
+  // Drag-to-scroll refs
+  const scrollRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const dragDistance = useRef(0);
+
+  useEffect(() => {
+    axios
+      .get("https://operating-media-backend.onrender.com/api/leads/create/")
+      .then((res) => {
+        setOptions({ counsellors: res.data.counsellors || [] });
+      })
+      .catch((err) => console.error("Options error:", err));
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -63,12 +72,9 @@ const EnquiryManage = () => {
             counselor: filters.counselor,
             from: filters.fromDate,
             to: filters.toDate,
-            sort_field: sortField,
-            sort_order: sortOrder,
           },
         },
       );
-      // The API returns a direct array or results object
       const dataResults = Array.isArray(res.data)
         ? res.data
         : res.data.results || [];
@@ -76,7 +82,6 @@ const EnquiryManage = () => {
       setTotalPages(res.data.total_pages || 1);
       setTotalCount(res.data.total_count || dataResults.length);
     } catch (err) {
-      console.error("Fetch error:", err);
       setEnquiries([]);
     } finally {
       setLoading(false);
@@ -85,7 +90,7 @@ const EnquiryManage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize, filters, search, sortField, sortOrder]);
+  }, [page, pageSize, filters, search]);
 
   const handleDateChange = (update) => {
     setDateRange(update);
@@ -97,6 +102,40 @@ const EnquiryManage = () => {
     });
   };
 
+  // Drag-to-scroll handlers
+  const handleMouseDown = (e) => {
+    isDragging.current = true;
+    dragDistance.current = 0;
+    startX.current = e.pageX - scrollRef.current.offsetLeft;
+    scrollLeft.current = scrollRef.current.scrollLeft;
+    scrollRef.current.style.cursor = "grabbing";
+    scrollRef.current.style.userSelect = "none";
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2;
+    dragDistance.current = Math.abs(walk);
+    scrollRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
+  const stopDragging = () => {
+    isDragging.current = false;
+    if (scrollRef.current) {
+      scrollRef.current.style.cursor = "grab";
+      scrollRef.current.style.userSelect = "";
+    }
+  };
+
+  const handleRowClick = (e, item) => {
+    // Ignore click if the user was dragging (moved more than 5px)
+    if (dragDistance.current > 5) return;
+    setSelectedEnquiry(item);
+    setIsDrawerOpen(true);
+  };
+
   const getPageNumbers = () => {
     const pages = [];
     let startPage = Math.max(1, page - 2);
@@ -106,18 +145,31 @@ const EnquiryManage = () => {
     return pages;
   };
 
+  // Helper to render multiple items vertically
+  const renderVerticalList = (str) => {
+    if (!str || str === "—") return "—";
+    return (
+      <div className="enq-m-stack-box">
+        {str.split(",").map((item, i) => (
+          <span key={i} className="enq-m-item-pill">
+            {item.trim()}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div id="enquiry-management-portal">
       <Navbar onToggle={() => setIsCollapsed(!isCollapsed)} />
 
-      <main className="enq-content-area">
-        {/* FILTERS CARD */}
-        <div className="enq-filter-card">
-          <div className="enq-filter-header">
+      <main className="enq-m-viewport">
+        <div className="enq-m-filter-section">
+          <div className="enq-m-filter-head">
             <Filter size={16} /> <span>SEARCH FILTERS</span>
           </div>
-          <div className="enq-filter-grid">
-            <div className="enq-filter-group">
+          <div className="enq-m-filter-grid">
+            <div className="enq-m-group">
               <label>BRANCH</label>
               <select
                 value={filters.branch}
@@ -130,7 +182,7 @@ const EnquiryManage = () => {
                 <option value="Borivali">Borivali</option>
               </select>
             </div>
-            <div className="enq-filter-group">
+            <div className="enq-m-group">
               <label>COURSE</label>
               <select
                 value={filters.course}
@@ -143,7 +195,7 @@ const EnquiryManage = () => {
                 <option value="Advanced">Advanced Diploma</option>
               </select>
             </div>
-            <div className="enq-filter-group">
+            <div className="enq-m-group">
               <label>COUNSELLOR</label>
               <select
                 value={filters.counselor}
@@ -151,41 +203,32 @@ const EnquiryManage = () => {
                   setFilters({ ...filters, counselor: e.target.value })
                 }
               >
-                <option value="">All Counselors</option>
-                <option value="Rahul">Harsh Pareek</option>
-                <option value="Priya">koomal Pareek</option>
+                <option value="">All Counsellors</option>
+                {options.counsellors.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
               </select>
             </div>
-            <div className="enq-filter-group range-group">
-              <label>SUBMISSION DATE RANGE</label>
-              <div className="enq-date-wrapper">
-                <CalendarIcon size={14} className="enq-cal-icon" />
+            <div className="enq-m-group enq-m-range">
+              <label>DATE RANGE</label>
+              <div className="enq-m-date-input">
+                <CalendarIcon size={14} />
                 <DatePicker
                   selectsRange
                   startDate={startDate}
                   endDate={endDate}
                   onChange={handleDateChange}
-                  placeholderText="Select range (Start - End)"
+                  placeholderText="Select Range"
                   dateFormat="MMM d, yyyy"
-                  monthsShown={2}
-                  className="enq-date-field"
+                  className="enq-m-picker-field"
                 />
-                {(startDate || endDate) && (
-                  <button
-                    className="enq-clear-date"
-                    onClick={() => {
-                      setDateRange([null, null]);
-                      setFilters({ ...filters, fromDate: "", toDate: "" });
-                    }}
-                  >
-                    <X size={14} />
-                  </button>
-                )}
               </div>
             </div>
-            <div className="enq-filter-actions">
+            <div className="enq-m-actions">
               <button
-                className="enq-btn-reset"
+                className="enq-m-reset"
                 onClick={() => {
                   setFilters({
                     branch: "",
@@ -200,17 +243,16 @@ const EnquiryManage = () => {
               >
                 <RotateCcw size={14} />
               </button>
-              <button className="enq-btn-apply" onClick={fetchData}>
+              <button className="enq-m-apply" onClick={fetchData}>
                 <Check size={14} /> APPLY
               </button>
             </div>
           </div>
         </div>
 
-        {/* DATA TABLE CARD */}
-        <div className="enq-data-card">
-          <div className="enq-toolbar">
-            <div className="enq-entries">
+        <div className="enq-m-data-container">
+          <div className="enq-m-toolbar">
+            <div className="enq-m-entries">
               Show{" "}
               <select
                 value={pageSize}
@@ -224,93 +266,84 @@ const EnquiryManage = () => {
               </select>{" "}
               entries
             </div>
-            <div className="enq-search-box">
+            <div className="enq-m-search">
               <span>Search:</span>
-              <div className="enq-search-input-wrapper">
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search student name or phone..."
-                />
-              </div>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search student name or phone..."
+              />
             </div>
           </div>
 
-          <div className="enq-table-sticky-wrapper">
-            <table className="enq-modern-table">
+          <div
+            className="enq-m-table-scroll"
+            ref={scrollRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={stopDragging}
+            onMouseLeave={stopDragging}
+          >
+            <table className="enq-m-table">
               <thead>
                 <tr>
-                  <th>STUDENT</th>
-                  <th>SUBMISSION DATE</th>
-                  <th>COUNSELLOR</th>
-                  <th>PHONE</th>
-                  <th>EMAIL</th>
-                  <th>COURSE</th>
-                  <th>BRANCH</th>
-                  <th className="text-center">ACTIONS</th>
+                  <th width="200">STUDENT NAME</th>
+                  <th width="120">SUBMISSION DATE</th>
+                  <th width="140">PHONE</th>
+                  <th width="220">EMAIL</th>
+                  <th width="160">LOCATION</th>
+                  <th width="80">AGE</th>
+                  <th width="100">GENDER</th>
+                  <th width="150">PROFESSION</th>
+                  <th width="180">SOURCE</th>
+                  <th width="250">PURPOSE</th>
+                  <th width="250">COURSES</th>
+                  <th width="120">BATCH</th>
+                  <th width="120">BRANCH</th>
+                  <th width="160">POC</th>
+                  <th width="160">COUNSELOR</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="8" className="enq-table-loader">
-                      Syncing data records...
+                    <td colSpan="15" className="enq-m-loader">
+                      Syncing database records...
                     </td>
                   </tr>
                 ) : enquiries.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="enq-table-loader">
-                      No enquiries found.
+                    <td colSpan="15" className="enq-m-loader">
+                      No records available.
                     </td>
                   </tr>
                 ) : (
                   enquiries.map((item) => (
-                    <tr key={item.id} className="enq-clickable-row">
-                      <td className="enq-student-cell">
-                        <strong>{item.name}</strong>
+                    <tr
+                      key={item.id}
+                      className="enq-clickable-row"
+                      onClick={(e) => handleRowClick(e, item)}
+                    >
+                      <td className="enq-m-name-bold">{item.name}</td>
+                      <td className="enq-m-txt-small">{item.date}</td>
+                      <td className="enq-m-txt-small">{item.counselor}</td>
+                      <td className="enq-m-txt-small">{item.phone}</td>
+                      <td className="enq-m-txt-small">{item.email}</td>
+                      <td className="enq-m-txt-small">{item.location}</td>
+                      <td className="text-center">{item.age}</td>
+                      <td className="enq-m-txt-small">{item.gender}</td>
+                      <td className="enq-m-txt-small">{item.profession}</td>
+                      <td>{renderVerticalList(item.source)}</td>
+                      <td className="enq-m-long-text">{item.purpose}</td>
+                      <td>{renderVerticalList(item.courses)}</td>
+                      <td className="enq-m-txt-small">
+                        {item.batch_preference}
                       </td>
-                      <td className="enq-date-text">{item.date}</td>
-                      <td className="enq-counselor-text">{item.counselor}</td>
-                      <td className="enq-phone-text">{item.phone}</td>
-                      <td className="enq-email-text">{item.email}</td>
-                      <td>
-                        <span className="enq-course-pill">
-                          {item.courses?.split(",")[0]}
-                        </span>
-                      </td>
-                      <td className="enq-branch-text">
+                      <td className="enq-m-txt-small">
                         {item.branch_preference}
                       </td>
-                      <td>
-                        <div className="enq-action-btns">
-                          <button className="enq-icon-btn">
-                            <Eye size={16} />
-                          </button>
-                          <div className="enq-menu-container">
-                            <button
-                              className={`enq-icon-btn ${activeMenuId === item.id ? "active" : ""}`}
-                              onClick={() =>
-                                setActiveMenuId(
-                                  activeMenuId === item.id ? null : item.id,
-                                )
-                              }
-                            >
-                              <MoreHorizontal size={16} />
-                            </button>
-                            {activeMenuId === item.id && (
-                              <div className="enq-dropdown-list">
-                                <button className="enq-drop-item">
-                                  <Edit3 size={14} /> Edit
-                                </button>
-                                <button className="enq-drop-item delete">
-                                  <Trash2 size={14} /> Delete
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </td>
+                      <td className="enq-m-txt-small">{item.poc}</td>
                     </tr>
                   ))
                 )}
@@ -318,24 +351,23 @@ const EnquiryManage = () => {
             </table>
           </div>
 
-          {/* PAGINATION FOOTER */}
-          <div className="enq-table-footer">
-            <span className="enq-showing-text">
+          <div className="enq-m-footer">
+            <span className="enq-m-showing">
               Showing page <strong>{page}</strong> of{" "}
               <strong>{totalPages}</strong>
-              <span className="enq-sep"> | </span> Total:{" "}
+              <span className="enq-m-sep"> | </span> Total Enquiries:{" "}
               <strong>{totalCount}</strong>
             </span>
-            <div className="enq-pagination">
+            <div className="enq-m-pagination">
               <button
-                className="enq-page-nav"
+                className="enq-m-nav"
                 disabled={page === 1}
                 onClick={() => setPage(1)}
               >
                 <ChevronsLeft size={16} />
               </button>
               <button
-                className="enq-page-nav"
+                className="enq-m-nav"
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
               >
@@ -344,21 +376,21 @@ const EnquiryManage = () => {
               {getPageNumbers().map((num) => (
                 <button
                   key={num}
-                  className={`enq-page-num ${page === num ? "active" : ""}`}
+                  className={`enq-m-num ${page === num ? "active" : ""}`}
                   onClick={() => setPage(num)}
                 >
                   {num}
                 </button>
               ))}
               <button
-                className="enq-page-nav"
+                className="enq-m-nav"
                 disabled={page === totalPages}
                 onClick={() => setPage(page + 1)}
               >
                 <ChevronRight size={16} />
               </button>
               <button
-                className="enq-page-nav"
+                className="enq-m-nav"
                 disabled={page === totalPages}
                 onClick={() => setPage(totalPages)}
               >
@@ -366,6 +398,11 @@ const EnquiryManage = () => {
               </button>
             </div>
           </div>
+          <EnquiryDetailDrawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            data={selectedEnquiry}
+          />
         </div>
       </main>
     </div>

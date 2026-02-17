@@ -10,9 +10,9 @@ import {
   RotateCcw,
   Check,
   Star,
-  Eye,
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
+import TrainerFeedbackDetailDrawer from "../../components/TrainerFeedbackDetailDrawer/TrainerFeedbackDetailDrawer";
 import "./TrainerFeedbackManage.css";
 
 const TrainerFeedbackManage = () => {
@@ -27,10 +27,12 @@ const TrainerFeedbackManage = () => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     trainer: "",
-    course: "",
     startDate: "",
     endDate: "",
   });
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
 
   // --- DRAG SCROLL LOGIC ---
   const scrollRef = useRef(null);
@@ -64,7 +66,6 @@ const TrainerFeedbackManage = () => {
             size: pageSize,
             search,
             trainer: filters.trainer,
-            course: filters.course,
             start_date: filters.startDate,
             end_date: filters.endDate,
           },
@@ -86,6 +87,11 @@ const TrainerFeedbackManage = () => {
   useEffect(() => {
     fetchData();
   }, [page, pageSize, filters, search]);
+
+  const openDetails = (item) => {
+    setSelectedFeedback(item);
+    setIsDrawerOpen(true);
+  };
 
   const getPageNumbers = () => {
     const pages = [];
@@ -117,7 +123,7 @@ const TrainerFeedbackManage = () => {
               >
                 <option value="">All Trainers</option>
                 <option value="Harsh Pareek">Harsh Pareek</option>
-                <option value="Shraddha Rane">Shraddha Rane</option>
+                <option value="Trainer A">Trainer A</option>
               </select>
             </div>
 
@@ -153,12 +159,7 @@ const TrainerFeedbackManage = () => {
               <button
                 className="tf-m-btn-reset"
                 onClick={() => {
-                  setFilters({
-                    trainer: "",
-                    course: "",
-                    startDate: "",
-                    endDate: "",
-                  });
+                  setFilters({ trainer: "", startDate: "", endDate: "" });
                   setSearch("");
                   setPage(1);
                 }}
@@ -172,6 +173,7 @@ const TrainerFeedbackManage = () => {
           </div>
         </div>
 
+        {/* DATA TABLE */}
         <div className="tf-m-data-card">
           <div className="tf-m-toolbar">
             <div className="tf-m-entries-select">
@@ -242,7 +244,11 @@ const TrainerFeedbackManage = () => {
                   </tr>
                 ) : (
                   feedbacks.map((item) => (
-                    <tr key={item.id}>
+                    <tr
+                      key={item.id}
+                      onClick={() => openDetails(item)}
+                      className="tf-m-row-clickable"
+                    >
                       <td className="tf-m-bold">{item.student_name}</td>
                       <td className="tf-m-small">{item.date}</td>
                       <td className="tf-m-small">{item.course_name}</td>
@@ -326,6 +332,13 @@ const TrainerFeedbackManage = () => {
           </div>
         </div>
       </main>
+
+      <TrainerFeedbackDetailDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        data={selectedFeedback}
+        onUpdate={fetchData}
+      />
     </div>
   );
 };

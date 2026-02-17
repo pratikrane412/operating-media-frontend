@@ -304,6 +304,22 @@ select {
 
 .tf-m-table thead th {
   font-size: 11px; /* Small, bold headers */
+  /* Add this to TrainerFeedbackManage.css */
+
+.tf-m-row-clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tf-m-row-clickable:hover {
+  background-color: #f1f5f9 !important; /* Light blue/gray highlight on hover */
+}
+
+/* Optional: Make the student name stand out slightly more on hover */
+.tf-m-row-clickable:hover .tf-m-bold {
+  color: #0056b3;
+  text-decoration: underline;
+}
   letter-spacing: 0.02em;
 }
 

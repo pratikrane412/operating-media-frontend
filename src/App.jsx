@@ -136,9 +136,9 @@ function App() {
           }
         />
         <Route path="/admission" element={<AdmissionForm />} />
-        <Route path="/counsellor" element={<CounsellorForm />} />
-        <Route path="/feedback" element={<FeedbackForm />} />
-        <Route path="/trainer-feedback" element={<TrainerFeedback />} />
+        <Route path="/counsellor-form" element={<CounsellorForm />} />
+        <Route path="/course-form" element={<FeedbackForm />} />
+        <Route path="/trainer-form" element={<TrainerFeedback />} />
       </Routes>
     </Router>
   );

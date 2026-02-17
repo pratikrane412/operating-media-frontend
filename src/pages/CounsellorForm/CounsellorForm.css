@@ -182,9 +182,17 @@
 /* --- SELECTION BOXES --- */
 .counsellor-portal-scoped .cf-select-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
 }
+
+.counsellor-portal-scoped .cf-select-box {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
 .counsellor-portal-scoped .cf-select-box {
   padding: 14px;
   border: 1px solid var(--e-border);
@@ -371,4 +379,117 @@
   .counsellor-portal-scoped .cf-toggle-row {
     flex-direction: column;
   }
+}
+
+/* --- COURSE LIST --- */
+.counsellor-portal-scoped .cf-course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.counsellor-portal-scoped .cf-course-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.1s;
+
+  font-size: 13px;      /* ✅ ADD THIS */
+  font-weight: 600;     /* Optional for better look */
+}
+/* --- RADIO BUTTON STYLE --- */
+
+.counsellor-portal-scoped .cf-radio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.counsellor-portal-scoped .cf-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 0;
+}
+
+.counsellor-portal-scoped .cf-radio-circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--e-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.counsellor-portal-scoped .cf-radio-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--e-navy);
+  border-radius: 50%;
+}
+
+.counsellor-portal-scoped .cf-radio-item.active .cf-radio-circle {
+  border-color: var(--e-navy);
+}
+
+
+.counsellor-portal-scoped .cf-select-box {
+  width: 100%;
+  padding: 16px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  justify-content: center;
+}
+/* Marketing Source - Sidebar Alignment Fix */
+.counsellor-portal-scoped .cf-sidebar .cf-check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 14px 25px;   /* row gap / column gap */
+  margin-top: 5px;
+}
+
+.counsellor-portal-scoped .cf-sidebar .cf-check-item {
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* === FORCE 4 CURRENT PROFESSION BUTTONS FULL WIDTH === */
+.counsellor-portal-scoped .cf-select-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 16px;
+  width: 100%;
+}
+
+.counsellor-portal-scoped .cf-select-box {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+/* === FIX CURRENT PROFESSION FULL WIDTH === */
+.counsellor-portal-scoped .cf-card:nth-of-type(2) .cf-select-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 16px;
+  width: 100%;
+}
+
+.counsellor-portal-scoped .cf-card:nth-of-type(2) .cf-select-box {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
 }

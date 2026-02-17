@@ -31,7 +31,7 @@ const CounsellorForm = () => {
     batch_preference: "",
     branch_preference: "",
     poc: "",
-    counselor_name: [],
+    counselor_name: "",
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -89,7 +89,7 @@ const CounsellorForm = () => {
             {/* SECTION 1 - PERSONAL DATA */}
             <section className="cf-card">
               <div className="cf-card-head">
-                <User size={18} /> <h3>1. Primary Lead Information</h3>
+                <User size={18} /> <h3>1. Primary Information</h3>
               </div>
               <div className="cf-grid grid-3">
                 <div className="cf-group">
@@ -174,7 +174,7 @@ const CounsellorForm = () => {
               <div className="cf-card-head">
                 <Briefcase size={18} /> <h3>2. Career Background</h3>
               </div>
-              <div className="cf-grid grid-2">
+              <div className="cf-grid">
                 <div className="cf-group">
                   <label>Current Profession *</label>
                   <div className="cf-select-grid">
@@ -193,31 +193,7 @@ const CounsellorForm = () => {
                     )}
                   </div>
                 </div>
-                <div className="cf-group">
-                  <label>Marketing Source *</label>
-                  <div className="cf-check-grid">
-                    {[
-                      "Google",
-                      "Instagram",
-                      "Facebook",
-                      "Justdial",
-                      "Sulekha",
-                      "Webinar",
-                      "Reference",
-                    ].map((s) => (
-                      <div
-                        key={s}
-                        className={`cf-check-item ${formData.source.includes(s) ? "active" : ""}`}
-                        onClick={() => handleToggle("source", s)}
-                      >
-                        <div className="cf-box">
-                          {formData.source.includes(s) && <Check size={12} />}
-                        </div>
-                        <span>{s}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                
               </div>
               <div className="cf-group full-width mt-25">
                 <label>Purpose of Joining *</label>
@@ -294,6 +270,32 @@ const CounsellorForm = () => {
                       <option value="Online">Online</option>
                     </select>
                   </div>
+                  <br />
+                  <div className="cf-group">
+                  <label>Marketing Source *</label>
+                  <div className="cf-check-grid">
+                    {[
+                      "Google",
+                      "Instagram",
+                      "Facebook",
+                      "Justdial",
+                      "Sulekha",
+                      "Webinar",
+                      "Reference",
+                    ].map((s) => (
+                      <div
+                        key={s}
+                        className={`cf-check-item ${formData.source.includes(s) ? "active" : ""}`}
+                        onClick={() => handleToggle("source", s)}
+                      >
+                        <div className="cf-box">
+                          {formData.source.includes(s) && <Check size={12} />}
+                        </div>
+                        <span>{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 </div>
               </div>
             </section>
@@ -326,8 +328,8 @@ const CounsellorForm = () => {
                   </div>
                 </div>
                 <div className="cf-group">
-                  <label>Counselors</label>
-                  <div className="cf-check-grid">
+                  <label>Counselor</label>
+                  <div className="cf-radio-grid">
                     {[
                       "Harsh Pareek",
                       "Pooja Parab",
@@ -339,12 +341,16 @@ const CounsellorForm = () => {
                     ].map((c) => (
                       <div
                         key={c}
-                        className={`cf-check-item ${formData.counselor_name.includes(c) ? "active" : ""}`}
-                        onClick={() => handleToggle("counselor_name", c)}
+                        className={`cf-radio-item ${
+                          formData.counselor_name === c ? "active" : ""
+                        }`}
+                        onClick={() =>
+                          setFormData({ ...formData, counselor_name: c })
+                        }
                       >
-                        <div className="cf-box">
-                          {formData.counselor_name.includes(c) && (
-                            <Check size={12} />
+                        <div className="cf-radio-circle">
+                          {formData.counselor_name === c && (
+                            <div className="cf-radio-dot"></div>
                           )}
                         </div>
                         <span>{c}</span>

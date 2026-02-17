@@ -295,7 +295,41 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 13px;/* Date Input Wrapper (Enquiry Style) */
+.cf-m-date-input-wrapper {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  background: #fcfdfe; /* Matches the select dropdown bg */
+}
+
+/* The actual date input field */
+.cf-m-picker-field {
+  border: none !important;
   font-size: 13px;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  background: transparent !important;
+  font-family: inherit;
+  color: var(--text);
+}
+
+/* Adjust the grid to fit more filters now */
+.cf-m-filter-grid {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Ensure groups don't shrink too much */
+.cf-m-group {
+  min-width: 160px;
+}
   font-weight: 700;
   color: #475569;
   transition: 0.2s ease;
@@ -326,4 +360,39 @@ select {
     flex-wrap: wrap;
     justify-content: center;
   }
+}
+/* Date Input Wrapper (Enquiry Style) */
+.cf-m-date-input-wrapper {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  background: #fcfdfe; /* Matches the select dropdown bg */
+}
+
+/* The actual date input field */
+.cf-m-picker-field {
+  border: none !important;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  background: transparent !important;
+  font-family: inherit;
+  color: var(--text);
+}
+
+/* Adjust the grid to fit more filters now */
+.cf-m-filter-grid {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Ensure groups don't shrink too much */
+.cf-m-group {
+  min-width: 160px;
 }

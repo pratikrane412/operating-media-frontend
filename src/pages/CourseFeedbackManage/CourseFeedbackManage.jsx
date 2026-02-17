@@ -25,7 +25,12 @@ const CourseFeedbackManage = () => {
   const [pageSize, setPageSize] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState({ profession: "", reviewStatus: "" });
+  const [filters, setFilters] = useState({
+    profession: "",
+    reviewStatus: "",
+    startDate: "", // New
+    endDate: "",
+  });
 
   // --- DRAG SCROLL LOGIC ---
   const scrollRef = useRef(null);
@@ -60,6 +65,8 @@ const CourseFeedbackManage = () => {
             search,
             profession: filters.profession,
             review_status: filters.reviewStatus,
+            start_date: filters.startDate, // Added
+            end_date: filters.endDate, // Added
           },
         },
       );
@@ -100,6 +107,7 @@ const CourseFeedbackManage = () => {
             <Filter size={16} /> <span>INSIGHT FILTERS</span>
           </div>
           <div className="cf-m-filter-grid">
+            {/* PROFESSION */}
             <div className="cf-m-group">
               <label>PROFESSION</label>
               <select
@@ -113,6 +121,8 @@ const CourseFeedbackManage = () => {
                 <option value="Working Pro">Working Professional</option>
               </select>
             </div>
+
+            {/* STATUS */}
             <div className="cf-m-group">
               <label>REVIEW STATUS</label>
               <select
@@ -125,6 +135,35 @@ const CourseFeedbackManage = () => {
                 <option value="Yes">Yes (Submitted)</option>
                 <option value="No">No (Pending)</option>
               </select>
+            </div>
+            {/* START DATE - Enquiry Style */}
+            <div className="cf-m-group">
+              <label>START DATE</label>
+              <div className="cf-m-date-input-wrapper">
+                <input
+                  type="date"
+                  className="cf-m-picker-field"
+                  value={filters.startDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, startDate: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            {/* END DATE - Enquiry Style */}
+            <div className="cf-m-group">
+              <label>END DATE</label>
+              <div className="cf-m-date-input-wrapper">
+                <input
+                  type="date"
+                  className="cf-m-picker-field"
+                  value={filters.endDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, endDate: e.target.value })
+                  }
+                />
+              </div>
             </div>
             <div className="cf-m-actions">
               <button

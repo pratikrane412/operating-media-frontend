@@ -120,7 +120,7 @@ function App() {
           }
         />
         <Route
-          path="/counsellor-feedback-form"
+          path="/counsellor-feedback-list"
           element={
             <ProtectedRoute>
               <EnquiryManage />

@@ -169,7 +169,7 @@ const Navbar = () => {
             </div>
             <div className="top-submenu">
               <NavLink
-                to="/counsellor-feedback-form"
+                to="/counsellor-feedback-list"
                 onClick={() => setActiveDropdown(null)}
               >
                 Counsellor Feedback

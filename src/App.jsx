@@ -19,6 +19,7 @@ import TrainerFeedback from "./pages/TrainerFeedback/TrainerFeedback";
 import TrainerFeedbackManage from "./pages/TrainerFeedbackManage/TrainerFeedbackManage";
 import EnquiryManage from "./pages/EnquiryManage/EnquiryManage";
 import CourseFeedbackManage from "./pages/CourseFeedbackManage/CourseFeedbackManage";
+import CertificateManage from "./pages/CertificateManage/CertificateManage";
 
 function App() {
   return (
@@ -132,6 +133,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CourseFeedbackManage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/certificate-manage"
+          element={
+            <ProtectedRoute>
+              <CertificateManage />
             </ProtectedRoute>
           }
         />

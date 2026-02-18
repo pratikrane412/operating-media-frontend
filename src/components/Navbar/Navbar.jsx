@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Users,
   ClipboardList,
+  Award,
   FileText,
   ChevronDown,
 } from "lucide-react";
@@ -178,13 +179,34 @@ const Navbar = () => {
                 to="/course-feedback-list"
                 onClick={() => setActiveDropdown(null)}
               >
-                Course Feedback 
+                Course Feedback
               </NavLink>
               <NavLink
                 to="/trainer-feedback-list"
                 onClick={() => setActiveDropdown(null)}
               >
-                Trainer Feedback 
+                Trainer Feedback
+              </NavLink>
+            </div>
+          </div>
+
+          {/* CERTIFICATE DROPDOWN */}
+          <div
+            className={`top-nav-dropdown ${activeDropdown === "certificates" ? "is-open" : ""}`}
+          >
+            <div
+              className="top-link trigger"
+              onClick={() => toggleDropdown("certificates")}
+            >
+              <Award size={18} /> <span>Certificates</span>{" "}
+              <ChevronDown size={14} />
+            </div>
+            <div className="top-submenu">
+              <NavLink
+                to="/certificate-manage"
+                onClick={() => setActiveDropdown(null)}
+              >
+                Manage certificates
               </NavLink>
             </div>
           </div>

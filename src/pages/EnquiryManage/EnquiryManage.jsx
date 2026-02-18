@@ -191,8 +191,14 @@ const EnquiryManage = () => {
                 }
               >
                 <option value="">All Courses</option>
-                <option value="Masters">Masters in Digital Marketing</option>
-                <option value="Advanced">Advanced Diploma</option>
+                <option value="Masters in Digital Marketing">Masters in Digital Marketing</option>
+                <option value="Advanced Diploma in Digital Marketing">Advanced Diploma in Digital Marketing</option>
+                <option value="Diploma in Digital Marketing">Diploma in Digital Marketing</option>
+                <option value="Pay Per Click Course">Pay Per Click Course</option>
+                <option value="Social Media Optimization Course">Social Media Optimization Course</option>
+                <option value="Search Engine Optimization Course">Search Engine Optimization Course</option>
+                <option value="Google Analytics Course (GA4)">Google Analytics Course (GA4)</option>
+                <option value="WordPress Development Course">WordPress Development Course</option>
               </select>
             </div>
             <div className="enq-m-group">

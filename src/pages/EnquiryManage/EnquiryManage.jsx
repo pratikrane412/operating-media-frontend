@@ -288,10 +288,10 @@ const EnquiryManage = () => {
             <table className="enq-m-table">
               <thead>
                 <tr>
-                  <th width="200">STUDENT NAME</th>
                   <th width="120">SUBMISSION DATE</th>
-                  <th width="140">PHONE</th>
+                  <th width="200">STUDENT NAME</th>
                   <th width="220">EMAIL</th>
+                  <th width="140">PHONE</th>
                   <th width="160">LOCATION</th>
                   <th width="80">AGE</th>
                   <th width="100">GENDER</th>
@@ -301,8 +301,8 @@ const EnquiryManage = () => {
                   <th width="250">COURSES</th>
                   <th width="120">BATCH</th>
                   <th width="120">BRANCH</th>
-                  <th width="160">POC</th>
                   <th width="160">COUNSELOR</th>
+                  <th width="160">POC</th>
                 </tr>
               </thead>
               <tbody>
@@ -325,10 +325,10 @@ const EnquiryManage = () => {
                       className="enq-clickable-row"
                       onClick={(e) => handleRowClick(e, item)}
                     >
-                      <td className="enq-m-name-bold">{item.name}</td>
                       <td className="enq-m-txt-small">{item.date}</td>
-                      <td className="enq-m-txt-small">{item.phone}</td>
+                      <td className="enq-m-name-bold">{item.name}</td>
                       <td className="enq-m-txt-small">{item.email}</td>
+                      <td className="enq-m-txt-small">{item.phone}</td>
                       <td className="enq-m-txt-small">{item.location}</td>
                       <td className="text-center">{item.age}</td>
                       <td className="enq-m-txt-small">{item.gender}</td>
@@ -342,8 +342,8 @@ const EnquiryManage = () => {
                       <td className="enq-m-txt-small">
                         {item.branch_preference}
                       </td>
-                      <td className="enq-m-txt-small">{item.poc}</td>
                       <td className="enq-m-txt-small">{item.counselor}</td>
+                      <td className="enq-m-txt-small">{item.poc}</td>
                     </tr>
                   ))
                 )}

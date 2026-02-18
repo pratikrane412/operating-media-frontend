@@ -36,7 +36,7 @@ const CertificateManage = () => {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedCert, setSelectedCert] = useState(null);
-  const componentRef = useRef();
+  const componentRef = useRef(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Refs
@@ -45,6 +45,7 @@ const CertificateManage = () => {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
+  
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -95,7 +96,7 @@ const CertificateManage = () => {
   };
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef: componentRef, // Note the property name change
   });
 
   const openPreview = (item) => {

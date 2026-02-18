@@ -327,7 +327,6 @@ const EnquiryManage = () => {
                     >
                       <td className="enq-m-name-bold">{item.name}</td>
                       <td className="enq-m-txt-small">{item.date}</td>
-                      <td className="enq-m-txt-small">{item.counselor}</td>
                       <td className="enq-m-txt-small">{item.phone}</td>
                       <td className="enq-m-txt-small">{item.email}</td>
                       <td className="enq-m-txt-small">{item.location}</td>
@@ -344,6 +343,7 @@ const EnquiryManage = () => {
                         {item.branch_preference}
                       </td>
                       <td className="enq-m-txt-small">{item.poc}</td>
+                      <td className="enq-m-txt-small">{item.counselor}</td>
                     </tr>
                   ))
                 )}

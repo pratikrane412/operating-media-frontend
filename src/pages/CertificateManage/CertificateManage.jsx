@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { useReactToPrint } from "react-to-print";
+import CertificateTemplate from "../../components/CertificateTemplate/CertificateTemplate";
 import {
   Search,
   ChevronLeft,
@@ -8,6 +10,8 @@ import {
   ChevronsRight,
   Filter,
   RotateCcw,
+  Download,
+  X,
   Award,
   Plus,
   Eye,
@@ -32,6 +36,8 @@ const CertificateManage = () => {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedCert, setSelectedCert] = useState(null);
+  const componentRef = useRef();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Refs
   const scrollRef = useRef(null);
@@ -88,6 +94,15 @@ const CertificateManage = () => {
     if (scrollRef.current) scrollRef.current.style.cursor = "grab";
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  const openPreview = (item) => {
+    setSelectedCert(item);
+    setIsPreviewOpen(true);
+  };
+
   const handleAddNew = () => {
     setSelectedCert(null);
     setIsDrawerOpen(true);
@@ -100,16 +115,18 @@ const CertificateManage = () => {
   };
 
   const handleDelete = async (id) => {
-  if (window.confirm("Are you sure you want to delete this certificate?")) {
-    try {
-      await axios.delete(`https://operating-media-backend.onrender.com/api/certificates/${id}/delete/`);
-      alert("Deleted successfully");
-      fetchData(); // Refresh table
-    } catch (err) {
-      alert("Failed to delete.");
+    if (window.confirm("Are you sure you want to delete this certificate?")) {
+      try {
+        await axios.delete(
+          `https://operating-media-backend.onrender.com/api/certificates/${id}/delete/`,
+        );
+        alert("Deleted successfully");
+        fetchData(); // Refresh table
+      } catch (err) {
+        alert("Failed to delete.");
+      }
     }
-  }
-};
+  };
 
   const handleMouseMove = (e) => {
     if (!isDragging.current) return;
@@ -251,10 +268,40 @@ const CertificateManage = () => {
                           {/* VIEW BUTTON */}
                           <button
                             className="cert-m-round-btn"
-                            title="View Detail"
+                            onClick={() => openPreview(item)}
                           >
-                            <Eye size={16} strokeWidth={1.5} />
+                            <Eye size={16} />
                           </button>
+                          {isPreviewOpen && (
+                            <div className="cert-preview-modal-overlay">
+                              <div className="cert-preview-modal-content">
+                                <div className="modal-header">
+                                  <h3>Certificate Preview</h3>
+                                  <div className="header-btns">
+                                    <button
+                                      onClick={handlePrint}
+                                      className="btn-print"
+                                    >
+                                      <Download size={14} /> Download PDF
+                                    </button>
+                                    <button
+                                      onClick={() => setIsPreviewOpen(false)}
+                                      className="btn-close-modal"
+                                    >
+                                      <X size={18} />
+                                    </button>
+                                  </div>
+                                </div>
+
+                                <div className="modal-body">
+                                  <CertificateTemplate
+                                    ref={componentRef}
+                                    data={selectedCert}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
 
                           {/* DROPDOWN BUTTON */}
                           <div className="cert-m-dropdown-rel">

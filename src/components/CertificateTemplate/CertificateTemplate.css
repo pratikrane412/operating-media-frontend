@@ -1,0 +1,175 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+.cert-final-container {
+  width: 1000px;
+  height: 707px;
+  position: relative;
+  background: white;
+  font-family: "Montserrat", sans-serif;
+  overflow: hidden;
+  margin: 0 auto;
+  color: #1e293b;
+}
+
+.cert-final-bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* --- TEXT LAYERS --- */
+
+.txt-certify {
+  position: absolute;
+  top: 26.5%;
+  width: 100%;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 500;
+  z-index: 10;
+  color: #475569;
+}
+
+.txt-name {
+  position: absolute;
+  top: 31.5%;
+  width: 100%;
+  text-align: center;
+  font-size: 46px;
+  font-weight: 800;
+  color: #003873;
+  text-transform: uppercase;
+  z-index: 10;
+  letter-spacing: 0.5px;
+}
+
+.txt-completion {
+  position: absolute;
+  top: 41%;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #475569;
+  z-index: 10;
+}
+
+.txt-course {
+  position: absolute;
+  top: 54.5%;
+  width: 100%;
+  text-align: center;
+  font-size: 38px;
+  font-weight: 800;
+  color: #0d6b7b;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+.txt-date {
+  position: absolute;
+  top: 62.5%;
+  width: 100%;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+  color: #475569;
+  z-index: 10;
+}
+
+/* --- RATING SECTION (Left) --- */
+
+.box-rating-val {
+  position: absolute;
+  bottom: 23%; /* Above the line */
+  left: 10%;
+  width: 26.5%;
+  text-align: center;
+  font-size: 38px;
+  font-weight: 800;
+  color: #003873;
+  z-index: 10;
+}
+
+.box-rating-label {
+  position: absolute;
+  bottom: 15.5%; /* Below the line */
+  left: 10%;
+  width: 26.5%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  z-index: 10;
+}
+
+/* --- SIGNATURE SECTION (Right) --- */
+
+.box-signature-label {
+  position: absolute;
+  bottom: 15.5%; /* Below the line */
+  right: 10.5%;
+  width: 25.5%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  z-index: 10;
+}
+
+/* --- FOOTER SECTIONS --- */
+
+.footer-left {
+  position: absolute;
+  bottom: 5.5%;
+  left: 0;
+  width: 33%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  z-index: 10;
+}
+
+.footer-mid {
+  position: absolute;
+  bottom:5.5%;
+  left: 33.5%;
+  width: 33%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  z-index: 10;
+}
+
+.footer-right {
+  position: absolute;
+  bottom: 5.5%;
+  right: 0;
+  width: 33%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  z-index: 10;
+}
+
+/* --- PRINT SETTINGS --- */
+@media print {
+  @page {
+    size: landscape;
+    margin: 0;
+  }
+  .cert-final-container {
+    width: 100%;
+    height: 100vh;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+  }
+}

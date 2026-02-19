@@ -45,7 +45,6 @@ const CertificateManage = () => {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
-  
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -88,6 +87,12 @@ const CertificateManage = () => {
     startX.current = e.pageX - scrollRef.current.offsetLeft;
     scrollLeft.current = scrollRef.current.scrollLeft;
     scrollRef.current.style.cursor = "grabbing";
+  };
+
+  const handleViewCertificate = (cid) => {
+    // Use the exact URL structure you wanted
+    const url = `/certificate/show.php?cid=${(cid)}`;
+    window.open(url, "_blank"); // Opens in new tab
   };
 
   const stopDragging = () => {
@@ -269,9 +274,12 @@ const CertificateManage = () => {
                           {/* VIEW BUTTON */}
                           <button
                             className="cert-m-round-btn"
-                            onClick={() => openPreview(item)}
+                            title="View Certificate"
+                            onClick={() =>
+                              handleViewCertificate(item.certificate_id)
+                            }
                           >
-                            <Eye size={16} />
+                            <Eye size={16} strokeWidth={1.5} />
                           </button>
                           {isPreviewOpen && (
                             <div className="cert-preview-modal-overlay">

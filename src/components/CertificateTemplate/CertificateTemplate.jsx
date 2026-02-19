@@ -7,7 +7,7 @@ const CertificateTemplate = forwardRef(({ data }, ref) => {
   return (
     <div className="cert-final-container" ref={ref}>
       {/* THE BLANK TEMPLATE IMAGE */}
-      <img src="/bg1.png" alt="Template" className="cert-final-bg" />
+      <img src="/OM Certificate 2026.png" alt="Template" className="cert-final-bg" />
 
       {/* 1. TOP SECTION */}
       <p className="txt-certify">This certifies that</p>

@@ -220,6 +220,7 @@ const CounsellorForm = () => {
                     {[
                       "Master's Program in Digital Marketing",
                       "Advanced Diploma in Digital Marketing",
+                      "Diploma in Digital Marketing",
                       "Search Engine Optimization",
                       "Pay Per Click",
                       "Social Media Marketing",
@@ -282,6 +283,7 @@ const CounsellorForm = () => {
                       "Sulekha",
                       "Webinar",
                       "Reference",
+                      "Website",
                     ].map((s) => (
                       <div
                         key={s}
@@ -311,9 +313,9 @@ const CounsellorForm = () => {
                   <div className="cf-staff-list">
                     {[
                       "Pooja Parab",
-                      "Aniket Pawar",
+                      "Darshan Deorhkhkar",
                       "Mayuri Patel",
-                      "Komal",
+                      "Komal Pareek",
                       "Ashwini",
                     ].map((p) => (
                       <div
@@ -332,11 +334,10 @@ const CounsellorForm = () => {
                   <div className="cf-radio-grid">
                     {[
                       "Harsh Pareek",
-                      "Pooja Parab",
-                      "Aniket Pawar",
+                      "Pooja Parab",  
                       "Mayuri Patel",
-                      "Komal",
-                      "Hemant Mane",
+                      "Darshan Deorhkhkar",
+                      "Komal Pareek",
                       "Shraddha Rane",
                     ].map((c) => (
                       <div

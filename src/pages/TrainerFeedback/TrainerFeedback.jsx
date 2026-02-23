@@ -132,12 +132,13 @@ const TrainerFeedback = () => {
                     <option value="">Select Trainer</option>
                     <option value="Shraddha Rane">Shraddha Rane</option>
                     <option value="Harsh Pareek">Harsh Pareek</option>
-                    <option value="Vikram Kamble">Vikram Kamble</option>
+                    <option value="Ritesh Pandey">Ritesh Pandey</option>
                     <option value="Dashmeet Bhogal">Dashmeet Bhogal</option>
                     <option value="Rahul Shende">Rahul Shende</option>
                     <option value="Surbhi Samant">Surbhi Samant</option>
                     <option value="Prachi Gala">Prachi Gala</option>
-                    <option value="Mahima Priyolkar">Mahima Priyolkar</option>
+                    <option value="Rasika Karjavkar">Rasika Karjavkar</option>
+                    <option value="Nilkamal Mukharjee">Nilkamal Mukharjee</option>
                   </select>
                 </div>
               </div>

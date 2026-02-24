@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Search,
   Bell,
@@ -11,6 +12,9 @@ import {
   Award,
   FileText,
   ChevronDown,
+  Clock,
+  Phone,
+  X,
 } from "lucide-react";
 import ProfileDropdown from "./ProfileDropdown";
 import { hasPermission } from "../../utils/permissionCheck";
@@ -19,17 +23,70 @@ import "./Navbar.css";
 const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+
   const dropRef = useRef(null);
   const navRef = useRef(null);
+  const notifRef = useRef(null);
   const navigate = useNavigate();
+
+  // --- NOTIFICATION LOGIC ---
+
+  const fetchNotifications = async () => {
+  try {
+    // 1. Get your auth token from storage
+    const token = localStorage.getItem("access_token"); 
+
+    const res = await axios.get(
+      "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
+      {
+        headers: {
+          // 2. Add the Authorization Header
+          Authorization: `Bearer ${token}` 
+        }
+      }
+    );
+    setNotifications(res.data || []);
+  } catch (e) {
+    console.error("Notif Error:", e);
+  }
+};
+
+  useEffect(() => {
+    fetchNotifications();
+    // Refresh notifications every 60 seconds
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleDismissNotif = async (id) => {
+    try {
+      await axios.patch(
+        `https://operating-media-backend.onrender.com/api/leads/${id}/dismiss/`,
+      );
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (e) {
+      console.error("Dismiss Error:", e);
+    }
+  };
+
+  // --- UI INTERACTION LOGIC ---
 
   useEffect(() => {
     const clickOutside = (e) => {
-      // Logic to close dropdowns if clicked outside the nav container
-      if (navRef.current && !navRef.current.contains(e.target))
+      // Close nav dropdowns if clicked outside
+      if (navRef.current && !navRef.current.contains(e.target)) {
         setActiveDropdown(null);
-      if (dropRef.current && !dropRef.current.contains(e.target))
+      }
+      // Close profile if clicked outside
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
         setIsProfileOpen(false);
+      }
+      // Close notifications if clicked outside
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setIsNotifOpen(false);
+      }
     };
     document.addEventListener("mousedown", clickOutside);
     return () => document.removeEventListener("mousedown", clickOutside);
@@ -37,6 +94,16 @@ const Navbar = () => {
 
   const toggleDropdown = (name) => {
     setActiveDropdown(activeDropdown === name ? null : name);
+    // Close other panels
+    setIsProfileOpen(false);
+    setIsNotifOpen(false);
+  };
+
+  const toggleNotif = () => {
+    setIsNotifOpen(!isNotifOpen);
+    // Close other panels
+    setActiveDropdown(null);
+    setIsProfileOpen(false);
   };
 
   return (
@@ -50,7 +117,6 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Start of Main Links Container */}
         <div className="top-menu-links" ref={navRef}>
           <NavLink to="/dashboard" className="top-link">
             <LayoutDashboard size={18} /> <span>Dashboard</span>
@@ -157,7 +223,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* FORMS - PROPERLY PLACED INSIDE THE CONTAINER */}
+          {/* FORMS */}
           <div
             className={`top-nav-dropdown ${activeDropdown === "forms" ? "is-open" : ""}`}
           >
@@ -190,7 +256,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* CERTIFICATE DROPDOWN */}
+          {/* CERTIFICATES */}
           <div
             className={`top-nav-dropdown ${activeDropdown === "certificates" ? "is-open" : ""}`}
           >
@@ -211,22 +277,74 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        {/* End of Main Links Container */}
       </div>
 
       <div className="header-actions">
         <button className="action-btn">
           <Search size={18} />
         </button>
-        <button className="action-btn">
-          <Bell size={18} />
-        </button>
+
+        {/* BELL NOTIFICATIONS */}
+        <div className="notif-container" ref={notifRef}>
+          <button
+            className={`action-btn ${isNotifOpen ? "active" : ""}`}
+            onClick={toggleNotif}
+          >
+            <Bell size={18} />
+            {notifications.length > 0 && (
+              <span className="notif-badge">{notifications.length}</span>
+            )}
+          </button>
+
+          {isNotifOpen && (
+            <div className="notif-dropdown">
+              <div className="notif-header">
+                <h4>Notifications</h4>
+                <span>{notifications.length} Pending</span>
+              </div>
+              <div className="notif-list">
+                {notifications.length === 0 ? (
+                  <div className="notif-empty">All Notifications cleared!</div>
+                ) : (
+                  notifications.map((n) => (
+                    <div key={n.id} className="notif-item">
+                      <div className="notif-info">
+                        <p className="notif-user">{n.name}</p>
+                        <div className="notif-meta">
+                          <span>
+                            <Phone size={10} /> {n.phone}
+                          </span>
+                          <span>
+                            <Clock size={10} /> {n.time}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        className="notif-dismiss"
+                        onClick={() => handleDismissNotif(n.id)}
+                        title="Dismiss"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* PROFILE */}
         <div className="profile-container" ref={dropRef}>
           <img
             src="/admin.jpg"
             alt="admin"
             className="header-avatar"
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            onClick={() => {
+              setIsProfileOpen(!isProfileOpen);
+              setIsNotifOpen(false);
+              setActiveDropdown(null);
+            }}
           />
           {isProfileOpen && <ProfileDropdown />}
         </div>

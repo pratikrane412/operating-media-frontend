@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Bell, X, Phone, Clock } from "lucide-react"; // Added Clock
+import { Bell, X, Phone, Clock } from "lucide-react";
 import "./ReminderAlert.css";
 
 const ReminderAlert = () => {
@@ -8,9 +8,23 @@ const ReminderAlert = () => {
 
   const checkServer = useCallback(async () => {
     try {
+      // 1. Pull user data from localStorage (Duralux logic)
+      const adminData = JSON.parse(localStorage.getItem("admin"));
+
+      // If not logged in, don't check for reminders
+      if (!adminData) return;
+
+      // 2. Pass role and name as parameters to the API
       const res = await axios.get(
         "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
+        {
+          params: {
+            role: adminData.role, // e.g., 'admin' or 'super_admin'
+            name: adminData.name, // e.g., 'Darshan'
+          },
+        },
       );
+
       if (res.data && res.data.length > 0) {
         setActiveAlerts(res.data);
       }
@@ -20,11 +34,8 @@ const ReminderAlert = () => {
   }, []);
 
   useEffect(() => {
-    // 1. Check immediately when the app opens
     checkServer();
-
-    // 2. Set interval to check every 30 seconds
-    const interval = setInterval(checkServer, 30000);
+    const interval = setInterval(checkServer, 30000); // Check every 30 seconds
     return () => clearInterval(interval);
   }, [checkServer]);
 
@@ -65,4 +76,4 @@ const ReminderAlert = () => {
   );
 };
 
-export default ReminderAlert; // Added export
+export default ReminderAlert;

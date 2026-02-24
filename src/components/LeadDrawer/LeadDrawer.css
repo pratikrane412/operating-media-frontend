@@ -433,3 +433,125 @@
   color: #94a3b8;
   padding: 50px;
 }
+
+/* --- NEW REMINDER UI --- */
+
+.reminder-premium-box {
+  margin-top: 20px;
+}
+
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.ist-tag {
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.reminder-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 56, 115, 0.03);
+}
+
+.reminder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.reminder-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reminder-field label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Styled Input Wrapper */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 42px;
+  transition: 0.2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #003873;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 56, 115, 0.05);
+}
+
+.input-icon {
+  color: #94a3b8;
+  margin-right: 10px;
+}
+
+.input-wrapper input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  width: 100%;
+  font-family: inherit;
+}
+
+/* Primary Action Button */
+.reminder-set-btn {
+  width: 100%;
+  height: 42px;
+  background: #003873;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reminder-set-btn:hover {
+  background: #002d5c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(0, 56, 115, 0.2);
+}
+
+.reminder-disclaimer {
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin-top: 12px;
+  text-align: center;
+  line-height: 1.4;
+  font-style: italic;
+}

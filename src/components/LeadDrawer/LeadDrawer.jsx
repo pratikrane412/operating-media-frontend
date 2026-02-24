@@ -3,6 +3,7 @@ import axios from "axios";
 import { X, Mail, Phone, Calendar, Send, Check } from "lucide-react";
 import "./LeadDrawer.css";
 import { hasPermission } from "../../utils/permissionCheck";
+import { Bell, Clock } from "lucide-react";
 
 const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   const [details, setDetails] = useState(null);
@@ -11,6 +12,8 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
   // Followup Form States
   const [newRemark, setNewRemark] = useState("");
   const [nextDate, setNextDate] = useState("");
+  const [reminderDate, setReminderDate] = useState("");
+  const [reminderTime, setReminderTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   // Tags & Sources States
@@ -138,6 +141,30 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
         setLoading(false);
       });
   };
+
+  const handleSaveReminder = async () => {
+    try {
+      await axios.put(
+        `https://operating-media-backend.onrender.com/api/leads/${leadId}/edit/`,
+        {
+          reminder_date: reminderDate,
+          reminder_time: reminderTime,
+          reminder_dismissed: false, // Reset dismissal when new reminder is set
+        },
+      );
+      alert("Reminder Set Successfully (IST)");
+      if (onUpdate) onUpdate();
+    } catch (err) {
+      console.error("Reminder Error:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (details) {
+      setReminderDate(details.reminder_date || "");
+      setReminderTime(details.reminder_time || "");
+    }
+  }, [details]);
 
   useEffect(() => {
     if (isOpen && leadId) {
@@ -349,6 +376,53 @@ const LeadDrawer = ({ leadId, isOpen, onClose, onUpdate }) => {
                     </div>
                   </div>
                 )}
+                {/* REMINDER SECTION - REDESIGNED */}
+                <div className="drawer-section reminder-premium-box">
+                  <div className="section-header-flex">
+                    <h4 className="section-title">Set Follow-up Alert</h4>
+                    <div className="ist-tag">IST (GMT +5:30)</div>
+                  </div>
+
+                  <div className="reminder-card">
+                    <div className="reminder-grid">
+                      <div className="reminder-field">
+                        <label>Pick Date</label>
+                        <div className="input-wrapper">
+                          <Calendar size={14} className="input-icon" />
+                          <input
+                            type="date"
+                            value={reminderDate}
+                            onChange={(e) => setReminderDate(e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="reminder-field">
+                        <label>Pick Time</label>
+                        <div className="input-wrapper">
+                          <Clock size={14} className="input-icon" />
+                          <input
+                            type="time"
+                            value={reminderTime}
+                            onChange={(e) => setReminderTime(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className="reminder-set-btn"
+                      onClick={handleSaveReminder}
+                    >
+                      <Bell size={14} /> <span>Set Smart Reminder</span>
+                    </button>
+
+                    <p className="reminder-disclaimer">
+                      You will receive a popup notification across the CRM when
+                      the time arrives.
+                    </p>
+                  </div>
+                </div>
                 <div className="timeline">
                   {details?.history?.map((h, i) => (
                     <div key={i} className="timeline-item">

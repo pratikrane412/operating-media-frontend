@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import LeadsView from "./pages/LeadsView/LeadsView";
 import LeadsCreate from "./pages/LeadsCreate/LeadsCreate";
 import LeadsEdit from "./pages/LeadsEdit/LeadsEdit";
+import ReminderAlert from "./components/ReminderAlert/ReminderAlert";
 import ManageBatch from "./pages/ManageBatch/ManageBatch";
 import ManageCourse from "./pages/ManageCourse/ManageCourse";
 import ManageStaff from "./pages/ManageStaff/ManageStaff";
@@ -25,6 +26,7 @@ import PublicCertificateView from "./components/PublicCertificateView/PublicCert
 function App() {
   return (
     <Router>
+      <ReminderAlert />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Login />} />
@@ -149,7 +151,10 @@ function App() {
         <Route path="/counsellor-form" element={<CounsellorForm />} />
         <Route path="/course-form" element={<FeedbackForm />} />
         <Route path="/trainer-form" element={<TrainerFeedback />} />
-        <Route path="/certificate/show.php" element={<PublicCertificateView />} />
+        <Route
+          path="/certificate/show.php"
+          element={<PublicCertificateView />}
+        />
       </Routes>
     </Router>
   );

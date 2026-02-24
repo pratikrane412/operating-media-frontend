@@ -34,24 +34,29 @@ const Navbar = () => {
   // --- NOTIFICATION LOGIC ---
 
   const fetchNotifications = async () => {
-    try {
-      // 1. Get your auth token from storage
-      const token = localStorage.getItem("access_token");
+  const userString = localStorage.getItem("admin");
+  if (!userString) return;
 
-      const res = await axios.get(
-        "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
-        {
-          headers: {
-            // 2. Add the Authorization Header
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      setNotifications(res.data || []);
-    } catch (e) {
-      console.error("Notif Error:", e);
-    }
-  };
+  try {
+    const adminData = JSON.parse(userString);
+    
+    // DEBUG: Open your console (F12) to see if this matches your DB
+    console.log("Navbar Sending Name:", adminData.name); 
+
+    const res = await axios.get(
+      "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
+      {
+        params: {
+          role: adminData.role,
+          name: adminData.name 
+        }
+      }
+    );
+    setNotifications(res.data || []);
+  } catch (e) {
+    console.error("Fetch Notif Error:", e);
+  }
+};
 
   useEffect(() => {
     fetchNotifications();

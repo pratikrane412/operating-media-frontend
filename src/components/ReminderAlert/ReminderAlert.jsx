@@ -7,35 +7,47 @@ const ReminderAlert = () => {
   const [activeAlerts, setActiveAlerts] = useState([]);
 
   const checkServer = useCallback(async () => {
+    const userString = localStorage.getItem("admin");
+
+    if (!userString) {
+      console.log("ReminderAlert: No user found in storage, skipping check.");
+      return;
+    }
+
     try {
-      // 1. Pull user data from localStorage (Duralux logic)
-      const adminData = JSON.parse(localStorage.getItem("admin"));
+      const adminData = JSON.parse(userString);
+      console.log(
+        `ReminderAlert: Checking for ${adminData.name} (${adminData.role})...`,
+      );
 
-      // If not logged in, don't check for reminders
-      if (!adminData) return;
-
-      // 2. Pass role and name as parameters to the API
       const res = await axios.get(
         "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
         {
           params: {
-            role: adminData.role, // e.g., 'admin' or 'super_admin'
-            name: adminData.name, // e.g., 'Darshan'
+            role: adminData.role,
+            name: adminData.name,
           },
         },
       );
 
-      if (res.data && res.data.length > 0) {
+      console.log("ReminderAlert: Data received from server:", res.data);
+
+      // Simple array comparison to prevent unnecessary renders
+      if (res.data && res.data.length !== activeAlerts.length) {
         setActiveAlerts(res.data);
       }
     } catch (e) {
-      console.error("Polling error:", e);
+      console.error("ReminderAlert: Polling error:", e);
     }
-  }, []);
+  }, [activeAlerts.length]);
 
   useEffect(() => {
+    // Initial check
     checkServer();
-    const interval = setInterval(checkServer, 30000); // Check every 30 seconds
+
+    // Polling every 30 seconds
+    const interval = setInterval(checkServer, 30000);
+
     return () => clearInterval(interval);
   }, [checkServer]);
 
@@ -45,8 +57,9 @@ const ReminderAlert = () => {
         `https://operating-media-backend.onrender.com/api/leads/${id}/dismiss/`,
       );
       setActiveAlerts((prev) => prev.filter((a) => a.id !== id));
+      console.log(`ReminderAlert: Alert ${id} dismissed.`);
     } catch (e) {
-      console.error("Dismiss error:", e);
+      console.error("ReminderAlert: Dismiss error:", e);
     }
   };
 
@@ -60,7 +73,7 @@ const ReminderAlert = () => {
             <Bell size={20} className="ring-anim" />
           </div>
           <div className="popup-info">
-            <label>FOLLOW-UP REMINDER</label>
+            <label>FOLLOW-UP DUE NOW</label>
             <h4>{alert.name}</h4>
             <p>
               <Phone size={12} /> {alert.phone} | <Clock size={12} />{" "}

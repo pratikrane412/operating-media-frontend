@@ -131,6 +131,7 @@ const ManageAdmission = () => {
             size: pageSize,
             search,
             branch_id: user.branch_id,
+            role: user.role,
             branch: filters.branch,
             course: filters.course,
             counsellor: filters.counsellor,
@@ -219,24 +220,22 @@ const ManageAdmission = () => {
               </div>
             </div>
             <div className="filter-grid">
-              {!isBranchUser && (
-                <div className="filter-group">
-                  <label>BRANCH</label>
-                  <select
-                    value={filters.branch}
-                    onChange={(e) =>
-                      setFilters({ ...filters, branch: e.target.value })
-                    }
-                  >
-                    <option value="">All Branches</option>
-                    {options.branches.map((b, i) => (
-                      <option key={i} value={b}>
-                        {b}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              <div className="filter-group">
+                <label>BRANCH</label>
+                <select
+                  value={filters.branch}
+                  onChange={(e) =>
+                    setFilters({ ...filters, branch: e.target.value })
+                  }
+                >
+                  <option value="">All Branches</option>
+                  {options.branches.map((b, i) => (
+                    <option key={i} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="filter-group">
                 <label>COURSE</label>
                 <select

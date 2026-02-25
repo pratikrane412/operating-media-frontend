@@ -131,7 +131,7 @@ const ManageAdmission = () => {
             size: pageSize,
             search,
             branch_id: user.branch_id,
-            role: user.role,
+            role: user.role, 
             branch: filters.branch,
             course: filters.course,
             counsellor: filters.counsellor,

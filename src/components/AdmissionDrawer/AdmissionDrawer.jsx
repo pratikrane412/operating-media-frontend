@@ -480,6 +480,7 @@ const AdmissionDrawer = ({ isOpen, onClose, onUpdate, admissionId }) => {
                           <option value="GPay">GPay</option>
                           <option value="CC">CC</option>
                           <option value="Bank Transfer">Bank Transfer</option>
+                          <option value="Cheque">Cheque</option>
                         </select>
 
                         <select

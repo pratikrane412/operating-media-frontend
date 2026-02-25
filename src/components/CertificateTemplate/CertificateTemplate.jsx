@@ -14,8 +14,7 @@ const CertificateTemplate = forwardRef(({ data }, ref) => {
       <h1 className="txt-name">{data.name}</h1>
       <p className="txt-completion">
         has completed the required course of study <br />
-        for the below mentioned topic and <br />
-        in testimony thereof is awarded this
+        for the below mentioned topic and in testimony thereof is awarded this
       </p>
 
       {/* 2. COURSE SECTION */}

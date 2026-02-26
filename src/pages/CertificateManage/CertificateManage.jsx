@@ -248,10 +248,10 @@ const CertificateManage = () => {
               <thead>
                 <tr>
                   <th width="80">ID</th>
-                  <th width="200">CERTIFICATE ID</th>
-                  <th width="300">STUDENT NAME</th>
-                  <th width="150">ISSUE DATE</th>
-                  <th width="400">COURSE NAME</th>
+                  <th width="150">CERTIFICATE ID</th>
+                  <th width="200">STUDENT NAME</th>
+                  <th width="100">ISSUE DATE</th>
+                  <th width="300">COURSE NAME</th>
                   <th width="100" className="text-center">
                     RATING
                   </th>

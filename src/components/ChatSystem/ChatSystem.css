@@ -1,0 +1,339 @@
+:root {
+  --chat-navy: #003873;
+  --chat-blue-light: #f0f7ff;
+  --chat-text: #1e293b;
+  --chat-muted: #64748b;
+  --chat-shadow: 0 20px 50px rgba(0, 56, 115, 0.15);
+}
+
+.chat-premium-root {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* --- Floating Button --- */
+.chat-fab-main {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: var(--chat-navy);
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 56, 115, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.chat-fab-main:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+.chat-fab-main.active {
+  background: #0f172a;
+  border-radius: 50%;
+}
+
+.notif-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 3px solid white;
+}
+
+/* --- Main Window --- */
+.chat-panel-container {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  width: 380px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  box-shadow: var(--chat-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-view-header {
+  padding: 25px;
+  background: linear-gradient(135deg, #003873 0%, #002347 100%);
+  color: white;
+}
+
+.chat-view-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+.chat-view-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+}
+
+.chat-view-header.messaging {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+}
+
+/* --- Search --- */
+.chat-search-box {
+  margin: -15px 20px 15px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  height: 45px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.chat-search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--chat-text);
+}
+
+/* --- User List --- */
+.chat-user-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 15px;
+}
+
+.chat-user-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: 0.2s;
+}
+
+.chat-user-card:hover {
+  background: var(--chat-blue-light);
+}
+
+.chat-avatar-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #e2e8f0;
+  position: relative;
+}
+
+.chat-avatar-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--chat-navy);
+  font-size: 18px;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.chat-user-details {
+  flex: 1;
+}
+.name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.name-row strong {
+  font-size: 14px;
+  color: var(--chat-text);
+}
+.time-stamp {
+  font-size: 10px;
+  color: var(--chat-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.last-msg {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--chat-muted);
+}
+
+/* --- Messages --- */
+.chat-messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f8fafc;
+}
+
+.msg-row {
+  display: flex;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.msg-row.me {
+  justify-content: flex-end;
+}
+
+.msg-content {
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+}
+.msg-row.me .msg-content {
+  align-items: flex-end;
+}
+
+.msg-bubble {
+  padding: 12px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.msg-row.me .msg-bubble {
+  background: var(--chat-navy);
+  color: white;
+  border-radius: 18px 18px 2px 18px;
+  box-shadow: 0 4px 12px rgba(0, 56, 115, 0.2);
+}
+
+.msg-row.them .msg-bubble {
+  background: white;
+  color: var(--chat-text);
+  border-radius: 18px 18px 18px 2px;
+  border: 1px solid #e2e8f0;
+}
+
+.msg-time {
+  font-size: 9px;
+  color: var(--chat-muted);
+  margin-top: 5px;
+  font-weight: 700;
+}
+
+/* --- Input Area --- */
+.chat-input-row {
+  padding: 15px 20px;
+  background: white;
+}
+.input-pill {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border-radius: 15px;
+  padding: 5px 5px 5px 15px;
+}
+.input-pill input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.send-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 12px;
+  background: var(--chat-navy);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Premium Back Button Style */
+.icon-btn-back {
+  background: rgba(255, 255, 255, 0.15); /* Translucent white */
+  border: none;                           /* Remove default border */
+  color: white;                           /* Icon color */
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;                     /* Match the avatar style */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  outline: none;
+}
+
+.icon-btn-back:hover {
+  background: rgba(255, 255, 255, 0.25); /* Brighten on hover */
+  transform: translateX(-2px);           /* Subtle movement hint */
+}
+
+/* Fix for the ellipsis icon color as well */
+.header-icon-muted {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.header-icon-muted:hover {
+  color: white;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}

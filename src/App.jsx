@@ -22,11 +22,13 @@ import EnquiryManage from "./pages/EnquiryManage/EnquiryManage";
 import CourseFeedbackManage from "./pages/CourseFeedbackManage/CourseFeedbackManage";
 import CertificateManage from "./pages/CertificateManage/CertificateManage";
 import PublicCertificateView from "./components/PublicCertificateView/PublicCertificateView";
+import ChatSystem from "./components/ChatSystem/ChatSystem";
 
 function App() {
   return (
     <Router>
       <ReminderAlert />
+      <ChatSystem />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Login />} />

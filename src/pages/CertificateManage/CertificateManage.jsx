@@ -87,16 +87,31 @@ const CertificateManage = () => {
     setSelectedCert(item);
     setOpenMenuId(null);
 
-    // Short delay to allow hidden DOM to update with selectedCert data
     setTimeout(() => {
-      const element = document.getElementById("hidden-pdf-area");
+      const element = document.getElementById("hidden-download-area");
+      if (!element) return;
+
       const opt = {
         margin: 0,
         filename: `Certificate_${item.name.replace(/\s+/g, "_")}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+        image: { type: "jpeg", quality: 1.0 }, // Maximum quality
+        html2canvas: {
+          scale: 4, // High resolution
+          useCORS: true,
+          letterRendering: true,
+          // CRITICAL FIX: Match the exact dimensions of your template
+          width: 1000,
+          height: 707,
+          scrollY: 0, // Prevent capture offset
+          scrollX: 0,
+        },
+        jsPDF: {
+          unit: "px", // Use pixels for exact matching
+          format: [1000, 707], // Match the container exactly
+          orientation: "landscape",
+        },
       };
+
       html2pdf().set(opt).from(element).save();
     }, 500);
   };
@@ -352,8 +367,20 @@ const CertificateManage = () => {
       </main>
 
       {/* 4. HIDDEN DIV FOR PDF CAPTURE */}
-      <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }}>
-        <div id="hidden-pdf-area">
+      <div
+        style={{
+          position: "fixed" /* Fixed is better than absolute for capture */,
+          top: "-10000px",
+          left: "-10000px",
+          width: "1000px" /* Force the width */,
+          height: "707px" /* Force the height */,
+          overflow: "hidden",
+        }}
+      >
+        <div
+          id="hidden-download-area"
+          style={{ width: "1000px", height: "707px" }}
+        >
           {selectedCert && <CertificateTemplate data={selectedCert} />}
         </div>
       </div>

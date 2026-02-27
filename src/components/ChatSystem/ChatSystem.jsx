@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom"; // Added for path tracking
 import { db } from "../../firebase";
-import { ref, push, onValue, serverTimestamp } from "firebase/database";
+import { ref, push, onValue } from "firebase/database";
 import {
   MessageSquare,
   X,
@@ -13,6 +14,7 @@ import axios from "axios";
 import "./ChatSystem.css";
 
 const ChatSystem = () => {
+  const location = useLocation(); // Track current URL
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -20,51 +22,101 @@ const ChatSystem = () => {
   const [messages, setMessages] = useState([]);
   const [msgInput, setMsgInput] = useState("");
 
-  const currentUser = JSON.parse(localStorage.getItem("admin"));
+  // 1. Move currentUser into state to handle Login/Logout without refresh
+  const [currentUser, setCurrentUser] = useState(null);
   const chatEndRef = useRef(null);
 
+  // 2. Logic to detect page changes and user session
   useEffect(() => {
+    const adminData = localStorage.getItem("admin");
+    if (adminData) {
+      setCurrentUser(JSON.parse(adminData));
+    } else {
+      setCurrentUser(null);
+    }
+  }, [location]); // re-runs when user navigates (e.g. from Login to Dashboard)
+
+  // 3. Define Public Pages where chat should NOT appear
+  const publicPaths = [
+    "/",
+    "/login",
+    "/admission",
+    "/counsellor-form",
+    "/course-form",
+    "/trainer-form",
+  ];
+
+  const isPublicPage =
+    publicPaths.includes(location.pathname) ||
+    location.pathname.startsWith("/certificate");
+
+  // 4. Fetch Staff List
+  useEffect(() => {
+    if (!currentUser?.name) return;
+
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
-        const otherStaff = res.data.counsellors.filter(
-          (name) => name !== currentUser.name,
-        );
-        setUsers(otherStaff);
+        if (res.data && res.data.counsellors) {
+          const otherStaff = res.data.counsellors.filter(
+            (name) => name !== currentUser.name,
+          );
+          setUsers(otherStaff);
+        }
       });
-  }, [currentUser.name]);
+  }, [currentUser?.name]);
 
   const getChatRoomId = (userB) => {
+    if (!currentUser?.name) return "";
     const ids = [currentUser.name, userB].sort();
     return `chat_${ids[0]}_${ids[1]}`.replace(/\s+/g, "_");
   };
 
+  // 5. Listen for Messages
   useEffect(() => {
-    if (!selectedUser) return;
+    if (!selectedUser || !currentUser?.name) return;
+
     const roomID = getChatRoomId(selectedUser);
     const chatRef = ref(db, `chats/${roomID}/messages`);
+
     const unsubscribe = onValue(chatRef, (snapshot) => {
       const data = snapshot.val();
-      setMessages(data ? Object.values(data) : []);
+      if (data) {
+        const sortedMsgs = Object.values(data).sort(
+          (a, b) => a.timestamp - b.timestamp,
+        );
+        setMessages(sortedMsgs);
+      } else {
+        setMessages([]);
+      }
     });
+
     return () => unsubscribe();
-  }, [selectedUser]);
+  }, [selectedUser, currentUser?.name]);
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (!msgInput.trim()) return;
+    if (!msgInput.trim() || !currentUser?.name) return;
+
     const roomID = getChatRoomId(selectedUser);
     push(ref(db, `chats/${roomID}/messages`), {
       sender: currentUser.name,
       text: msgInput,
-      timestamp: Date.now(), // Using local timestamp for immediate display logic
+      timestamp: Date.now(),
     });
+
     setMsgInput("");
   };
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isOpen]);
+
+  // --- FINAL GUARD ---
+  // If no one is logged in OR if we are on a public page, show nothing
+  if (!currentUser || isPublicPage) {
+    return null;
+  }
 
   const filteredUsers = users.filter((u) =>
     u.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -168,6 +220,7 @@ const ChatSystem = () => {
                     placeholder="Write something..."
                     value={msgInput}
                     onChange={(e) => setMsgInput(e.target.value)}
+                    autoFocus
                   />
                   <button type="submit" className="send-btn">
                     <Send size={18} />

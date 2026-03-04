@@ -589,7 +589,15 @@ const LeadsView = () => {
                           <span>{lead.name}</span>
                         </td>
                         <td>
-                          <span className="phone-text-sm">{lead.mobile}</span>
+                          <div className="phone-cell-premium">
+                            <span className="phone-primary">{lead.mobile}</span>
+                            {lead.other_contact &&
+                              lead.other_contact !== "N/A" && (
+                                <span className="phone-secondary">
+                                  {lead.other_contact}
+                                </span>
+                              )}
+                          </div>
                         </td>
                         <td>
                           <div className="date-cell-sm">

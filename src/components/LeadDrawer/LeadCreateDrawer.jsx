@@ -299,8 +299,8 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
                 </div>
                 <input
                   type="text"
-                  name="other_contact"
-                  value={formData.other_contact}
+                  name="location"
+                  value={formData.location}
                   onChange={handleChange}
                   placeholder="City or Area"
                 />

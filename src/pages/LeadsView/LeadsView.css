@@ -8,7 +8,44 @@
   margin-top: 70px;
   background: #f8fafc;
 }
+/* Container logic */
+.phone-cell-premium {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px; /* Very tight gap for a unified look */
+}
 
+/* Primary Number: Bold, Navy, Clear */
+.phone-primary {
+  color: #003873; /* Your Navy theme color */
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+
+/* Secondary Number: Smaller, Muted Slate */
+.phone-secondary {
+  color: #94a3b8; /* Light slate gray */
+  font-size: 11px;
+  font-weight: 600;
+  position: relative;
+}
+
+/* Optional: Add a tiny "alt" label if you want extra clarity */
+.phone-secondary::before {
+  content: "alt. ";
+  font-size: 9px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  font-weight: 800;
+}
+
+/* Ensure the table cell padding handles the two lines */
+.leads-table td {
+  padding: 12px 8px !important;
+}
 /* --- FILTERS (ALL IN ONE LINE) --- */
 .filter-card {
   background: #ffffff;

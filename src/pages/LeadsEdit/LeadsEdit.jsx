@@ -32,6 +32,7 @@ const LeadsEdit = () => {
     first_name: "",
     last_name: "",
     mobile: "",
+    other_contact: "",
     email: "",
     gender: "Male",
     source: [], // Array for Multi-select
@@ -172,6 +173,20 @@ const LeadsEdit = () => {
                   <div className="input-field-box">
                     <div className="icon-box-shaded"><Smartphone size={16} /></div>
                     <input type="text" name="mobile" value={formData.mobile} onChange={handleChange} required />
+                  </div>
+                </div>
+
+                <div className="form-row-layout">
+                  <label>Other Contact:</label>
+                  <div className="input-field-box">
+                    <div className="icon-box-shaded"><Phone size={16} /></div>
+                    <input 
+                        type="text" 
+                        name="other_contact" 
+                        value={formData.other_contact} 
+                        onChange={handleChange} 
+                        placeholder="Alternative contact info"
+                    />
                   </div>
                 </div>
 

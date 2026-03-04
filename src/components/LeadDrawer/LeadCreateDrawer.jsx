@@ -17,6 +17,7 @@ import {
   Briefcase,
   Building2,
   UserCheck,
+  MapPin,
 } from "lucide-react";
 import { hasPermission } from "../../utils/permissionCheck";
 import "./LeadCreateDrawer.css";
@@ -36,6 +37,8 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
     first_name: "",
     last_name: "",
     mobile: "",
+    other_contact: "",
+    location: "",
     email: "",
     gender: "Male",
     source: [],
@@ -80,7 +83,10 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
 
     setIsSubmitting(true);
     try {
-      await axios.post("https://operating-media-backend.onrender.com/api/leads/create/", formData);
+      await axios.post(
+        "https://operating-media-backend.onrender.com/api/leads/create/",
+        formData,
+      );
       alert("Lead Created Successfully!");
       onUpdate();
       onClose();
@@ -89,6 +95,8 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
         last_name: "",
         mobile: "",
         email: "",
+        other_contact: "",
+        location: "",
         gender: "Male",
         source: [],
         tags: [],
@@ -263,6 +271,38 @@ const LeadCreateDrawer = ({ isOpen, onClose, onUpdate }) => {
                   onChange={handleChange}
                   placeholder="10 digit number"
                   maxLength="10"
+                />
+              </div>
+            </div>
+
+            <div className="drawer-form-row">
+              <label className="row-label">Other Contact:</label>
+              <div className="row-input-wrapper">
+                <div className="icon-box-shaded">
+                  <Phone size={18} />
+                </div>
+                <input
+                  type="text"
+                  name="other_contact"
+                  value={formData.other_contact}
+                  onChange={handleChange}
+                  placeholder="Alt number / Parent name / etc."
+                />
+              </div>
+            </div>
+
+            <div className="drawer-form-row">
+              <label className="row-label">Location:</label>
+              <div className="row-input-wrapper">
+                <div className="icon-box-shaded">
+                  <MapPin size={18} />
+                </div>
+                <input
+                  type="text"
+                  name="other_contact"
+                  value={formData.other_contact}
+                  onChange={handleChange}
+                  placeholder="City or Area"
                 />
               </div>
             </div>

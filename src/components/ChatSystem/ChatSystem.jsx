@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom"; // Added for path tracking
+import { useLocation } from "react-router-dom";
 import { db } from "../../firebase";
-import { ref, push, onValue } from "firebase/database";
+import { ref, push, onValue, update, increment } from "firebase/database"; // Added increment/update
 import {
   MessageSquare,
   X,
@@ -14,95 +14,97 @@ import axios from "axios";
 import "./ChatSystem.css";
 
 const ChatSystem = () => {
-  const location = useLocation(); // Track current URL
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [messages, setMessages] = useState([]);
   const [msgInput, setMsgInput] = useState("");
+  const [unreadCounts, setUnreadCounts] = useState({}); // Stores counts from everyone
 
-  // 1. Move currentUser into state to handle Login/Logout without refresh
-  const [currentUser, setCurrentUser] = useState(null);
+  const adminData = localStorage.getItem("admin");
+  const currentUser = adminData ? JSON.parse(adminData) : null;
   const chatEndRef = useRef(null);
 
-  // 2. Logic to detect page changes and user session
-  useEffect(() => {
-    const adminData = localStorage.getItem("admin");
-    if (adminData) {
-      setCurrentUser(JSON.parse(adminData));
-    } else {
-      setCurrentUser(null);
-    }
-  }, [location]); // re-runs when user navigates (e.g. from Login to Dashboard)
-
-  // 3. Define Public Pages where chat should NOT appear
-  const publicPaths = [
-    "/",
-    "/login",
-    "/admission",
-    "/counsellor-form",
-    "/course-form",
-    "/trainer-form",
-  ];
-
-  const isPublicPage =
-    publicPaths.includes(location.pathname) ||
-    location.pathname.startsWith("/certificate");
-
-  // 4. Fetch Staff List
+  // 1. Fetch Staff & Listen for UNREAD COUNTS
   useEffect(() => {
     if (!currentUser?.name) return;
 
     axios
       .get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
-        if (res.data && res.data.counsellors) {
-          const otherStaff = res.data.counsellors.filter(
-            (name) => name !== currentUser.name,
-          );
-          setUsers(otherStaff);
-        }
+        const otherStaff = res.data.counsellors.filter(
+          (name) => name !== currentUser.name,
+        );
+        setUsers(otherStaff);
       });
-  }, [currentUser?.name]);
+
+    // Listen to my unread counts node in Firebase
+    const countsRef = ref(
+      db,
+      `unread_counts/${currentUser.name.replace(/\s+/g, "_")}`,
+    );
+    const unsubscribe = onValue(countsRef, (snapshot) => {
+      setUnreadCounts(snapshot.val() || {});
+    });
+
+    return () => unsubscribe();
+  }, [currentUser?.name, location]);
+
+  // 2. Reset count when opening a specific chat
+  useEffect(() => {
+    if (selectedUser && currentUser) {
+      const myNameKey = currentUser.name.replace(/\s+/g, "_");
+      const senderKey = selectedUser.replace(/\s+/g, "_");
+      const specificCountRef = ref(db, `unread_counts/${myNameKey}`);
+
+      // Set unread count for this specific person to 0
+      update(specificCountRef, { [senderKey]: 0 });
+    }
+  }, [selectedUser, currentUser]);
 
   const getChatRoomId = (userB) => {
-    if (!currentUser?.name) return "";
     const ids = [currentUser.name, userB].sort();
     return `chat_${ids[0]}_${ids[1]}`.replace(/\s+/g, "_");
   };
 
-  // 5. Listen for Messages
+  // 3. Listen for Messages
   useEffect(() => {
     if (!selectedUser || !currentUser?.name) return;
-
     const roomID = getChatRoomId(selectedUser);
     const chatRef = ref(db, `chats/${roomID}/messages`);
-
     const unsubscribe = onValue(chatRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        const sortedMsgs = Object.values(data).sort(
-          (a, b) => a.timestamp - b.timestamp,
-        );
-        setMessages(sortedMsgs);
-      } else {
-        setMessages([]);
-      }
+      setMessages(
+        data
+          ? Object.values(data).sort((a, b) => a.timestamp - b.timestamp)
+          : [],
+      );
     });
-
     return () => unsubscribe();
   }, [selectedUser, currentUser?.name]);
 
+  // 4. Send Message + Increment Receiver's Count
   const sendMessage = (e) => {
     e.preventDefault();
     if (!msgInput.trim() || !currentUser?.name) return;
 
     const roomID = getChatRoomId(selectedUser);
+    const myNameKey = currentUser.name.replace(/\s+/g, "_");
+    const receiverKey = selectedUser.replace(/\s+/g, "_");
+
+    // Push the message
     push(ref(db, `chats/${roomID}/messages`), {
       sender: currentUser.name,
       text: msgInput,
       timestamp: Date.now(),
+    });
+
+    // Increment the receiver's unread counter for me
+    const receiverCountRef = ref(db, `unread_counts/${receiverKey}`);
+    update(receiverCountRef, {
+      [myNameKey]: increment(1),
     });
 
     setMsgInput("");
@@ -112,11 +114,22 @@ const ChatSystem = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen]);
 
-  // --- FINAL GUARD ---
-  // If no one is logged in OR if we are on a public page, show nothing
-  if (!currentUser || isPublicPage) {
-    return null;
-  }
+  // Calculate Total Unread for the Main FAB
+  const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
+
+  const publicPaths = [
+    "/",
+    "/login",
+    "/admission",
+    "/counsellor-form",
+    "/course-form",
+    "/trainer-form",
+  ];
+  const isPublicPage =
+    publicPaths.includes(location.pathname) ||
+    location.pathname.startsWith("/certificate");
+
+  if (!currentUser || isPublicPage) return null;
 
   const filteredUsers = users.filter((u) =>
     u.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -133,7 +146,9 @@ const ChatSystem = () => {
         ) : (
           <>
             <MessageSquare size={24} />
-            <span className="notif-dot"></span>
+            {totalUnread > 0 && (
+              <span className="notif-badge-fab">{totalUnread}</span>
+            )}
           </>
         )}
       </button>
@@ -144,38 +159,50 @@ const ChatSystem = () => {
             <div className="chat-view fade-in">
               <div className="chat-view-header">
                 <h3>Messages</h3>
-                <p>Team communication</p>
+                <p>Internal Team Chat</p>
               </div>
 
               <div className="chat-search-box">
                 <Search size={16} />
                 <input
-                  placeholder="Search counsellor..."
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
 
               <div className="chat-user-list custom-scroll">
-                {filteredUsers.map((user) => (
-                  <div
-                    key={user}
-                    className="chat-user-card"
-                    onClick={() => setSelectedUser(user)}
-                  >
-                    <div className="chat-avatar-ring">
-                      <div className="chat-avatar-inner">{user.charAt(0)}</div>
-                      <span className="online-indicator"></span>
-                    </div>
-                    <div className="chat-user-details">
-                      <div className="name-row">
-                        <strong>{user}</strong>
-                        <span className="time-stamp">Counsellor</span>
+                {filteredUsers.map((user) => {
+                  const userKey = user.replace(/\s+/g, "_");
+                  const count = unreadCounts[userKey] || 0;
+                  return (
+                    <div
+                      key={user}
+                      className="chat-user-card"
+                      onClick={() => setSelectedUser(user)}
+                    >
+                      <div className="chat-avatar-ring">
+                        <div className="chat-avatar-inner">
+                          {user.charAt(0)}
+                        </div>
+                        <span className="online-indicator"></span>
                       </div>
-                      <p className="last-msg">Click to start conversation</p>
+                      <div className="chat-user-details">
+                        <div className="name-row">
+                          <strong>{user}</strong>
+                          {count > 0 && (
+                            <span className="user-unread-count">{count}</span>
+                          )}
+                        </div>
+                        <p className={`last-msg ${count > 0 ? "unread" : ""}`}>
+                          {count > 0
+                            ? "New messages received"
+                            : "Click to chat"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ) : (

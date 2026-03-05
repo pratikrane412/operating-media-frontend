@@ -99,6 +99,59 @@
   padding: 15px 20px;
 }
 
+/* Update these specific classes in ChatSystem.css */
+
+/* Main FAB Badge */
+.notif-badge-fab {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444; /* Vibrant Red */
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid white;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+  animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Specific User Count in List */
+.user-unread-count {
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.last-msg.unread {
+  color: var(--chat-navy);
+  font-weight: 700;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Ensure the user card highlights the name when unread */
+.chat-user-card:has(.user-unread-count) strong {
+  color: var(--chat-navy);
+}
+
 /* --- Search --- */
 .chat-search-box {
   margin: -15px 20px 15px;
@@ -286,11 +339,11 @@
 /* Premium Back Button Style */
 .icon-btn-back {
   background: rgba(255, 255, 255, 0.15); /* Translucent white */
-  border: none;                           /* Remove default border */
-  color: white;                           /* Icon color */
+  border: none; /* Remove default border */
+  color: white; /* Icon color */
   width: 32px;
   height: 32px;
-  border-radius: 8px;                     /* Match the avatar style */
+  border-radius: 8px; /* Match the avatar style */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -302,7 +355,7 @@
 
 .icon-btn-back:hover {
   background: rgba(255, 255, 255, 0.25); /* Brighten on hover */
-  transform: translateX(-2px);           /* Subtle movement hint */
+  transform: translateX(-2px); /* Subtle movement hint */
 }
 
 /* Fix for the ellipsis icon color as well */

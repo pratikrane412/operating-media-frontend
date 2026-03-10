@@ -124,6 +124,7 @@ const ChatSystem = () => {
     "/counsellor-form",
     "/course-form",
     "/trainer-form",
+    "/counselling-scheduling",
   ];
   const isPublicPage =
     publicPaths.includes(location.pathname) ||

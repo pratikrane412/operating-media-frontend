@@ -23,6 +23,7 @@ import CourseFeedbackManage from "./pages/CourseFeedbackManage/CourseFeedbackMan
 import CertificateManage from "./pages/CertificateManage/CertificateManage";
 import PublicCertificateView from "./components/PublicCertificateView/PublicCertificateView";
 import ChatSystem from "./components/ChatSystem/ChatSystem";
+import CounsellingBooking from "./pages/CounsellingBooking/CounsellingBooking";
 
 function App() {
   return (
@@ -153,6 +154,7 @@ function App() {
         <Route path="/counsellor-form" element={<CounsellorForm />} />
         <Route path="/course-form" element={<FeedbackForm />} />
         <Route path="/trainer-form" element={<TrainerFeedback />} />
+        <Route path="/counselling-scheduling" element={<CounsellingBooking />} />
         <Route
           path="/certificate/show.php"
           element={<PublicCertificateView />}

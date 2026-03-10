@@ -32,24 +32,45 @@ const CounsellingBooking = () => {
     center: "",
   });
 
-  // --- LOGIC: 2 WEEK RESTRICTION ---
+  // --- LOGIC: DYNAMIC TIME SLOTS ---
+  const getAvailableSlots = (date) => {
+    const day = date.getDay(); // 0 is Sunday, 6 is Saturday
+    const isWeekend = day === 0 || day === 6;
+
+    if (isWeekend) {
+      // Weekend: 10:00am to 5:00pm
+      return [
+        "10:00am",
+        "11:00am",
+        "12:00pm",
+        "1:00pm",
+        "2:00pm",
+        "3:00pm",
+        "4:00pm",
+        "5:00pm",
+      ];
+    }
+    // Weekdays: 9:00am to 7:00pm
+    return [
+      "9:00am",
+      "10:00am",
+      "11:00am",
+      "12:00pm",
+      "1:00pm",
+      "2:00pm",
+      "3:00pm",
+      "4:00pm",
+      "5:00pm",
+      "6:00pm",
+      "7:00pm",
+    ];
+  };
+
+  const currentSlots = getAvailableSlots(selectedDate);
+
   const today = new Date();
   const maxDate = new Date();
   maxDate.setDate(today.getDate() + 14);
-
-  const timeSlots = [
-    "9:00am",
-    "10:00am",
-    "11:00am",
-    "12:00pm",
-    "1:00pm",
-    "2:00pm",
-    "3:00pm",
-    "4:00pm",
-    "5:00pm",
-    "6:00pm",
-    "7:00pm",
-  ];
 
   const handleBooking = async (e) => {
     e.preventDefault();
@@ -97,7 +118,6 @@ const CounsellingBooking = () => {
   return (
     <div id="counselling-scheduling-page">
       <div className="booking-wrapper">
-        {/* LEFT SIDEBAR: CONTEXT */}
         <aside className="service-sidebar">
           <div className="brand-logo">
             <img src="/OPM.png" alt="Operating Media" />
@@ -131,7 +151,6 @@ const CounsellingBooking = () => {
           </div>
         </aside>
 
-        {/* RIGHT SIDE: INTERACTION */}
         <main className="booking-main">
           <div className="booking-stepper">
             <div className={`step-item ${step === 1 ? "active" : "completed"}`}>
@@ -152,7 +171,10 @@ const CounsellingBooking = () => {
               <div className="selection-view fade-in">
                 <div className="calendar-card">
                   <Calendar
-                    onChange={setSelectedDate}
+                    onChange={(date) => {
+                      setSelectedDate(date);
+                      setSelectedTime(null);
+                    }}
                     value={selectedDate}
                     minDate={today}
                     maxDate={maxDate}
@@ -170,7 +192,7 @@ const CounsellingBooking = () => {
                     </span>
                   </div>
                   <div className="slots-grid">
-                    {timeSlots.map((slot) => (
+                    {currentSlots.map((slot) => (
                       <button
                         key={slot}
                         className={`slot-pill ${selectedTime === slot ? "active" : ""}`}
@@ -250,9 +272,9 @@ const CounsellingBooking = () => {
                       }
                     >
                       <option value="">Choose Center</option>
-                      <option value="Andheri">Andheri</option>
-                      <option value="Borivali">Borivali</option>
-                      <option value="Online">Online</option>
+                      <option value="Andheri">Andheri (W) Branch</option>
+                      <option value="Borivali">Borivali (W) Branch</option>
+                      <option value="Online">Online / Google Meet</option>
                     </select>
                   </div>
                 </div>
@@ -261,7 +283,7 @@ const CounsellingBooking = () => {
                   className="btn-confirm-booking"
                   disabled={loading}
                 >
-                  {loading ? "Processing..." : "Schedule Appointment"}
+                  {loading ? "Scheduling..." : "Schedule Appointment"}
                 </button>
               </form>
             )}

@@ -250,9 +250,9 @@ const CounsellingBooking = () => {
                       }
                     >
                       <option value="">Choose Center</option>
-                      <option value="Andheri">Andheri (W) Branch</option>
-                      <option value="Borivali">Borivali (W) Branch</option>
-                      <option value="Online">Online / Google Meet</option>
+                      <option value="Andheri">Andheri</option>
+                      <option value="Borivali">Borivali</option>
+                      <option value="Online">Online</option>
                     </select>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Image, DownloadCloud } from "lucide-react"; // Add these icons
 import {
   X,
   User,
@@ -15,22 +16,58 @@ import {
   Banknote,
   CheckCircle,
   Clock,
+  Eye,
+  Download,      // Added this import
 } from "lucide-react";
 import "./AdmissionViewDrawer.css";
 
 const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showDocGallery, setShowDocGallery] = useState(false);
 
   // 1. ADD STATE FOR FULL PHOTO VIEW
   const [showFullPhoto, setShowFullPhoto] = useState(false);
+
+  const handleDownload = async (url, filename) => {
+    if (!url || url === "" || url === "—") {
+        alert("Document not available.");
+        return;
+    }
+
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      // Fallback for CORS issues
+      window.open(url, "_blank");
+    }
+  };
+
+  // --- 2. ADDED MISSING handleDownloadAll FUNCTION ---
+  const handleDownloadAll = () => {
+    if (!data) return;
+    if (data.photo) handleDownload(data.photo, `${data.first_name}_Photo.jpg`);
+    if (data.aadhar_card_front) handleDownload(data.aadhar_card_front, `${data.first_name}_Aadhar_Front.jpg`);
+    if (data.aadhar_card_back) handleDownload(data.aadhar_card_back, `${data.first_name}_Aadhar_Back.jpg`);
+  };
+
 
   useEffect(() => {
     if (isOpen && admissionId) {
       setLoading(true);
       axios
         .get(
-          ` https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`,
+          `https://operating-media-backend.onrender.com/api/admissions/${admissionId}/`,
         )
         .then((res) => {
           setData(res.data);
@@ -45,10 +82,10 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
   // --- ADD THIS HELPER TO FIX THE ERROR ---
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "—" || dateStr === "None" || dateStr === "") return "—";
-    
+
     // Handles database format (2026-01-29) and converts to UI format (29/01/2026)
     const parts = dateStr.includes("/") ? dateStr.split("/") : dateStr.split("/");
-    
+
     if (parts.length === 3) {
       if (parts[0].length === 4) {
         return `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -163,9 +200,8 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
                 <div className="view-info-grid">
                   <InfoItem
                     label="Full Name"
-                    value={`${data.first_name} ${data.middle_name || ""} ${
-                      data.last_name
-                    }`}
+                    value={`${data.first_name} ${data.middle_name || ""} ${data.last_name
+                      }`}
                     icon={User}
                   />
                   <InfoItem
@@ -193,9 +229,8 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
                   <div className="full-row">
                     <InfoItem
                       label="Residential Address"
-                      value={`${data.address1}, ${data.address2 || ""}, ${
-                        data.city
-                      }, ${data.state} - ${data.pincode}`}
+                      value={`${data.address1}, ${data.address2 || ""}, ${data.city
+                        }, ${data.state} - ${data.pincode}`}
                       icon={MapPin}
                     />
                   </div>
@@ -256,6 +291,84 @@ const AdmissionViewDrawer = ({ isOpen, onClose, admissionId }) => {
                   />
                 </div>
               </div>
+
+              {/* --- NEW: DOCUMENT ACTIONS AT THE BOTTOM --- */}
+              <div className="view-card doc-actions-card">
+                <h4 className="view-card-title">Admission Documents</h4>
+                <div className="doc-btn-group">
+                  <button className="btn-doc-view" onClick={() => setShowDocGallery(true)}>
+                    <Eye size={16} /> View All Documents
+                  </button>
+                  <button className="btn-doc-download" onClick={handleDownloadAll}>
+                    <DownloadCloud size={16} /> Download All (3)
+                  </button>
+                </div>
+              </div>
+
+              {showDocGallery && (
+                <div className="gallery-overlay" onClick={() => setShowDocGallery(false)}>
+                  <div className="gallery-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="gallery-header">
+                      <h4>Student Documents</h4>
+                      <button className="close-gallery" onClick={() => setShowDocGallery(false)}>
+                        <X size={20} />
+                      </button>
+                    </div>
+
+                    <div className="gallery-grid">
+                      {/* DOCUMENT 1: PHOTO */}
+                      <div className="gallery-item">
+                        <div className="img-container">
+                          <img src={data.photo || "/placeholder.png"} alt="Photo" />
+                          <button
+                            className="individual-download-btn"
+                            onClick={() => handleDownload(data.photo, `${data.first_name}_Photo.jpg`)}
+                          >
+                            <Download size={16} /> Download Photo
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* DOCUMENT 2: AADHAR FRONT */}
+                      <div className="gallery-item">
+                        <div className="img-container">
+                          <img src={data.aadhar_card_front || "/placeholder.png"} alt="Aadhar Front" />
+                          <button
+                            className="individual-download-btn"
+                            onClick={() => handleDownload(data.aadhar_card_front, `${data.first_name}_Aadhar_Front.jpg`)}
+                          >
+                            <Download size={16} /> Download Aadhar Front
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* DOCUMENT 3: AADHAR BACK */}
+                      <div className="gallery-item">
+                        <div className="img-container">
+                          <img src={data.aadhar_card_back || "/placeholder.png"} alt="Aadhar Back" />
+                          <button
+                            className="individual-download-btn"
+                            onClick={() => handleDownload(data.aadhar_card_back, `${data.first_name}_Aadhar_Back.jpg`)}
+                          >
+                            <Download size={16} /> Download Aadhar Back
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="gallery-footer">
+                      <button className="btn-download-all-main" onClick={() => {
+                        handleDownload(data.photo, 'Photo.jpg');
+                        handleDownload(data.aadhar_card_front, 'Aadhar_Front.jpg');
+                        handleDownload(data.aadhar_card_back, 'Aadhar_Back.jpg');
+                      }}>
+                        <DownloadCloud size={18} /> Download Zip / All Files
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
             </>
           )}
         </div>

@@ -21,11 +21,48 @@ import {
 } from "lucide-react";
 import "./Dashboard.css";
 
+// --- HELPERS ---
+const parseDate = (dateStr) => {
+  if (!dateStr || dateStr === "—" || dateStr === "None") return new Date(0);
+  // Handle YYYY-MM-DD
+  if (dateStr.includes("-") && dateStr.split("-")[0].length === 4)
+    return new Date(dateStr);
+  // Handle DD/MM/YYYY
+  if (dateStr.includes("/")) {
+    const [d, m, y] = dateStr.split("/");
+    return new Date(y, m - 1, d);
+  }
+  return new Date(dateStr);
+};
+
+const sortData = (list, sortObj) => {
+  return [...list].sort((a, b) => {
+    let valA = a[sortObj.field];
+    let valB = b[sortObj.field];
+    if (sortObj.field.includes("date") || sortObj.field.includes("time")) {
+      valA = parseDate(valA);
+      valB = parseDate(valB);
+    }
+    if (valA < valB) return sortObj.order === "asc" ? -1 : 1;
+    if (valA > valB) return sortObj.order === "asc" ? 1 : -1;
+    return 0;
+  });
+};
+
+const formatDate = (dateStr) => {
+  if (!dateStr || dateStr === "None" || dateStr === "N/A" || dateStr === "—")
+    return "—";
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return dateStr;
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+};
+
 const Dashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
     followups: [],
+    scheduled_sessions: [],
     hot_leads: [],
     reminders: [],
     revenue_details: [],
@@ -48,6 +85,7 @@ const Dashboard = () => {
     field: "followup_date",
     order: "desc",
   });
+  const [sortSched, setSortSched] = useState({ field: "date", order: "asc" });
   const [sortHot, setSortHot] = useState({
     field: "enquiry_date",
     order: "desc",
@@ -57,34 +95,6 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
-
-  // --- HELPERS ---
-  const parseDate = (dateStr) => {
-    if (!dateStr || dateStr === "—" || dateStr === "None") return new Date(0);
-    // Handle YYYY-MM-DD
-    if (dateStr.includes("-") && dateStr.split("-")[0].length === 4)
-      return new Date(dateStr);
-    // Handle DD/MM/YYYY
-    if (dateStr.includes("/")) {
-      const [d, m, y] = dateStr.split("/");
-      return new Date(y, m - 1, d);
-    }
-    return new Date(dateStr);
-  };
-
-  const sortData = (list, sortObj) => {
-    return [...list].sort((a, b) => {
-      let valA = a[sortObj.field];
-      let valB = b[sortObj.field];
-      if (sortObj.field.includes("date") || sortObj.field.includes("time")) {
-        valA = parseDate(valA);
-        valB = parseDate(valB);
-      }
-      if (valA < valB) return sortObj.order === "asc" ? -1 : 1;
-      if (valA > valB) return sortObj.order === "asc" ? 1 : -1;
-      return 0;
-    });
-  };
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -119,14 +129,6 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [revBranch, revCounsellor, startDate, endDate]);
 
-  const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "None" || dateStr === "N/A" || dateStr === "—")
-      return "—";
-    const parts = dateStr.split("-");
-    if (parts.length !== 3) return dateStr;
-    return `${parts[2]}/${parts[1]}/${parts[0]}`;
-  };
-
   // --- DYNAMIC TOTALS ---
   const revenueTotals = data.revenue_details?.reduce(
     (acc, item) => ({
@@ -149,6 +151,8 @@ const Dashboard = () => {
     }),
     sortFol,
   );
+
+  const scheduledList = sortData(data.scheduled_sessions || [], sortSched);
 
   const hotLeadsList = sortData(
     data.hot_leads?.filter((hl) => {
@@ -350,6 +354,109 @@ const Dashboard = () => {
                                     state: { openLeadId: item.id },
                                   })
                                 }
+                              >
+                                <ArrowRight size={15} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* --- NEW: COUNSELLOR SCHEDULED APPOINTMENTS --- */}
+              <div className="data-display-card mt-30 scheduled-border">
+                <div className="data-toolbar">
+                  <div className="toolbar-content">
+                    <div className="toolbar-left">
+                      <CalendarClock size={18} color="#003873" />
+                      <span className="branch-title">
+                        Counsellor Scheduled Sessions
+                      </span>
+                    </div>
+                    <div className="toolbar-right">
+                      <span className="count-badge">
+                        {scheduledList.length} Upcoming
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="table-sticky-wrapper">
+                  <table className="modern-data-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: "20%" }}>STUDENT</th>
+                        <th style={{ width: "12%" }}>PHONE</th>
+                        <th style={{ width: "15%" }}>EMAIL</th>
+                        <th style={{ width: "12%" }}>CENTER</th>
+                        <th
+                          style={{ width: "12%", cursor: "pointer" }}
+                          onClick={() =>
+                            toggleSort(setSortSched, sortSched, "date")
+                          }
+                        >
+                          DATE{" "}
+                          {sortSched.field === "date" &&
+                            (sortSched.order === "asc" ? "↑" : "↓")}
+                        </th>
+                        <th style={{ width: "10%" }}>TIME</th>
+                        <th style={{ width: "11%" }} className="text-center">
+                          STATUS
+                        </th>
+                        <th style={{ width: "8%" }} className="text-center">
+                          ACTION
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scheduledList.length === 0 ? (
+                        <tr>
+                          <td colSpan="8" className="loader">
+                            No upcoming counselling sessions.
+                          </td>
+                        </tr>
+                      ) : (
+                        scheduledList.map((item) => (
+                          <tr key={item.id}>
+                            <td>
+                              <div className="user-profile-cell">
+                                <div className="avatar-letter sched-avatar">
+                                  {item.name.charAt(0)}
+                                </div>
+                                <span className="user-full-name">
+                                  {item.name}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="phone-num-text">{item.phone}</td>
+                            <td className="email-text-truncate">
+                              {item.email}
+                            </td>
+                            <td>
+                              <span
+                                className="course-pill-lite"
+                                style={{ color: "#003873" }}
+                              >
+                                {item.center}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="join-date-text">
+                                {formatDate(item.date)}
+                              </span>
+                            </td>
+                            <td className="phone-num-text">{item.time}</td>
+                            <td className="text-center">
+                              <span className="status-pill upcoming">
+                                {item.status}
+                              </span>
+                            </td>
+                            <td className="text-center">
+                              <button
+                                className="btn-icon-round"
+                                onClick={() => navigate("/book-counselling")}
                               >
                                 <ArrowRight size={15} />
                               </button>

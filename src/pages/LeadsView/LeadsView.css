@@ -8,7 +8,7 @@
   margin-top: 70px;
   background: #f8fafc;
 }
-/* Container logic */
+
 .phone-cell-premium {
   display: flex;
   flex-direction: column;
@@ -765,6 +765,194 @@ table tbody td {
 
   .notes-cell-sm {
     max-width: 300px;
+  }
+}
+
+/* ===============================
+   TABLET RESPONSIVE (768px–1024px)
+   =============================== */
+
+@media (max-width: 1024px) {
+  /* Reduce page padding */
+  .content-area {
+    padding: 12px 14px;
+  }
+
+  /* Filters wrap into multiple rows */
+  .filter-grid {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-group {
+    flex: 1 1 48%;
+    min-width: 150px;
+  }
+
+  .filter-group.range-group {
+    flex: 1 1 100%;
+  }
+
+  .filter-actions-inline {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+
+  /* Toolbar stack */
+  .leads-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .search-box {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-box input {
+    width: 200px;
+  }
+
+  /* TABLE SCROLL */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .leads-table {
+    min-width: 1100px; /* keep table readable */
+  }
+
+  /* Reduce table spacing */
+  .leads-table th {
+    font-size: 10px;
+    padding: 10px 6px;
+  }
+
+  .leads-table td {
+    font-size: 12px;
+    padding: 10px 6px;
+  }
+
+  /* Notes column smaller */
+  .notes-cell-sm {
+    max-width: 280px;
+  }
+
+  .note-date-horizontal {
+    font-size: 10px;
+    min-width: 70px;
+  }
+
+  .note-text-horizontal {
+    font-size: 11px;
+  }
+
+  /* Smaller action buttons */
+  .icon-btn-sm {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Pagination tighter */
+  .table-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
+
+/* =====================================
+   TABLET RESPONSIVE (LEADS PAGE ONLY)
+   ===================================== */
+
+@media (max-width: 1280px) {
+  /* --- CRITICAL: Contain the table inside the card --- */
+  .leads-card {
+    overflow: hidden;
+  }
+
+  .table-wrapper {
+    overflow-x: auto !important;
+    overflow-y: visible;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    /* Subtle scrollbar so user knows it's scrollable */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  .table-wrapper::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+
+  /* Keep table at fixed width so columns don't squish */
+  .leads-table {
+    min-width: 1100px;
+    table-layout: fixed;
+  }
+
+  /* Filters wrap into two columns */
+  .filter-grid {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-group {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 140px;
+  }
+
+  .filter-group.range-group {
+    flex: 1 1 100%;
+  }
+
+  .filter-actions-inline {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Toolbar stack */
+  .leads-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .search-box {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-box input {
+    flex: 1;
+    width: auto;
+  }
+
+  /* Footer stack */
+  .table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
   }
 }
 /* --- EXPORT BUTTON IN TOOLBAR --- */

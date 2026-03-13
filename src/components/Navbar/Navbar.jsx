@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   Search,
@@ -15,6 +15,7 @@ import {
   Clock,
   Phone,
   X,
+  Menu
 } from "lucide-react";
 import ProfileDropdown from "./ProfileDropdown";
 import { hasPermission } from "../../utils/permissionCheck";
@@ -25,38 +26,44 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const dropRef = useRef(null);
   const navRef = useRef(null);
   const notifRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // --- NOTIFICATION LOGIC ---
 
   const fetchNotifications = async () => {
-  const userString = localStorage.getItem("admin");
-  if (!userString) return;
+    const userString = localStorage.getItem("admin");
+    if (!userString) return;
 
-  try {
-    const adminData = JSON.parse(userString);
-    
-    // DEBUG: Open your console (F12) to see if this matches your DB
-    console.log("Navbar Sending Name:", adminData.name); 
+    try {
+      const adminData = JSON.parse(userString);
 
-    const res = await axios.get(
-      "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
-      {
-        params: {
-          role: adminData.role,
-          name: adminData.name 
+      // DEBUG: Open your console (F12) to see if this matches your DB
+      console.log("Navbar Sending Name:", adminData.name);
+
+      const res = await axios.get(
+        "https://operating-media-backend.onrender.com/api/leads/check-reminders/",
+        {
+          params: {
+            role: adminData.role,
+            name: adminData.name
+          }
         }
-      }
-    );
-    setNotifications(res.data || []);
-  } catch (e) {
-    console.error("Fetch Notif Error:", e);
-  }
-};
+      );
+      setNotifications(res.data || []);
+    } catch (e) {
+      console.error("Fetch Notif Error:", e);
+    }
+  };
+
+  useEffect(() => {
+    setIsMobileOpen(false); // Close menu on page change
+  }, [location]);
 
   useEffect(() => {
     fetchNotifications();
@@ -114,6 +121,9 @@ const Navbar = () => {
   return (
     <nav className="header-nav">
       <div className="nav-left-section">
+        <button className="mobile-menu-toggle" onClick={() => setIsMobileOpen(!isMobileOpen)}>
+          {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
         <div className="brand-box" onClick={() => navigate("/dashboard")}>
           <img
             src="/OPM.png"
@@ -122,7 +132,7 @@ const Navbar = () => {
           />
         </div>
 
-        <div className="top-menu-links" ref={navRef}>
+        <div className={`top-menu-links ${isMobileOpen ? "mobile-open" : ""}`} ref={navRef}>
           <NavLink to="/dashboard" className="top-link">
             <LayoutDashboard size={18} /> <span>Dashboard</span>
           </NavLink>
@@ -354,6 +364,7 @@ const Navbar = () => {
           {isProfileOpen && <ProfileDropdown />}
         </div>
       </div>
+      {isMobileOpen && <div className="mobile-overlay" onClick={() => setIsMobileOpen(false)}></div>}
     </nav>
   );
 };

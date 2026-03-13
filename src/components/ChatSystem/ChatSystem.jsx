@@ -22,19 +22,19 @@ const ChatSystem = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [messages, setMessages] = useState([]);
   const [msgInput, setMsgInput] = useState("");
-  const [unreadCounts, setUnreadCounts] = useState({}); // Stores individual counts
+  const [unreadCounts, setUnreadCounts] = useState({});
 
   const [currentUser, setCurrentUser] = useState(null);
   const chatEndRef = useRef(null);
+  const panelRef = useRef(null);
 
-  // 1. Sync User Session & Listen for GLOBAL UNREAD COUNTS
+  // 1. Sync User Session & Listen for UNREAD COUNTS
   useEffect(() => {
     const adminData = localStorage.getItem("admin");
     if (adminData) {
       const user = JSON.parse(adminData);
       setCurrentUser(user);
 
-      // Listen for all unread counts sent TO ME
       const myNameKey = user.name.replace(/\s+/g, '_');
       const countsRef = ref(db, `unread_counts/${myNameKey}`);
       const unsubscribe = onValue(countsRef, (snapshot) => {
@@ -44,26 +44,53 @@ const ChatSystem = () => {
     }
   }, [location]);
 
-  // 2. Fetch User List
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // If the panel is open and the click is NOT inside the panelRef container
+      if (panelRef.current && !panelRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setSelectedUser(null); // Optional: resets the view to the user list
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // 2. Fetch User List & MERGE with anyone who sent an unread message
   useEffect(() => {
     if (!currentUser?.name) return;
+
     axios.get("https://operating-media-backend.onrender.com/api/leads/create/")
       .then((res) => {
         if (res.data?.counsellors) {
-          const otherStaff = res.data.counsellors.filter(name => name !== currentUser.name);
-          setUsers(otherStaff);
+          // Get basic list from API
+          let baseUsers = res.data.counsellors;
+
+          // FIX: Add anyone who has sent an unread message but isn't in the list (like Admin)
+          const unreadSenders = Object.keys(unreadCounts).map(k => k.replace(/_/g, ' '));
+
+          // Combine both lists and remove duplicates
+          const combined = [...new Set([...baseUsers, ...unreadSenders])];
+
+          // Filter out yourself
+          const finalUsers = combined.filter(name => name !== currentUser.name);
+          setUsers(finalUsers);
         }
       });
-  }, [currentUser]);
+  }, [currentUser, unreadCounts]); // Re-runs if unreadCounts changes
 
-  // 3. Clear unread count when I open a chat with someone
+  // 3. Clear unread count logic (Same as before)
   useEffect(() => {
     if (selectedUser && currentUser) {
       const myNameKey = currentUser.name.replace(/\s+/g, '_');
       const senderKey = selectedUser.replace(/\s+/g, '_');
       const specificCountRef = ref(db, `unread_counts/${myNameKey}`);
-
-      // Reset this person's unread count to 0 because I'm looking at it now
       update(specificCountRef, { [senderKey]: 0 });
     }
   }, [selectedUser, currentUser]);
@@ -74,7 +101,7 @@ const ChatSystem = () => {
     return `chat_${ids[0]}_${ids[1]}`.replace(/\s+/g, "_");
   };
 
-  // 4. Listen for Messages in Active Room
+  // 4. Listen for Messages (Same as before)
   useEffect(() => {
     if (!selectedUser || !currentUser) return;
     const roomID = getChatRoomId(selectedUser);
@@ -86,28 +113,22 @@ const ChatSystem = () => {
     return () => unsubscribe();
   }, [selectedUser, currentUser]);
 
-  // 5. Send Message + Increment COUNTER for the Receiver
+  // 5. Send Message (Same as before)
   const sendMessage = (e) => {
     e.preventDefault();
     if (!msgInput.trim() || !currentUser) return;
-
     const roomID = getChatRoomId(selectedUser);
     const myNameKey = currentUser.name.replace(/\s+/g, '_');
     const receiverKey = selectedUser.replace(/\s+/g, '_');
 
-    // Save message
     push(ref(db, `chats/${roomID}/messages`), {
       sender: currentUser.name,
       text: msgInput,
       timestamp: Date.now(),
     });
 
-    // ALERT: Notify the receiver by incrementing their unread node for me
     const receiverCountRef = ref(db, `unread_counts/${receiverKey}`);
-    update(receiverCountRef, {
-      [myNameKey]: increment(1)
-    });
-
+    update(receiverCountRef, { [myNameKey]: increment(1) });
     setMsgInput("");
   };
 
@@ -115,7 +136,6 @@ const ChatSystem = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen]);
 
-  // Logic to hide chat on public pages
   const publicPaths = ["/", "/login", "/admission", "/counsellor-form", "/course-form", "/trainer-form", "/counselling-scheduling"];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname.startsWith("/certificate");
 
@@ -125,7 +145,7 @@ const ChatSystem = () => {
   const filteredUsers = users.filter((u) => u.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="chat-premium-root">
+    <div className="chat-premium-root" ref={panelRef}>
       <button className={`chat-fab-main ${isOpen ? "active" : ""}`} onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <X size={24} /> : (
           <>
@@ -143,17 +163,14 @@ const ChatSystem = () => {
                 <h3>Messages</h3>
                 <p>Internal Team Chat</p>
               </div>
-
               <div className="chat-search-box">
                 <Search size={16} />
-                <input placeholder="Search contact..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <input placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
-
               <div className="chat-user-list custom-scroll">
                 {filteredUsers.map((user) => {
                   const userKey = user.replace(/\s+/g, '_');
                   const count = unreadCounts[userKey] || 0;
-
                   return (
                     <div key={user} className={`chat-user-card ${count > 0 ? 'has-unread' : ''}`} onClick={() => setSelectedUser(user)}>
                       <div className="chat-avatar-ring">
@@ -186,7 +203,6 @@ const ChatSystem = () => {
                 </div>
                 <MoreVertical size={18} className="header-icon-muted" />
               </div>
-
               <div className="chat-messages-area custom-scroll">
                 {messages.map((m, i) => (
                   <div key={i} className={`msg-row ${m.sender === currentUser.name ? "me" : "them"}`}>
@@ -198,7 +214,6 @@ const ChatSystem = () => {
                 ))}
                 <div ref={chatEndRef} />
               </div>
-
               <form className="chat-input-row" onSubmit={sendMessage}>
                 <div className="input-pill">
                   <input placeholder="Write something..." value={msgInput} onChange={(e) => setMsgInput(e.target.value)} autoFocus />

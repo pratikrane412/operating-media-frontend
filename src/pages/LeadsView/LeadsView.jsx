@@ -74,6 +74,29 @@ const LeadsView = () => {
     setIsExportOpen(false);
   };
 
+  const handleImportFile = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("role", user.role); // Sends 'super_admin' for security check
+
+    setLoading(true);
+    try {
+      const res = await axios.post("https://operating-media-backend.onrender.com/api/leads/import-csv/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert(res.data.message);
+      fetchData(); // Refresh the table
+    } catch (err) {
+      alert("Import failed. Check if CSV headers match DB columns.");
+    } finally {
+      setLoading(false);
+      e.target.value = null; // Reset input
+    }
+  };
+
   const [filters, setFilters] = useState({
     branch: "",
     source: "",
@@ -536,9 +559,23 @@ const LeadsView = () => {
               </div>
               <div className="search-box">
                 {isSuperAdmin && (
-                  <button className="btn-premium-export" onClick={() => setIsExportOpen(true)}>
-                    <DownloadCloud size={14} /> EXPORT DATA
-                  </button>
+                  <>
+                    {/* Hidden File Input */}
+                    <input
+                      type="file" id="csv-upload" hidden accept=".csv"
+                      onChange={handleImportFile}
+                    />
+
+                    {/* Import Button */}
+                    <button className="btn-import-outline" onClick={() => document.getElementById('csv-upload').click()}>
+                      <Plus size={14} /> IMPORT LEADS
+                    </button>
+
+                    {/* Export Button */}
+                    <button className="btn-premium-export" onClick={() => setIsExportOpen(true)}>
+                      <DownloadCloud size={14} /> EXPORT DATA
+                    </button>
+                  </>
                 )}
                 <span>Search:</span>
                 <input

@@ -70,7 +70,7 @@ const LeadsView = () => {
     if (!startExp || !endExp) return alert("Select a range first");
     const s = startExp.toISOString().split('T')[0];
     const e = endExp.toISOString().split('T')[0];
-    window.location.href = `https://operatingmedia.org/api/leads/export-csv/?from=${s}&to=${e}&role=${user.role}`;
+    window.location.href = `https://operating-media-backend.onrender.com/api/leads/export-csv/?from=${s}&to=${e}&role=${user.role}`;
     setIsExportOpen(false);
   };
 

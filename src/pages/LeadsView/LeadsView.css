@@ -233,7 +233,7 @@
   min-width: 100%;
 }
 table tbody td {
-border-right: 1px solid #0038731a;
+  border-right: 1px solid #0038731a;
 }
 
 .leads-table thead th {
@@ -766,4 +766,194 @@ border-right: 1px solid #0038731a;
   .notes-cell-sm {
     max-width: 300px;
   }
+}
+/* --- EXPORT BUTTON IN TOOLBAR --- */
+.btn-premium-export {
+  height: 34px;
+  background: white;
+  border: 1.5px solid #003873;
+  color: #003873;
+  border-radius: 8px;
+  padding: 0 15px;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-right: 15px;
+}
+
+.btn-premium-export:hover {
+  background: #f0f7ff;
+  transform: translateY(-1px);
+}
+
+/* --- MODAL DESIGN --- */
+#premium-export-module .export-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(6px);
+  z-index: 5000;
+}
+
+#premium-export-module .export-modal-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  width: 500px;
+  border-radius: 24px;
+  padding: 40px;
+  z-index: 5001;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#premium-export-module .icon-circle {
+  width: 50px;
+  height: 50px;
+  background: #f0f7ff;
+  color: #003873;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+}
+
+#premium-export-module h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+#premium-export-module p {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* --- PRESETS --- */
+#premium-export-module .presets-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 25px 0 15px;
+}
+#premium-export-module .presets-row button {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#premium-export-module .presets-row button:hover {
+  background: #003873;
+  color: white;
+  border-color: #003873;
+}
+
+/* --- PICKER --- */
+#premium-export-module .modal-date-picker-container {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  gap: 10px;
+}
+#premium-export-module .modal-picker-input {
+  border: none !important;
+  background: transparent !important;
+  width: 100%;
+  outline: none !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* --- FOOTER --- */
+#premium-export-module .export-footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+#premium-export-module .btn-cancel {
+  flex: 1;
+  height: 48px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+}
+#premium-export-module .btn-generate {
+  flex: 2;
+  height: 48px;
+  border-radius: 12px;
+  border: none;
+  background: #003873;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+#premium-export-module .btn-generate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* 1. Increase the overall card width to fit the long date text */
+#premium-export-module .export-modal-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  width: 500px; /* Increased from 450px */
+  border-radius: 24px;
+  padding: 40px;
+  z-index: 5001;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* 2. Improve the container spacing */
+#premium-export-module .modal-date-picker-container {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  height: 52px; /* Slightly taller */
+  display: flex;
+  align-items: center;
+  padding: 0 12px; /* Reduced side padding */
+  gap: 8px;
+  margin: 20px 0;
+}
+
+/* 3. Force the input to take all available space and not cut text */
+#premium-export-module .modal-picker-input {
+  border: none !important;
+  background: transparent !important;
+  width: 100%;
+  outline: none !important;
+  font-size: 13px; /* Slightly smaller font to ensure fit */
+  font-weight: 700;
+  color: #1e293b;
+  padding: 0 !important;
+  letter-spacing: -0.2px; /* Tighten letters slightly */
+}
+
+/* 4. Fix for the react-datepicker wrapper that sometimes limits width */
+#premium-export-module .react-datepicker-wrapper {
+  width: 100%;
 }

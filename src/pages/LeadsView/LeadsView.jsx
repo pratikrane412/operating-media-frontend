@@ -18,7 +18,9 @@ import {
   Check,
   Trash2,
   Edit3,
-  X, // Added X
+  X,
+  DownloadCloud,
+  Download,
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import LeadCreateDrawer from "../../components/LeadDrawer/LeadCreateDrawer";
@@ -32,6 +34,7 @@ const LeadsView = () => {
   const searchTimeoutRef = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
+  const isSuperAdmin = user.role === "super_admin";
   const isBranchUser = !!user.branch_id;
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -52,6 +55,24 @@ const LeadsView = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [exportRange, setExportRange] = useState([null, null]);
+  const [startExp, endExp] = exportRange;
+
+  const setPresetRange = (days) => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - days);
+    setExportRange([start, end]);
+  };
+
+  const handleDownload = () => {
+    if (!startExp || !endExp) return alert("Select a range first");
+    const s = startExp.toISOString().split('T')[0];
+    const e = endExp.toISOString().split('T')[0];
+    window.location.href = `https://operatingmedia.org/api/leads/export-csv/?from=${s}&to=${e}&role=${user.role}`;
+    setIsExportOpen(false);
+  };
 
   const [filters, setFilters] = useState({
     branch: "",
@@ -514,6 +535,11 @@ const LeadsView = () => {
                 entries
               </div>
               <div className="search-box">
+                {isSuperAdmin && (
+                  <button className="btn-premium-export" onClick={() => setIsExportOpen(true)}>
+                    <DownloadCloud size={14} /> EXPORT DATA
+                  </button>
+                )}
                 <span>Search:</span>
                 <input
                   type="text"
@@ -735,6 +761,49 @@ const LeadsView = () => {
         onClose={() => setIsDrawerOpen(false)}
         onUpdate={fetchData}
       />
+      {isExportOpen && (
+        <div id="premium-export-module">
+          <div className="export-overlay" onClick={() => setIsExportOpen(false)}></div>
+          <div className="export-modal-card fade-in">
+            <div className="export-header">
+              <div className="icon-circle"><Download size={20} /></div>
+              <h3>Advanced Data Export</h3>
+              <p>Select a range or use quick presets to download Lead data.</p>
+            </div>
+
+            <div className="export-body">
+              {/* QUICK PRESETS */}
+              <div className="presets-row">
+                <button onClick={() => setPresetRange(30)}>Last 30 Days</button>
+                <button onClick={() => setPresetRange(90)}>Last 3 Months</button>
+                <button onClick={() => setPresetRange(180)}>Last 6 Months</button>
+              </div>
+
+              <div className="modal-date-picker-container">
+                <CalendarIcon size={16} color="#94a3b8" />
+                <DatePicker
+                  selectsRange={true}
+                  startDate={startExp}
+                  endDate={endExp}
+                  onChange={(update) => setExportRange(update)}
+                  showMonthDropdown
+                  showYearDropdown
+                  dropdownMode="select"
+                  placeholderText="Or pick a custom date range..."
+                  className="modal-picker-input"
+                />
+              </div>
+            </div>
+
+            <div className="export-footer">
+              <button className="btn-cancel" onClick={() => setIsExportOpen(false)}>Discard</button>
+              <button className="btn-generate" onClick={handleDownload} disabled={!startExp || !endExp}>
+                Generate CSV Report
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

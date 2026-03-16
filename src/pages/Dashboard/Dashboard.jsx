@@ -821,7 +821,14 @@ const Dashboard = () => {
                                   </div>
                                   <span className="user-full-name truncate-text">
                                     {item.name}
-                                    {item.paid_type > 1 && (
+
+                                    {/* If it's the Registration Fee */}
+                                    {item.paid_type === 99 && (
+                                      <span className="inst-badge" style={{ background: '#0d6b7b' }}>REG</span>
+                                    )}
+
+                                    {/* If it's an Installment 1-8 */}
+                                    {item.paid_type > 0 && item.paid_type < 10 && (
                                       <span className="inst-badge">
                                         Inst {item.paid_type}
                                       </span>

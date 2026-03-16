@@ -4,7 +4,6 @@ import {
   X,
   Briefcase,
   Clock,
-  Calendar,
   Building2,
   CheckCircle,
   Send,
@@ -16,7 +15,7 @@ import {
   UserMinus,
 } from "lucide-react";
 import "./BatchDrawer.css";
-import { hasPermission } from "../../utils/permissionCheck"; // Added permission utility
+import { hasPermission } from "../../utils/permissionCheck";
 
 const FormRow = ({ label, icon: Icon, children }) => (
   <div className="drawer-form-row">
@@ -32,17 +31,21 @@ const FormRow = ({ label, icon: Icon, children }) => (
 
 const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
   const user = JSON.parse(localStorage.getItem("admin") || "{}");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [studentsList, setStudentsList] = useState([]);
   const [isDropOpen, setIsDropOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // --- NEW SEARCH STATE ---
+  const [searchTerm, setSearchTerm] = useState("");
   const dropRef = useRef(null);
+
+  const [options, setOptions] = useState({
+    branches: [],
+    counsellors: [],
+  });
 
   const [formData, setFormData] = useState({
     name: "",
     timing: "",
-    starting_date: "",
-    end_date: "",
     status: 0,
     branch_id: user.branch_id || 1,
     selected_student_ids: [],
@@ -50,45 +53,51 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
 
   useEffect(() => {
     if (isOpen) {
-      setSearchTerm(""); // Reset search on open
+      setSearchTerm("");
+
+      // 1. Fetch Branches for the dropdown
+      axios
+        .get("https://operating-media-backend.onrender.com/api/leads/create/")
+        .then((res) => setOptions(res.data))
+        .catch((err) => console.error("Options error:", err));
+
+      // 2. Fetch EVERY student (New specialized API)
+      axios
+        .get(`https://operating-media-backend.onrender.com/api/admissions/all-list/`)
+        .then((res) => {
+          setStudentsList(res.data || []);
+        })
+        .catch((err) => console.error("Error fetching all students", err));
+
+      // 3. If Editing, fetch current batch details
       if (batchId) {
         axios
-          .get(
-            `https://operating-media-backend.onrender.com/api/batches/${batchId}/`
-          )
+          .get(`https://operating-media-backend.onrender.com/api/batches/${batchId}/`)
           .then((res) => setFormData((prev) => ({ ...prev, ...res.data })))
           .catch((err) => console.error("Error fetching batch", err));
       } else {
         setFormData({
           name: "",
           timing: "",
-          starting_date: "",
-          end_date: "",
           status: 0,
           branch_id: user.branch_id || 1,
           selected_student_ids: [],
         });
       }
-
-      axios
-        .get(
-          `https://operating-media-backend.onrender.com/api/admissions/manage/`
-        )
-        .then((res) => setStudentsList(res.data.admissions || []))
-        .catch((err) => console.error("Error fetching students", err));
     }
   }, [isOpen, batchId, user.branch_id]);
 
+  // --- FIXED: Handle clicking outside the student dropdown ---
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (dropRef.current && !dropRef.current.contains(e.target))
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
         setIsDropOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside); // FIXED NAME HERE
   }, []);
 
-  // --- FILTER LOGIC ---
   const filteredStudents = studentsList.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -102,7 +111,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
     });
   };
 
-  // Helper to Select All/Deselect All filtered students
   const handleSelectAll = (select) => {
     const filteredIds = filteredStudents.map((s) => s.id);
     setFormData((prev) => ({
@@ -121,20 +129,14 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
     setIsSubmitting(true);
     try {
       if (batchId) {
-        await axios.put(
-          `https://operating-media-backend.onrender.com/api/batches/${batchId}/`,
-          formData
-        );
+        await axios.put(`https://operating-media-backend.onrender.com/api/batches/${batchId}/`, formData);
       } else {
-        await axios.post(
-          "https://operating-media-backend.onrender.com/api/batches/manage/",
-          formData
-        );
+        await axios.post("https://operating-media-backend.onrender.com/api/batches/manage/", formData);
       }
       onUpdate();
       onClose();
     } catch (err) {
-      alert("Error processing batch");
+      alert("Error processing batch submission.");
     } finally {
       setIsSubmitting(false);
     }
@@ -142,7 +144,6 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
 
   if (!isOpen) return null;
 
-  // Determine required permission based on mode
   const requiredPermission = batchId ? "edit batch" : "add batch";
 
   return (
@@ -161,6 +162,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
 
         <form className="drawer-body" onSubmit={handleSubmit}>
           <div className="drawer-section">
+
             <FormRow label="Batch Name" icon={Briefcase}>
               <input
                 type="text"
@@ -168,6 +170,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                 value={formData.name}
                 required
                 onChange={handleChange}
+                placeholder="e.g. Master DM - Evening"
               />
             </FormRow>
 
@@ -175,53 +178,38 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
               <label>Assign Students:</label>
               <div className="multi-select-wrapper">
                 <div
-                  className={`drawer-input-wrapper select-trigger ${
-                    isDropOpen ? "active" : ""
-                  }`}
+                  className={`drawer-input-wrapper select-trigger ${isDropOpen ? "active" : ""}`}
                   onClick={() => setIsDropOpen(!isDropOpen)}
                 >
-                  <div className="drawer-icon-box">
-                    <Users size={16} />
-                  </div>
+                  <div className="drawer-icon-box"><Users size={16} /></div>
                   <div className="selected-placeholder">
                     {formData.selected_student_ids.length > 0
                       ? `${formData.selected_student_ids.length} Students Selected`
                       : "Choose Students..."}
                   </div>
-                  <ChevronDown
-                    size={14}
-                    className={`arrow ${isDropOpen ? "rotate" : ""}`}
-                  />
+                  <ChevronDown size={14} className={`arrow ${isDropOpen ? "rotate" : ""}`} />
                 </div>
 
                 {isDropOpen && (
                   <div className="multi-dropdown-list">
-                    {/* --- SEARCH BOX INSIDE DROPDOWN --- */}
                     <div className="dropdown-search-container">
                       <SearchIcon size={14} className="inner-search-icon" />
                       <input
                         type="text"
                         className="inner-search-input"
-                        placeholder="Type name to search..."
+                        placeholder="Search all students..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
 
-                    {/* Select All Buttons */}
                     <div className="select-actions-row">
-                      <button
-                        type="button"
-                        onClick={() => handleSelectAll(true)}
-                      >
-                        <UserPlus size={12} /> Select Filtered
+                      <button type="button" onClick={() => handleSelectAll(true)}>
+                        <UserPlus size={12} /> Select All
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSelectAll(false)}
-                      >
-                        <UserMinus size={12} /> Clear Filtered
+                      <button type="button" onClick={() => handleSelectAll(false)}>
+                        <UserMinus size={12} /> Clear
                       </button>
                     </div>
 
@@ -230,23 +218,17 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                         filteredStudents.map((student) => (
                           <div
                             key={student.id}
-                            className={`student-option ${
-                              formData.selected_student_ids.includes(student.id)
-                                ? "selected"
-                                : ""
-                            }`}
+                            className={`student-option ${formData.selected_student_ids.includes(student.id) ? "selected" : ""}`}
                             onClick={() => toggleStudent(student.id)}
                           >
                             <div className="checkbox">
-                              {formData.selected_student_ids.includes(
-                                student.id
-                              ) && <Check size={12} />}
+                              {formData.selected_student_ids.includes(student.id) && <Check size={12} />}
                             </div>
                             <span>{student.name}</span>
                           </div>
                         ))
                       ) : (
-                        <div className="no-results">No students found</div>
+                        <div className="no-results">No matches found</div>
                       )}
                     </div>
                   </div>
@@ -259,17 +241,7 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                 type="text"
                 name="timing"
                 value={formData.timing}
-                placeholder="e.g. 10AM - 1PM"
-                required
-                onChange={handleChange}
-              />
-            </FormRow>
-
-            <FormRow label="Start Date" icon={Calendar}>
-              <input
-                type="date"
-                name="starting_date"
-                value={formData.starting_date}
+                placeholder="e.g. 10:00 AM - 1:00 PM"
                 required
                 onChange={handleChange}
               />
@@ -292,9 +264,14 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
                   name="branch_id"
                   value={formData.branch_id}
                   onChange={handleChange}
+                  required
                 >
-                  <option value={1}>Andheri</option>
-                  <option value={2}>Borivali</option>
+                  <option value="">Select Branch</option>
+                  {options.branches.map((b, i) => (
+                    <option key={i} value={i + 1}>
+                      {b}
+                    </option>
+                  ))}
                 </select>
               </FormRow>
             )}
@@ -304,28 +281,13 @@ const BatchDrawer = ({ isOpen, onClose, onUpdate, batchId }) => {
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
-            {/* PERMISSION CHECKED SUBMIT BUTTON */}
             {hasPermission(requiredPermission) ? (
-              <button
-                type="submit"
-                className="btn-save"
-                disabled={isSubmitting}
-              >
+              <button type="submit" className="btn-save" disabled={isSubmitting}>
                 <Send size={16} />{" "}
-                {isSubmitting
-                  ? "Saving..."
-                  : batchId
-                  ? "Update Batch"
-                  : "Submit Batch"}
+                {isSubmitting ? "Processing..." : batchId ? "Update Batch" : "Create Batch"}
               </button>
             ) : (
-              <span
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "700",
-                  color: "#ef4444",
-                }}
-              >
+              <span style={{ fontSize: "12px", fontWeight: "700", color: "#ef4444" }}>
                 READ ONLY MODE
               </span>
             )}

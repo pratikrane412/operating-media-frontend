@@ -277,7 +277,7 @@ const CertificateManage = () => {
               </thead>
               <tbody>
                 {!loading &&
-                  certificates.map((item) => (
+                  certificates.map((item, index) => (
                     <tr key={item.id}>
                       <td className="cert-m-txt-small">#{item.id}</td>
                       <td className="cert-m-id-bold">{item.certificate_id}</td>
@@ -308,17 +308,16 @@ const CertificateManage = () => {
                           </button>
 
                           {/* DROPDOWN MENU */}
-                          <div className="cert-m-dropdown-rel">
+                          <div className={`cert-m-dropdown-rel ${index >= certificates.length - 3 ? "open-up" : ""}`}>
                             <button
                               className={`cert-m-round-btn ${openMenuId === item.id ? "active" : ""}`}
                               onClick={() =>
-                                setOpenMenuId(
-                                  openMenuId === item.id ? null : item.id,
-                                )
+                                setOpenMenuId(openMenuId === item.id ? null : item.id)
                               }
                             >
                               <MoreHorizontal size={16} strokeWidth={1.5} />
                             </button>
+
                             {openMenuId === item.id && (
                               <div className="cert-m-dropdown-menu">
                                 <button

@@ -231,3 +231,40 @@
   cursor: not-allowed;
   transform: none;
 }
+
+.enq-status-section{
+margin-bottom:12px;
+}
+
+.enq-status-buttons{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
+
+.status-btn{
+padding:6px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:13px;
+}
+
+.status-btn.green{
+background:#e8f8ef;
+color:#16a34a;
+}
+
+.status-btn.yellow{
+background:#fff8e1;
+color:#d97706;
+}
+
+.status-btn.red{
+background:#fdecec;
+color:#dc2626;
+}
+
+.status-btn.active{
+outline:2px solid #003873;
+}

@@ -184,6 +184,7 @@
   vertical-align: middle;
   white-space: nowrap;
   color: var(--text);
+  text-align: center;
 }
 
 /* Stacked Items (Course/Source) */
@@ -283,4 +284,21 @@
   overflow-x: auto;
   max-height: 65vh;
   cursor: grab;
+}
+
+
+
+.green{
+background:#e9f9ee !important;
+border-left:4px solid #22c55e;
+}
+
+.yellow{
+background:#fff7db !important;
+border-left:4px solid #f59e0b;
+}
+
+.red{
+background:#fdeaea !important;
+border-left:4px solid #ef4444;
 }

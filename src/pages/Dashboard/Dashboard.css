@@ -433,7 +433,7 @@
 
 .modern-data-table td {
   padding: 18px 22px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #0038731a;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
@@ -442,6 +442,9 @@
   vertical-align: middle;
   line-height: 1.5;
   text-align: left;
+}
+.modern-data-table tr td {
+  border-right: 1px solid #0038731a !important;
 }
 
 .modern-data-table tbody tr:last-child td {
@@ -973,4 +976,12 @@
 /* Ensure actions don't stretch */
 .modern-data-table td.text-center {
   text-align: center;
+}
+
+.modern-data-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.modern-data-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
 }

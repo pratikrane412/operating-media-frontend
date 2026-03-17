@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
-  User, Mail, Phone, MapPin, Calendar, Edit3, Send, Smartphone, 
+  User, Mail, Phone, MapPin, Calendar, Edit3, Send, Smartphone,
   ChevronDown, ChevronRight, Link2, Building2, Briefcase, Check, Tag, BookOpen
 } from "lucide-react";
 // import Sidebar from "../../components/Sidebar/Sidebar";
@@ -33,6 +33,7 @@ const LeadsEdit = () => {
     last_name: "",
     mobile: "",
     other_contact: "",
+    location: "",
     email: "",
     gender: "Male",
     source: [], // Array for Multi-select
@@ -58,6 +59,7 @@ const LeadsEdit = () => {
       setFormData({
         ...data,
         // Convert "Tag1, Tag2" -> ["Tag1", "Tag2"] so UI works
+        location: data.location || "",
         tags: data.tags ? data.tags.split(", ") : [],
         source: data.source ? data.source.split(", ") : [],
       });
@@ -105,7 +107,7 @@ const LeadsEdit = () => {
       }
     };
 
-    const displayText = isMulti 
+    const displayText = isMulti
       ? (value.length > 0 ? value.join(", ") : placeholder)
       : (value || placeholder);
 
@@ -151,7 +153,7 @@ const LeadsEdit = () => {
             <form onSubmit={handleSubmit}>
               <div className="section-block">
                 <h3 className="section-label-heading"><User size={16} /> PERSONAL DETAILS</h3>
-                
+
                 <div className="form-row-layout">
                   <label>First Name:</label>
                   <div className="input-field-box">
@@ -180,12 +182,12 @@ const LeadsEdit = () => {
                   <label>Other Contact:</label>
                   <div className="input-field-box">
                     <div className="icon-box-shaded"><Phone size={16} /></div>
-                    <input 
-                        type="text" 
-                        name="other_contact" 
-                        value={formData.other_contact} 
-                        onChange={handleChange} 
-                        placeholder="Alternative contact info"
+                    <input
+                      type="text"
+                      name="other_contact"
+                      value={formData.other_contact}
+                      onChange={handleChange}
+                      placeholder="Alternative contact info"
                     />
                   </div>
                 </div>
@@ -205,14 +207,27 @@ const LeadsEdit = () => {
 
                 <div className="form-row-layout">
                   <label>Source:</label>
-                  <ModernSelect 
-                    name="source" 
-                    value={formData.source} 
-                    options={options.sources} 
-                    icon={Link2} 
-                    placeholder="Select Multiple Sources" 
-                    isMulti={true} 
+                  <ModernSelect
+                    name="source"
+                    value={formData.source}
+                    options={options.sources}
+                    icon={Link2}
+                    placeholder="Select Multiple Sources"
+                    isMulti={true}
                   />
+                </div>
+                <div className="form-row-layout">
+                  <label>Location:</label>
+                  <div className="input-field-box">
+                    <div className="icon-box-shaded"><MapPin size={16} /></div>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      placeholder="City or Area (Optional)"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -220,7 +235,7 @@ const LeadsEdit = () => {
 
               <div className="section-block">
                 <h3 className="section-label-heading"><BookOpen size={16} /> COURSE DETAILS</h3>
-                
+
                 <div className="form-row-layout">
                   <label>Select Course:</label>
                   <ModernSelect name="course" value={formData.course} options={options.courses} icon={BookOpen} placeholder="Select Course" />

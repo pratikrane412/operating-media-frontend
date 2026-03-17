@@ -106,7 +106,7 @@ const TrainingChart = () => {
                         <Layers size={40} className="title-icon" />
                         <div className="text-group">
                             <h2>Training Chart</h2>
-                            <p>Branch: {branch} Center</p>
+                            <p>Branch: {branch}</p>
                         </div>
                     </div>
 

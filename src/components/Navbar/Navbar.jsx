@@ -183,6 +183,14 @@ const Navbar = () => {
                     Manage Courses
                   </NavLink>
                 )}
+                {hasPermission("view training chart") && (
+                  <NavLink
+                    to="/training-chart"
+                    onClick={() => setActiveDropdown(null)}
+                  >
+                    Training Chart
+                  </NavLink>
+                )}
               </div>
             </div>
           )}

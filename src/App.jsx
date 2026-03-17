@@ -24,6 +24,7 @@ import CertificateManage from "./pages/CertificateManage/CertificateManage";
 import PublicCertificateView from "./components/PublicCertificateView/PublicCertificateView";
 import ChatSystem from "./components/ChatSystem/ChatSystem";
 import CounsellingBooking from "./pages/CounsellingBooking/CounsellingBooking";
+import TrainingChart from "./pages/TrainingChart/TrainingChart";
 
 function App() {
   return (
@@ -86,6 +87,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/training-chart"
+          element={
+            <ProtectedRoute permission="view training chart">
+              <TrainingChart />
+            </ProtectedRoute>
+          } />
         <Route
           path="/manage-staff"
           element={

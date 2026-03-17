@@ -105,7 +105,7 @@ const TrainingChart = () => {
                     <div className="title-section">
                         <Layers size={40} className="title-icon" />
                         <div className="text-group">
-                            <h2>Training Progress Matrix</h2>
+                            <h2>Training Chart</h2>
                             <p>Branch: {branch} Center</p>
                         </div>
                     </div>

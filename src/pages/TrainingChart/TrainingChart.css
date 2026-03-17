@@ -195,7 +195,8 @@
 #training-chart-portal .matrix-table td,
 #training-chart-portal .matrix-table th {
   padding: 10px;
-  border-right: 1px solid #eef2f6;
+  border-right: 1px solid #bfbfbf;
+  border-bottom: 1px solid #bfbfbf;
   font-size: 11px;
   text-align: center;
   min-width: 120px;
@@ -236,7 +237,7 @@
 #training-chart-portal .status-cell.clickable {
   background: white;
   cursor: pointer;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #bfbfbf;
   transition: 0.2s;
 }
 #training-chart-portal .status-cell.clickable:hover {
@@ -325,4 +326,7 @@
 #training-chart-portal .custom-scroll::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 10px;
+}
+td.sticky-col.module-label-cell {
+    border-bottom: 1px solid #bfbfbf;
 }

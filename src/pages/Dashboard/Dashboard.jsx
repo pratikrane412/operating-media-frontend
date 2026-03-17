@@ -739,7 +739,7 @@ const Dashboard = () => {
                       </select>
                       <div
                         className="date-picker-wrapper"
-                        style={{ height: "36px", minWidth: "220px" }}
+                        style={{ height: "36px", minWidth: "245px" }}
                       >
                         <CalendarIcon size={14} className="calendar-icon" />
                         <DatePicker
@@ -786,28 +786,33 @@ const Dashboard = () => {
                     >
                       <thead>
                         <tr>
-                          <th style={{ width: "22%" }}>STUDENT NAME</th>
+                          <th style={{ width: "18%" }}>STUDENT NAME</th>
                           <th
-                            style={{ width: "12%", cursor: "pointer" }}
-                            onClick={() =>
-                              toggleSort(setSortRev, sortRev, "date")
-                            }
+                            style={{ width: "11%", cursor: "pointer" }}
+                            onClick={() => toggleSort(setSortRev, sortRev, "date")}
                           >
-                            ADMISSION DATE{" "}
-                            {sortRev.field === "date" &&
+                            ADM. DATE{" "}
+                            {sortRev.field === "date" && (sortRev.order === "asc" ? "↑" : "↓")}
+                          </th>
+                          <th
+                            style={{ width: "11%", cursor: "pointer" }}
+                            onClick={() => toggleSort(setSortRev, sortRev, "payment_date")}
+                          >
+                            INST. DATE{" "}
+                            {sortRev.field === "payment_date" &&
                               (sortRev.order === "asc" ? "↑" : "↓")}
                           </th>
-                          <th style={{ width: "20%" }}>COURSE</th>
-                          <th style={{ width: "14%" }}>COUNSELLOR</th>
-                          <th style={{ width: "11%" }}>TOTAL FEE</th>
+                          <th style={{ width: "18%" }}>COURSE</th>
+                          <th style={{ width: "12%" }}>COUNSELLOR</th>
+                          <th style={{ width: "10%" }}>TOTAL FEE</th>
                           <th style={{ width: "10%" }}>RECEIVED</th>
-                          <th style={{ width: "11%" }}>PENDING</th>
+                          <th style={{ width: "10%" }}>PENDING</th>
                         </tr>
                       </thead>
                       <tbody>
                         {revenueList.length === 0 ? (
                           <tr>
-                            <td colSpan="7" className="loader">
+                            <td colSpan="8" className="loader">
                               No collection records found.
                             </td>
                           </tr>
@@ -824,29 +829,32 @@ const Dashboard = () => {
 
                                     {/* If it's the Registration Fee */}
                                     {item.paid_type === 99 && (
-                                      <span className="inst-badge" style={{ background: '#0d6b7b' }}>REG</span>
+                                      <span
+                                        className="inst-badge"
+                                        style={{ background: "#0d6b7b" }}
+                                      >
+                                        REG
+                                      </span>
                                     )}
 
                                     {/* If it's an Installment 1-8 */}
                                     {item.paid_type > 0 && item.paid_type < 10 && (
-                                      <span className="inst-badge">
-                                        Inst {item.paid_type}
-                                      </span>
+                                      <span className="inst-badge">Inst {item.paid_type}</span>
                                     )}
                                   </span>
                                 </div>
                               </td>
-                              <td className="join-date-text">
-                                {formatDate(item.date)}
+                              <td className="join-date-text">{formatDate(item.date)}</td>
+                              <td
+                                className="join-date-text"
+                                style={{ color: "#003873", fontWeight: "700" }}
+                              >
+                                {formatDate(item.payment_date)}
                               </td>
                               <td>
-                                <span className="course-pill-lite">
-                                  {item.course}
-                                </span>
+                                <span className="course-pill-lite">{item.course}</span>
                               </td>
-                              <td className="counsellor-name">
-                                {item.counsellor}
-                              </td>
+                              <td className="counsellor-name">{item.counsellor}</td>
                               <td className="fee-amount-bold">
                                 ₹{item.total_fees?.toLocaleString("en-IN")}
                               </td>
@@ -874,9 +882,9 @@ const Dashboard = () => {
                         <tbody>
                           <tr className="table-summary-footer">
                             <td
-                              colSpan="4"
+                              colSpan="5"
                               className="summary-label"
-                              style={{ width: "68%" }}
+                              style={{ width: "70%" }}
                             >
                               <div
                                 style={{
@@ -896,14 +904,12 @@ const Dashboard = () => {
                                     {data.revenue_details.length}
                                   </span>
                                 </span>
-                                <span style={{ marginRight: "10px" }}>
-                                  TOTALS:
-                                </span>
+                                <span style={{ marginRight: "10px" }}>TOTALS:</span>
                               </div>
                             </td>
                             <td
                               className="summary-value summary-total"
-                              style={{ width: "11%" }}
+                              style={{ width: "10%" }}
                             >
                               ₹{revenueTotals.totalFees.toLocaleString("en-IN")}
                             </td>
@@ -911,19 +917,13 @@ const Dashboard = () => {
                               className="summary-value summary-received"
                               style={{ width: "10%" }}
                             >
-                              ₹
-                              {revenueTotals.totalReceived.toLocaleString(
-                                "en-IN",
-                              )}
+                              ₹{revenueTotals.totalReceived.toLocaleString("en-IN")}
                             </td>
                             <td
                               className="summary-value summary-pending"
-                              style={{ width: "11%" }}
+                              style={{ width: "10%" }}
                             >
-                              ₹
-                              {revenueTotals.totalPending.toLocaleString(
-                                "en-IN",
-                              )}
+                              ₹{revenueTotals.totalPending.toLocaleString("en-IN")}
                             </td>
                           </tr>
                         </tbody>

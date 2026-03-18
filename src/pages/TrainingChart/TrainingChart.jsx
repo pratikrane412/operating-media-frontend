@@ -175,43 +175,62 @@ const TrainingChart = () => {
                         </thead>
 
                         <tbody>
-                            {data.modules.map(mod => (
-                                <tr key={mod.id}>
-                                    <td
-                                        className="sticky-col module-label-cell"
-                                        style={{
-                                            borderLeft: `6px solid ${mod.color || '#cbd5e1'}`,
-                                            background: `${mod.color}30` // ← 18 = ~10% opacity in hex
-                                        }}
-                                    >
-                                        {mod.name}
-                                    </td>
-                                    <td className="hours-data-cell"> {/* ADDED HOURS DATA CELL */}
-                                        {mod.hours}
-                                    </td>
-                                    {data.batches.map(b => (
-                                        <React.Fragment key={b.id}>
-                                            {b.students.map(s => {
-                                                const status = s.statuses[mod.id] || "—";
-                                                return (
-                                                    <td
-                                                        key={`${s.id}-${mod.id}`}
-                                                        className={`status-cell clickable ${status.toLowerCase()}`}
-                                                        onClick={(e) => {
-                                                            if (isDragging) return;
-                                                            const rect = e.target.getBoundingClientRect();
-                                                            setActivePopover({ studentId: s.id, moduleId: mod.id, batchId: b.id, currentStatus: status, top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
-                                                        }}
-                                                    >
-                                                        {status}
-                                                    </td>
-                                                );
-                                            })}
-                                            <td className="batch-gap-cell"></td>
-                                        </React.Fragment>
-                                    ))}
-                                </tr>
-                            ))}
+                            {data.modules.map((mod, index) => {
+                                const prevMod = data.modules[index - 1];
+                                const showSeparator = index !== 0 && prevMod.color !== mod.color;
+
+                                return (
+                                    <React.Fragment key={mod.id}>
+                                        {showSeparator && (
+                                            <tr className="separator-row">
+                                                <td className="sticky-col separator-sticky"></td>
+                                                <td></td>
+                                                {data.batches.map(b => (
+                                                    <React.Fragment key={b.id}>
+                                                        {b.students.map(s => <td key={s.id}></td>)}
+                                                        <td className="separator-gap"></td>  {/* ← separator-gap here */}
+                                                    </React.Fragment>
+                                                ))}
+                                            </tr>
+                                        )}
+                                        <tr>
+                                            <td
+                                                className="sticky-col module-label-cell"
+                                                style={{
+                                                    borderLeft: `6px solid ${mod.color || '#cbd5e1'}`,
+                                                    background: `${mod.color}30`
+                                                }}
+                                            >
+                                                {mod.name}
+                                            </td>
+                                            <td className="hours-data-cell">
+                                                {mod.hours}
+                                            </td>
+                                            {data.batches.map(b => (
+                                                <React.Fragment key={b.id}>
+                                                    {b.students.map(s => {
+                                                        const status = s.statuses[mod.id] || "—";
+                                                        return (
+                                                            <td
+                                                                key={`${s.id}-${mod.id}`}
+                                                                className={`status-cell clickable ${status.toLowerCase()}`}
+                                                                onClick={(e) => {
+                                                                    if (isDragging) return;
+                                                                    const rect = e.target.getBoundingClientRect();
+                                                                    setActivePopover({ studentId: s.id, moduleId: mod.id, batchId: b.id, currentStatus: status, top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
+                                                                }}
+                                                            >
+                                                                {status}
+                                                            </td>
+                                                        );
+                                                    })}
+                                                    <td className="batch-gap-cell"></td>
+                                                </React.Fragment>
+                                            ))}
+                                        </tr>
+                                    </React.Fragment>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>

@@ -41,7 +41,8 @@ const EnquiryDetailDrawer = ({ isOpen, onClose, data, onUpdate }) => {
       );
 
       alert("Counsellor response updated!");
-
+      if (onUpdate) onUpdate();
+      onClose();
       if (onUpdate) onUpdate();
 
     } catch (err) {
@@ -170,9 +171,9 @@ const EnquiryDetailDrawer = ({ isOpen, onClose, data, onUpdate }) => {
 
             <div className="enq-status-section">
 
-             <div className="enq-card-label">
-              <MessageSquare size={16} /> <span>Lead Status</span>
-            </div>
+              <div className="enq-card-label">
+                <MessageSquare size={16} /> <span>Lead Status</span>
+              </div>
 
               <div className="enq-status-buttons">
 
@@ -194,7 +195,7 @@ const EnquiryDetailDrawer = ({ isOpen, onClose, data, onUpdate }) => {
                   className={`status-btn red ${statusColor === "red" ? "active" : ""}`}
                   onClick={() => setStatusColor("red")}
                 >
-                 Red
+                  Red
                 </button>
 
               </div>

@@ -170,8 +170,8 @@
 
 /* --- COUNSELLOR RESPONSE SECTION --- */
 .enq-action-card {
-  border-left: 4px solid #003873;
-  background: #f8fbff; /* Subtle blue background for the action area */
+  
+  background: white; /* Subtle blue background for the action area */
 }
 
 .enq-action-container {

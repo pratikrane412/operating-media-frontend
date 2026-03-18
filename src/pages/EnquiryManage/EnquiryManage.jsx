@@ -327,10 +327,10 @@ const EnquiryManage = () => {
                 ) : (
                   enquiries.map((item) => (
                     <tr
-                      key={item.id}
-                      className="enq-clickable-row"
-                      onClick={(e) => handleRowClick(e, item)}
-                    >
+  key={item.id}
+  className={`enq-clickable-row ${item.status_color || ""}`}
+  onClick={(e) => handleRowClick(e, item)}
+>
                       <td className="enq-m-txt-small">{item.date}</td>
                       <td className="enq-m-name-bold">{item.name}</td>
                       <td className="enq-m-txt-small">{item.email}</td>

@@ -224,7 +224,7 @@ const Dashboard = () => {
                   <div className="card-header">
                     <div
                       className="icon-box"
-                      style={{ background: "#f3e8ff", color: "#7e22ce" }}
+                      style={{ background: "#ffffff", color: "#7e22ce" }}
                     >
                       <GraduationCap size={20} />
                     </div>
@@ -371,7 +371,7 @@ const Dashboard = () => {
                 <div className="data-toolbar">
                   <div className="toolbar-content">
                     <div className="toolbar-left">
-                      <CalendarClock size={18} color="#003873" />
+                      <CalendarClock size={20} color="#003873" />
                       <span className="branch-title">
                         Counsellor Scheduled Sessions
                       </span>
@@ -475,7 +475,7 @@ const Dashboard = () => {
                 <div className="data-toolbar">
                   <div className="toolbar-content">
                     <div className="toolbar-left">
-                      <Zap size={18} color="#ef4444" />
+                      <Zap size={20} color="#ef4444" />
                       <span className="branch-title">Priority Hot Leads</span>
                     </div>
 
@@ -605,7 +605,7 @@ const Dashboard = () => {
                 <div className="data-toolbar">
                   <div className="toolbar-content">
                     <div className="toolbar-left">
-                      <HandCoins size={18} className="title-icon-blue" />
+                      <HandCoins size={20} className="title-icon-blue" />
                       <span className="branch-title">Pending Payments</span>
                     </div>
                     <div className="toolbar-right">
@@ -712,7 +712,7 @@ const Dashboard = () => {
                 <div className="data-toolbar" style={{ background: "#fcfdfe" }}>
                   <div className="toolbar-content">
                     <div className="toolbar-left">
-                      <IndianRupee size={18} className="title-icon-blue" />
+                      <IndianRupee size={20} className="title-icon-blue" />
                       <span className="branch-title">Revenue Details</span>
                     </div>
                     <div className="toolbar-right">

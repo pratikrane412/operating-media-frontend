@@ -135,7 +135,7 @@ const TrainingChart = () => {
                             {/* ROW 1: BATCH NAMES */}
                             <tr className="row-batch">
                                 <th className="sticky-col first-head"><BookOpen size={14} /> MODULES</th>
-                                <th className="hours-header-cell">Number of Hours</th> {/* ADDED HOURS HEADER */}
+                                <th className="hours-header-cell">NUMBER OF HOURS</th> {/* ADDED HOURS HEADER */}
                                 {data.batches.map(b => (
                                     <React.Fragment key={b.id}>
                                         <th colSpan={b.students.length} className="batch-header-cell">{b.name}</th>

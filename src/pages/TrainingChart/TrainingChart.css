@@ -219,8 +219,8 @@
 }
 #training-chart-portal .meta-stack small {
   font-size: 9px;
-  color: #94a3b8;
-  font-weight: 700;
+  color: #003873;
+  font-weight: 900;
 }
 
 #training-chart-portal .status-cell.clickable {
@@ -351,26 +351,48 @@
 }
 td.sticky-col.module-label-cell {
   border-bottom: 1px solid #bfbfbf;
-  font-weight: 700;        
-  font-size: 12px;         
+  font-weight: 700;
+  font-size: 12px;
   color: #1e293b;
 }
 #training-chart-portal .separator-row td {
-    background: #94a3b8 !important;
-    height: 15px;
-    padding: 0;
-    border: none;
+  background: #94a3b8 !important;
+  height: 15px;
+  padding: 0;
+  border: none;
 }
 
 #training-chart-portal .separator-row td.separator-gap {
-    background: var(--bg) !important;  /* matches the table wrapper background */
-    border: none !important;
-    padding: 0;
+  background: var(--bg) !important; /* matches the table wrapper background */
+  border: none !important;
+  padding: 0;
 }
 
 #training-chart-portal .separator-row .separator-sticky {
-    background: #94a3b8 !important;
-    position: sticky;
-    left: 0;
-    z-index: 100;
+  background: #94a3b8 !important;
+  position: sticky;
+  left: 0;
+  z-index: 100;
+}
+
+/* Course color coding for meta cells */
+#training-chart-portal .student-meta-cell.course-masters {
+  background: #eeccc2 !important; /* light orange */
+}
+#training-chart-portal .student-meta-cell.course-adv-dip {
+  background: #c5f1ab !important; /* light green */
+}
+#training-chart-portal .student-meta-cell.course-dip {
+  background: #e6f39e !important; /* light yellow */
+}
+
+/* Also color the name cell above */
+#training-chart-portal .student-name-cell.course-masters {
+  background: #eeccc2 !important;
+}
+#training-chart-portal .student-name-cell.course-adv-dip {
+  background: #c5f1ab !important;
+}
+#training-chart-portal .student-name-cell.course-dip {
+  background: #e6f39e !important;
 }

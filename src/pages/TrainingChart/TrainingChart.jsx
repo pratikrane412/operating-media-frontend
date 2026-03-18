@@ -160,14 +160,19 @@ const TrainingChart = () => {
                                 <th className="hours-header-cell"></th> {/* ADDED ALIGNMENT CELL */}
                                 {data.batches.map(b => (
                                     <React.Fragment key={b.id}>
-                                        {b.students.map(s => (
-                                            <th key={s.id} className="student-meta-cell">
-                                                <div className="meta-stack">
-                                                    <span>{getShortCourse(s.course)}</span>
-                                                    <small>{s.adm_date}</small>
-                                                </div>
-                                            </th>
-                                        ))}
+                                        {b.students.map(s => {
+                                            const courseClass = s.course?.toLowerCase().includes("masters") ? "course-masters"
+                                                : s.course?.toLowerCase().includes("advanced") ? "course-adv-dip"
+                                                    : s.course?.toLowerCase().includes("diploma") ? "course-dip" : "";
+                                            return (
+                                                <th key={s.id} className={`student-meta-cell ${courseClass}`}>
+                                                    <div className="meta-stack">
+                                                        <span>{getShortCourse(s.course)}</span>
+                                                        <small>{s.adm_date}</small>
+                                                    </div>
+                                                </th>
+                                            );
+                                        })}
                                         <th className="batch-gap-header"></th>
                                     </React.Fragment>
                                 ))}

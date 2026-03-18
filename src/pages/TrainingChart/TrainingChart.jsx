@@ -149,7 +149,7 @@ const TrainingChart = () => {
                                 <th className="hours-header-cell"></th> {/* ADDED ALIGNMENT CELL */}
                                 {data.batches.map(b => (
                                     <React.Fragment key={b.id}>
-                                        {b.students.map(s => <th key={s.id} className="student-name-cell">{s.name.split(' ')[0]}</th>)}
+                                        {b.students.map(s => <th key={s.id} className="student-name-cell">{s.name}</th>)}
                                         <th className="batch-gap-header"></th>
                                     </React.Fragment>
                                 ))}

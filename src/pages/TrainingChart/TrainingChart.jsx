@@ -177,7 +177,13 @@ const TrainingChart = () => {
                         <tbody>
                             {data.modules.map(mod => (
                                 <tr key={mod.id}>
-                                    <td className="sticky-col module-label-cell" style={{ borderLeft: `6px solid ${mod.color || '#cbd5e1'}` }}>
+                                    <td
+                                        className="sticky-col module-label-cell"
+                                        style={{
+                                            borderLeft: `6px solid ${mod.color || '#cbd5e1'}`,
+                                            background: `${mod.color}30` // ← 18 = ~10% opacity in hex
+                                        }}
+                                    >
                                         {mod.name}
                                     </td>
                                     <td className="hours-data-cell"> {/* ADDED HOURS DATA CELL */}

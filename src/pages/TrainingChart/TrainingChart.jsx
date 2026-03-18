@@ -135,6 +135,7 @@ const TrainingChart = () => {
                             {/* ROW 1: BATCH NAMES */}
                             <tr className="row-batch">
                                 <th className="sticky-col first-head"><BookOpen size={14} /> MODULES</th>
+                                <th className="hours-header-cell">Number of Hours</th> {/* ADDED HOURS HEADER */}
                                 {data.batches.map(b => (
                                     <React.Fragment key={b.id}>
                                         <th colSpan={b.students.length} className="batch-header-cell">{b.name}</th>
@@ -144,7 +145,8 @@ const TrainingChart = () => {
                             </tr>
                             {/* ROW 2: NAMES */}
                             <tr className="row-name">
-                                <th className="sticky-col second-head"></th>
+                                <th className="sticky-col second-head">Student Name</th>
+                                <th className="hours-header-cell"></th> {/* ADDED ALIGNMENT CELL */}
                                 {data.batches.map(b => (
                                     <React.Fragment key={b.id}>
                                         {b.students.map(s => <th key={s.id} className="student-name-cell">{s.name.split(' ')[0]}</th>)}
@@ -154,7 +156,8 @@ const TrainingChart = () => {
                             </tr>
                             {/* ROW 3: META */}
                             <tr className="row-meta">
-                                <th className="sticky-col third-head"></th>
+                                <th className="sticky-col third-head">Course / Date</th>
+                                <th className="hours-header-cell"></th> {/* ADDED ALIGNMENT CELL */}
                                 {data.batches.map(b => (
                                     <React.Fragment key={b.id}>
                                         {b.students.map(s => (
@@ -176,6 +179,9 @@ const TrainingChart = () => {
                                 <tr key={mod.id}>
                                     <td className="sticky-col module-label-cell" style={{ borderLeft: `6px solid ${mod.color || '#cbd5e1'}` }}>
                                         {mod.name}
+                                    </td>
+                                    <td className="hours-data-cell"> {/* ADDED HOURS DATA CELL */}
+                                        {mod.hours}
                                     </td>
                                     {data.batches.map(b => (
                                         <React.Fragment key={b.id}>
